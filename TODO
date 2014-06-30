@@ -1,0 +1,10 @@
+- determine license to use
+    what codebase does this have? GPLv2 release from id? Wolf3dEULA?
+- one executable for all versions of the game
+    . remove shitty ifdefs
+- use lower screen for SOMETHING
+- option to swap screens
+- option to use stylus for movement
+- restart or shutdown on error
+- quit -> restart or shutdown
+- port to 9front (9wolf)
