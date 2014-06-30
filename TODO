@@ -1,5 +1,8 @@
 - determine license to use
     what codebase does this have? GPLv2 release from id? Wolf3dEULA?
+- docs:
+    . README, etc.
+    . comments: description of modules, etc.
 - one executable for all versions of the game
     . remove shitty ifdefs
 - use lower screen for SOMETHING
@@ -7,4 +10,6 @@
 - option to use stylus for movement
 - restart or shutdown on error
 - quit -> restart or shutdown
+- refactor code
+    keep old id structure?
 - port to 9front (9wolf)

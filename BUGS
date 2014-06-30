@@ -1,2 +1,6 @@
 - pushwalls don't work
 - wrong icon (icon.bmp) (not really a bug, but whatever)
+- fucks out on standby (if closed lid during gameplay)
+- works only on shareware, no full version or sod (shareware or full)
+- modified exit messages (a/b instead of y/n): that's just WRONG
+- performance: not as fluid as lazy1's port
