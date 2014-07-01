@@ -28,12 +28,12 @@ extern pictabletype *pictable;
 
 /* local variables */
 
-static const char aheadname[] = "/GAMES/WOLF/AUDIOHED.";
-static const char afilename[] = "/GAMES/WOLF/AUDIOT.";
-static const char gdictname[] = "/GAMES/WOLF/VGADICT.";
-static const char gheadname[] = "/GAMES/WOLF/VGAHEAD.";
-static const char gfilename[] = "/GAMES/WOLF/VGAGRAPH.";
-static const char mheadname[] = "/GAMES/WOLF/MAPHEAD.";
+static const char aheadname[] = "/dswolf/audiohed.";
+static const char afilename[] = "/dswolf/audiot.";
+static const char gdictname[] = "/dswolf/vgadict.";
+static const char gheadname[] = "/dswolf/vgahead.";
+static const char gfilename[] = "/dswolf/vgagraph.";
+static const char mheadname[] = "/dswolf/maphead.";
 
 static S32 * audiostarts = NULL;           /* array of offsets in audio / audiot */
 static FILE * audiohandle = NULL;          /* handle to AUDIOT / AUDIO */
@@ -1101,7 +1101,7 @@ static void CAL_SetupMapFile(void)
     RLEWtag = ((mapfiletype *) tinf)->RLEWtag;
 
     /* open the data file */
-    strcpy(fname,"/GAMES/WOLF/GAMEMAPS.");
+    strcpy(fname,"/dswolf/gamemaps.");
     strcat(fname, extension);
     maphandle = fopen(fname, "rb");
 

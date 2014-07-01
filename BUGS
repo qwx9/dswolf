@@ -4,3 +4,10 @@
 - works only on shareware, no full version or sod (shareware or full)
 - modified exit messages (a/b instead of y/n): that's just WRONG
 - performance: not as fluid as lazy1's port
+- controls: shitty; no controls for gun selection, etc.
+- lower screen -> print banner, then status messages
+- dogs: wrong sounds (dying, hits?)
+- shitty delay between going to the menu and going back in game
+- music: listen to main menu music: not everything is being played
+    compare to dosbox, etc.
+- slowdown when beginning to play music from beginning again

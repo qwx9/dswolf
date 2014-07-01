@@ -3,8 +3,13 @@
 - docs:
     . README, etc.
     . comments: description of modules, etc.
+- don't require a specific directory where the gamefiles are to be
+  located, instead try current directory, then a default one
+    stat calls fail with a relative path
 - one executable for all versions of the game
     . remove shitty ifdefs
+        actually, most are removed (SPEAR, SPEARDEMO)
+        SHAREWARE was defined in types.h
 - use lower screen for SOMETHING
 - option to swap screens
 - option to use stylus for movement
@@ -13,3 +18,4 @@
 - refactor code
     keep old id structure?
 - port to 9front (9wolf)
+- savegame naming? how does it work?

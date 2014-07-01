@@ -45,7 +45,8 @@ static void PM_CannotOpen(const char *string);
 void PM_Startup(void)
 {
     FILE *file = NULL;
-    char fname[30] = "/GAMES/WOLF/VSWAP.";
+    /* FIXME: buffer length */
+    char fname[30] = "/dswolf/vswap.";
     U32 dataStart;
     S32 i;
     long fileSize;

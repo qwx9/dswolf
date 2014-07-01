@@ -1112,14 +1112,14 @@ void CheckForEpisodes(void)
 {
     struct stat statbuf;
 
-    #if defined(SHAREWARE)
-    if(stat("/GAMES/WOLF/VSWAP.WL1", &statbuf) >= 0)
+    #ifdef SHAREWARE
+    if(stat("/dswolf/vswap.wl1", &statbuf) >= 0)
     {
         strcpy (extension, "wl1");
         numEpisodesMissing = 5;
     }
     #else
-    if(stat("/GAMES/WOLF/VSWAP.WL6", &statbuf) >= 0)
+    if(stat("/dswolf/vswap.wl6", &statbuf) >= 0)
     {
         strcpy (extension, "wl6");
         NewEmenu[2].active = 1;
@@ -1138,7 +1138,8 @@ void CheckForEpisodes(void)
 
     if(numEpisodesMissing == -1)
     {
-        printf("cant open valid /GAMES/WOLF/VSWAP file \n");
+        printf("cant open valid vswap file \n");
+        /* TODO: reset or poweroff instead (wait for keypress) */
         while(1){}; /* hang system */
     }
 
@@ -2821,7 +2822,8 @@ S32 CP_LoadGame(S32 quick)
     S32 which;
     S32 exit = 0;
     char name[13];
-    char loadpath[30] = "/GAMES/WOLF/";
+    /* FIXME: buffer length */
+    char loadpath[30] = "/dswolf/";
 
     strcpy(name, SaveName);
 
@@ -2882,7 +2884,8 @@ S32 CP_SaveGame (S32 quick)
     FILE *file;
     char name[13];
     char input[32] = "";
-    char savepath[30] = "/GAMES/WOLF/";
+    /* FIXME: buffer length */
+    char savepath[30] = "/dswolf/";
 
     strcpy (name, SaveName);
 
@@ -3119,7 +3122,7 @@ void SetupSaveGames(void)
     {
         name[7] = '0' + i;
 
-        strcpy(savepath,"/GAMES/WOLF/");
+        strcpy(savepath,"/dswolf/");
         strcat(savepath, name);
 
         file = fopen(savepath,"rb");
