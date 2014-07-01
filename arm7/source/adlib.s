@@ -4,15 +4,15 @@
 @
 @ Copyright (C) 2010
 @ Patrick Aalto (Pate)
-@ 
+@
 @ This software is provided 'as-is', without any express or implied
 @ warranty.  In no event will the authors be held liable for any
 @ damages arising from the use of this software.
-@ 
+@
 @ Permission is granted to anyone to use this software for any
 @ purpose, including commercial applications, and to alter it and
 @ redistribute it freely, subject to the following restrictions:
-@ 
+@
 @ 1. The origin of this software must not be misrepresented; you
 @ must not claim that you wrote the original software. If you use
 @ this software in a product, an acknowledgment in the product
@@ -77,12 +77,12 @@
 #define SOUND_FORMAT_PSG    (3<<29)
 #define SOUND_FORMAT_ADPCM  (2<<29)
 
-#define SCHANNEL_ENABLE 	(1<<31)
+#define SCHANNEL_ENABLE	(1<<31)
 
 @========== AdLib emulation handling variables ========================
 
 #define ADLIB_CHANNEL_CR		0x04000420
-#define	ADLIB_ENABLE 			(SOUND_VOL(127)+SOUND_PAN(64)+SOUND_FORMAT_16BIT+SOUND_REPEAT+SCHANNEL_ENABLE)
+#define	ADLIB_ENABLE			(SOUND_VOL(127)+SOUND_PAN(64)+SOUND_FORMAT_16BIT+SOUND_REPEAT+SCHANNEL_ENABLE)
 #define	ADLIB_FREQUENCY			65024		@ = -512 = About 32768 Hz
 #define	ADLIB_BUFFER_SAMPLES	64
 #define	ADLIB_BUFFER_SIZE		(2*ADLIB_BUFFER_SAMPLES)
@@ -102,32 +102,32 @@ cmnd_buf_keycmnd:													@ Command buffer key command head
 	.space	4
 cmnd_buf_tail:														@ Command buffer tail
 	.space	4
-#endif	
+#endif
 
 adlib_buf:															@ Buffer for output samples for each of the channels
 	.space	(2*9*ADLIB_BUFFER_SIZE)
-	
+
 adlib_buf_swap:														@ Toggle for which buffer we are writing to
 	.space	4
 
 adlib_spinlock:														@ Spinlock for waiting until OK to handle the other buffer
 	.space	4
-	
+
 	@ ===== Main FM_OPL struct
 
 	@ ----- LFO handling, 8.24 fixed point (LFO calculations)
-	
+
 #define LFO_AM_TAB_ELEMENTS 210
 #define LFO_SH				24
-	
+
 lfo_am_cnt:								@ UINT32
 	.space	4
-lfo_pm_cnt:								@ UINT32	
+lfo_pm_cnt:								@ UINT32
 	.space	4
-	
-lfo_am_depth:							@ UINT8	
+
+lfo_am_depth:							@ UINT8
 	.space	1
-lfo_pm_depth_range:						@ UINT8	
+lfo_pm_depth_range:						@ UINT8
 	.space	1
 wavesel:								@ UINT8						/* waveform select enable flag	*/
 	.space	1
@@ -137,7 +137,7 @@ rhythm:									@ UINT8						/* Rhythm mode					*/
 	@ ----- Two SLOTs for each of the 9 channels
 
 #define TL_RES_LEN		(256)
-#define TL_TAB_LEN 		(12*2*TL_RES_LEN)
+#define TL_TAB_LEN		(12*2*TL_RES_LEN)
 #define ENV_QUIET		(TL_TAB_LEN>>4)
 #define FREQ_SH			16
 #define FREQ_MASK		((1<<FREQ_SH)-1)
@@ -157,16 +157,16 @@ rhythm:									@ UINT8						/* Rhythm mode					*/
 
 	@ ----- Slot 1 -----
 	.global SLOT1
-SLOT1:	
+SLOT1:
 ch0_slot1_env_sustain:					@ UINT32;			/* r4 = envelope sustain level  */
 	.space	4
-ch0_slot1_env_incr:						@ UINT32;			/* r5 = envelope increment 		*/
+ch0_slot1_env_incr:						@ UINT32;			/* r5 = envelope increment		*/
 	.space	4
 ch0_slot1_Incr:							@ UINT32;			/* r6 = frequency counter step	*/
 	.space	4
 ch0_slot1_Cnt:							@ UINT32 Cnt;		/* r7 = frequency counter		*/
 	.space	4
-ch0_slot1_volume:						@ INT32	volume;		/* r8 = envelope counter		*/	
+ch0_slot1_volume:						@ INT32	volume;		/* r8 = envelope counter		*/
 	.space	4
 ch0_slot1_TLL:							@ INT32	TLL;		/* r9 = adjusted now TL			*/
 	.space	4
@@ -183,7 +183,7 @@ ch0_slot1_mul:							@ UINT8	mul;		/* multiple: mul_tab[ML]		*/
 	.space	1
 ch0_slot1_FB:							@ UINT8 FB;			/* feedback shift value			*/
 	.space	1
-ch0_slot1_bits:							@ UNIT8 bits;		/* AM, Vib, EG type, KSR 		*/
+ch0_slot1_bits:							@ UNIT8 bits;		/* AM, Vib, EG type, KSR		*/
 	.space	1
 ch0_slot1_dummy:
 	.space	1
@@ -211,10 +211,10 @@ ch0_slot1_rr:							@ UINT32 rr;		/* release rate:RR<<2			*/
 	.space	4
 ch0_slot1_sl:							@ UINT32;			/* sustain level: sl_tab[SL]	*/
 	.space	4
-	
+
 	@ ----- Slot 2 -----
 	.global SLOT2
-SLOT2:	
+SLOT2:
 #define	SLOT_SIZE	(SLOT2-SLOT1)
 	.space	SLOT_SIZE
 #define	CH_SIZE		(2*SLOT_SIZE)
@@ -279,13 +279,13 @@ PutAdLibBuffer:
 	.word	cmnd_E0_F0
 cmnd_loop:
 	ldmfd	sp!, {r4-r11}										@ Pop changed registers
-#endif	
+#endif
 	bx		lr
 
 	@=======
 	@ Handle AdLib emulation
 	@=======
-	
+
 .macro	LFO_AM_HANDLING
 	@-------
 	@	tmp = lfo_am_table[ OPL->lfo_am_cnt >> LFO_SH ];
@@ -319,12 +319,12 @@ cmnd_loop:
 	and		r1, r4, lsr #16										@		r1 = block_fnum&0x03ff (r4 high 16 bits contain 0x3FF)
 	rsb		r2, #7												@		r2 = 7-block
 	ldr		r1, [r3, r1, lsl #2]								@		r1 = OPL->fn_tab[block_fnum&0x03ff]
-	ldrb	r3, [r0, #SLOT_MUL] 								@ 		r3 = op->mul
+	ldrb	r3, [r0, #SLOT_MUL]								@		r3 = op->mul
 	lsr		r1, r2												@		r1 = (OPL->fn_tab[block_fnum&0x03ff] >> (7-block))
 	mul		r6, r1, r3											@		tmp = (OPL->fn_tab[block_fnum&0x03ff] >> (7-block)) * op->mul;
 1:																@ } }
 .endm
-	
+
 @-------------------------------------------------------------------------------------------------------------
 AdlibEmulator:
 @-------------------------------------------------------------------------------------------------------------
@@ -333,8 +333,8 @@ AdlibEmulator:
 	@-------
 	ldr		r0,=lfo_am_cnt
 	mov		r1, #0												@ lfo_am_cnt = 0, lfo_am_depth = False, lfo_am_direction = up
-	str		r1, [r0] 
-	str		r1, [r0, #(lfo_pm_cnt-lfo_am_cnt)] 					@ lfo_pm_cnt = 0
+	str		r1, [r0]
+	str		r1, [r0, #(lfo_pm_cnt-lfo_am_cnt)]					@ lfo_pm_cnt = 0
 
 	ldr		r1, =lfo_pm_table
 	stmfd	sp!, {r1}											@ Push the lfo_pm_table initial value into stack
@@ -397,7 +397,7 @@ AdlibEmulator:
 	str		r1, [r2]
 	str		r1, [r2, #4]
 	str		r1, [r2, #8]
-#endif	
+#endif
 
 	@-------
 	@ Initialize the hardware sound channels
@@ -458,7 +458,7 @@ AdlibEmulator:
 	@-------
 	@ Start the sync timer
 	@-------
-	ldr		r2,=0x04000104											@ #define  TIMER1_DATA   (*(vuint16*)0x04000104) 
+	ldr		r2,=0x04000104											@ #define  TIMER1_DATA   (*(vuint16*)0x04000104)
 	mov		r1, #0
 	strh	r1, [r2, #2]											@ TIMER1_CR = 0;
 	strh	r1, [r2]												@ TIMER1_DATA = 0;
@@ -502,13 +502,13 @@ adlib_loop:
 	ldr		r0,  =SLOT1
 	ldr		r12, [r0, #-(SLOT1-lfo_am_cnt)]
 	and		r12, #0xFF												@ r12 = LFO_AM and lfo_am_depth
-	
+
 	@-------
 	@ Spin loop here until the timer has done ADLIB_BUFFER_SAMPLES ticks since our last buffer fill
 	@-------
 	ldr		r3, =adlib_spinlock
 	ldr		r4, [r3]
-	ldr		r2, =0x04000104											@ #define  TIMER1_DATA   (*(vuint16*)0x04000104) 
+	ldr		r2, =0x04000104											@ #define  TIMER1_DATA   (*(vuint16*)0x04000104)
 	add		r4, #ADLIB_BUFFER_SAMPLES
 
 #if CPUCHECK
@@ -525,23 +525,23 @@ adlib_loop:
 	strhs	r7, [r5]
 	strlo	r6, [r5]
 #endif
-	
+
 	bics	r4, #0x10000
 	str		r4, [r3]
 	bne		.spin_loop
-.spin_zero:	
+.spin_zero:
 	ldrh	r1, [r2]												@ Get current timer value
 	tst		r1, #0x8000
 	bne		.spin_zero
 	b		.spin_done
-.spin_loop:	
+.spin_loop:
 	ldrh	r1, [r2]												@ Get current timer value
 	cmp		r1, r4
 	blo		.spin_loop
-.spin_done:	
+.spin_done:
 
 	ldr		r11, =tl_tab
-	
+
 for_channel:
 	@-------
 	@ Load the SLOT-specific data values
@@ -570,7 +570,7 @@ for_channel:
 	@ SLOT1 buffer fill loop handling
 	@-------
 	orr		r12, #(((ADLIB_BUFFER_SAMPLES>>1)-1)<<20)
-	
+
 	@-------
 	@ Use different sample loops for SLOT1 depending on whether feedback is active
 	@-------
@@ -608,7 +608,7 @@ for_SLOT1_FB:													@ for( i=length-1; i >= 0 ; i-- ) {
 	add		r2, r3, r3, lsl #16									@ out  = SLOT->op1_out[0] + SLOT->op1_out[1];
 	mov		r1, r12, lsr #(8+5)									@ r1 = feedback value, 1..7, 7 = smallest feedback, 1 = largest
 	and		r1, #7
-	add 	r1, #(1+TL_TAB_VOL_ADJUST)
+	add	r1, #(1+TL_TAB_VOL_ADJUST)
 	add		r1, r7, r2, asr r1									@ r1 = SLOT1->Cnt + (out<<SLOT->FB)
 	and		r1, r4												@ r1 &= SIN_MASK
 	ldr		r1, [r10, r1, lsr #(16-2)]							@ r1 = sin_tab[SLOT->wavetable + ((((signed int)((SLOT->Cnt & ~FREQ_MASK) + (out<<SLOT->FB))) >> FREQ_SH ) & SIN_MASK) ];
@@ -625,7 +625,7 @@ for_SLOT1_FB:													@ for( i=length-1; i >= 0 ; i-- ) {
 	bmi		decay_op1_FB										@ Go to decay if we went over max volume
 	rsbccs	r1, r8, r4, lsl #16									@ Did we go under the SUSTAIN level?
 	bcc		sustain_op1_FB										@ Yep, go adjust the volume
-env_done_op1_FB:	
+env_done_op1_FB:
 	@-------
 	@ Save the two samples to output buffer
 	@-------
@@ -640,7 +640,7 @@ env_done_op1_FB:
 	add		r2, r3, r3, lsl #16									@ out  = SLOT->op1_out[0] + SLOT->op1_out[1];
 	mov		r1, r12, lsr #(8+5)									@ r1 = feedback value, 1..7, 7 = smallest feedback, 1 = largest
 	and		r1, #7
-	add 	r1, #(1+TL_TAB_VOL_ADJUST)
+	add	r1, #(1+TL_TAB_VOL_ADJUST)
 	add		r1, r7, r2, asr r1									@ r1 = SLOT1->Cnt + (out<<SLOT->FB)
 	and		r1, r4												@ r1 &= SIN_MASK
 	ldr		r1, [r10, r1, lsr #(16-2)]							@ r1 = sin_tab[SLOT->wavetable + ((((signed int)((SLOT->Cnt & ~FREQ_MASK) + (out<<SLOT->FB))) >> FREQ_SH ) & SIN_MASK) ];
@@ -659,8 +659,8 @@ env_done_op1_FB:
 	@-------
 	subs	r12, #(1<<20)
 	bge		for_SLOT1_FB										@ }
-	
-for_SLOT1_done:	
+
+for_SLOT1_done:
 	add		r12, #(1<<20)
 	@-------
 	@ Save the final values for SLOT1
@@ -673,7 +673,7 @@ for_SLOT1_done:
 	@-------
 	sub		lr, #ADLIB_BUFFER_SIZE								@ Rewind buffer pointer back to start
 	add		r0, #SLOT_SIZE
-	
+
 	@-------
 	@ Load the SLOT-specific data values
 	@-------
@@ -705,7 +705,7 @@ for_SLOT1_done:
 
 	@=======
 	@ SLOT2 buffer fill loop when SLOT1 output goes to phase_modulation
-	@ 	env = ((SLOT)->TLL + ((UINT32)(SLOT)->volume) + (LFO_AM & (SLOT)->AMmask));
+	@	env = ((SLOT)->TLL + ((UINT32)(SLOT)->volume) + (LFO_AM & (SLOT)->AMmask));
 	@	if( env < ENV_QUIET )
 	@	{
 	@		UINT32 p = (env<<4) + sin_tab[SLOT->wavetable + ((((signed int)((SLOT->Cnt & ~FREQ_MASK) + (phase_modulation<<16))) >> FREQ_SH ) & SIN_MASK) ];
@@ -735,7 +735,7 @@ for_SLOT2_phase:												@ for( i=length-1; i >= 0 ; i-- ) {
 	bmi		decay_op2_phase										@ Go to decay if we went over max volume
 	rsbccs	r1, r8, r4, lsl #16									@ Did we go under the SUSTAIN level?
 	bcc		sustain_op2_phase									@ Yep, go adjust the volume
-env_done_op2_phase:	
+env_done_op2_phase:
 	@-------
 	@ Calculate phase generator values for SLOT 2
 	@-------
@@ -762,7 +762,7 @@ env_done_op2_phase:
 	@-------
 	subs	r12, #(1<<20)
 	bge		for_SLOT2_phase										@ }
-for_SLOT2_done:	
+for_SLOT2_done:
 	add		r12, #(1<<20)
 	@-------
 	@ Save the final values for SLOT2
@@ -786,7 +786,7 @@ for_SLOT2_done:
 	bhs		slots_done
 	@-------
 	@ Bass Drum = CH6 OP1 & OP2
-	@ - If Con bit (of either slot) is on, we can ignore slot 1 completely! 
+	@ - If Con bit (of either slot) is on, we can ignore slot 1 completely!
 	@-------
 	ldrb	r1, [r0, #SLOT_BITS]								@ r1 = SLOT bits (Feedback(3 bits), Con, AM, Vib, EG type, KSR)
 	tst		r1, #0x10											@ Test the Con bit
@@ -815,7 +815,7 @@ for_bd_slot1:													@ for( i=length-1; i >= 0 ; i-- ) {
 	mov		r1, r12, lsr #(8+5)									@ r1 = feedback value, 1..7, 7 = smallest feedback, 1 = largest
 	ands	r1, #7
 	moveq	r2, #0												@ if (!SLOT->FB) out = 0;
-	add 	r1, #(1+TL_TAB_VOL_ADJUST)
+	add	r1, #(1+TL_TAB_VOL_ADJUST)
 	add		r1, r7, r2, asr r1									@ r1 = SLOT1->Cnt + (out<<SLOT->FB)
 	and		r1, r4												@ r1 &= SIN_MASK
 	ldr		r1, [r10, r1, lsr #(16-2)]							@ r1 = sin_tab[SLOT->wavetable + ((((signed int)((SLOT->Cnt & ~FREQ_MASK) + (out<<SLOT->FB))) >> FREQ_SH ) & SIN_MASK) ];
@@ -832,7 +832,7 @@ for_bd_slot1:													@ for( i=length-1; i >= 0 ; i-- ) {
 	bmi		decay_bd_slot1										@ Go to decay if we went over max volume
 	rsbccs	r1, r8, r4, lsl #16									@ Did we go under the SUSTAIN level?
 	bcc		sustain_bd_slot1									@ Yep, go adjust the volume
-env_done_bd_slot1:	
+env_done_bd_slot1:
 	str		r3,[lr], #4
 	@-------
 	@ Calculate phase generator values for SLOT 1
@@ -845,7 +845,7 @@ env_done_bd_slot1:
 	mov		r1, r12, lsr #(8+5)									@ r1 = feedback value, 1..7, 7 = smallest feedback, 1 = largest
 	ands	r1, #7
 	moveq	r2, #0												@ if (!SLOT->FB) out = 0;
-	add 	r1, #(1+TL_TAB_VOL_ADJUST)
+	add	r1, #(1+TL_TAB_VOL_ADJUST)
 	add		r1, r7, r2, asr r1									@ r1 = SLOT1->Cnt + (out<<SLOT->FB)
 	and		r1, r4												@ r1 &= SIN_MASK
 	ldr		r1, [r10, r1, lsr #(16-2)]							@ r1 = sin_tab[SLOT->wavetable + ((((signed int)((SLOT->Cnt & ~FREQ_MASK) + (out<<SLOT->FB))) >> FREQ_SH ) & SIN_MASK) ];
@@ -876,7 +876,7 @@ env_done_bd_slot1:
 	@-------
 	sub		lr, #ADLIB_BUFFER_SIZE								@ Rewind buffer pointer back to start
 	add		r0, #SLOT_SIZE
-	
+
 	ldrb	r1, [r0, #SLOT_BITS]								@ r1 = SLOT bits (Feedback, Con, AM, Vib, EG type, KSR)
 	ldmia	r0, {r4-r10}
 
@@ -908,7 +908,7 @@ for_bd_slot2_phase:												@ for( i=length-1; i >= 0 ; i-- ) {
 	bmi		decay_bd_slot2_phase								@ Go to decay if we went over max volume
 	rsbccs	r1, r8, r4, lsl #16									@ Did we go under the SUSTAIN level?
 	bcc		sustain_bd_slot2_phase								@ Yep, go adjust the volume
-env_done_bd_slot2_phase:	
+env_done_bd_slot2_phase:
 	@-------
 	@ Calculate phase generator values for SLOT 2
 	@-------
@@ -936,11 +936,11 @@ env_done_bd_slot2_phase:
 	subs	r12, #(1<<20)
 	bge		for_bd_slot2_phase									@ }
 	b		bd_slot2_done
-	
+
 	@-------
 	@ Bassdrum only uses slot2, calculate all the ADLIB_BUFFER_SAMPLES samples for SLOT 2
 	@-------
-bd_slot2_solo:	
+bd_slot2_solo:
 	add		r0, #SLOT_SIZE										@ Jump over slot 1, make r0 point to slot 2
 
 	ldmia	r0, {r4-r10}
@@ -959,7 +959,7 @@ for_bd_slot2:													@ for( i=length-1; i >= 0 ; i-- ) {
 	add		r2, r9, r8, lsr #16									@ r2 = env = ((SLOT)->TLL + ((UINT32)(SLOT)->volume) + (LFO_AM & (SLOT)->AMmask));
 	add		r1, r2, lsl #5										@ r1 = env<<4 + sin_tab[..], extra << 1 for halfword accessing
 	cmp		r1, #(2*TL_TAB_LEN)									@ if (p < TL_TAB_LEN)
-	ldrloh	r3, [r11, r1]										@ 	output[0] = tl_tab[p];
+	ldrloh	r3, [r11, r1]										@	output[0] = tl_tab[p];
 	movhs	r3, #0												@ else output[0] = 0;
 	@-------
 	@ Calculate envelope for SLOT 2
@@ -968,7 +968,7 @@ for_bd_slot2:													@ for( i=length-1; i >= 0 ; i-- ) {
 	bmi		decay_bd_slot2										@ Go to decay if we went over max volume
 	rsbccs	r1, r8, r4, lsl #16									@ Did we go under the SUSTAIN level?
 	bcc		sustain_bd_slot2									@ Yep, go adjust the volume
-env_done_bd_slot2:	
+env_done_bd_slot2:
 	@-------
 	@ Calculate phase generator values for SLOT 2
 	@-------
@@ -981,7 +981,7 @@ env_done_bd_slot2:
 	add		r1, r2, lsl #5										@ r1 = env<<4 + sin_tab[..], extra << 1 for halfword accessing
 	cmp		r1, #(2*TL_TAB_LEN)									@ if (p < TL_TAB_LEN)
 	ldrloh	r1, [r11, r1]										@	output[0] = tl_tab[p];
-	lsl 	r3, #1												@ Drums have double volume
+	lsl	r3, #1												@ Drums have double volume
 	orrlo	r3, r1, lsl #17										@ Drums have double volume
 	str		r3, [lr], #4										@ buf[i] = output[0];
 	add		r7, r6												@ SLOT->Cnt += SLOT->Incr
@@ -997,7 +997,7 @@ bd_slot2_done:
 	@-------
 	str		r8, [r0, #SLOT_VOLUME]								@ r8 = SLOT volume value << 16
 	str		r7, [r0, #SLOT_CNT]									@ r7 = SLOT2 Cnt value
-	
+
 	add		lr, #(ADLIB_BUFFER_SIZE)							@ Skip over the swap buffer
 	add		r0, #SLOT_SIZE
 	@-------
@@ -1061,7 +1061,7 @@ bd_slot2_done:
 	@ Init the sample counter
 	@-------
 	orr		r12, #(((ADLIB_BUFFER_SAMPLES>>1)-1)<<20)
-	
+
 for_hihat:														@ for( i=length-1; i >= 0 ; i-- ) {
 	eor		r1, r7, r7, lsr #5
 	orr		r1, r7, lsr #1
@@ -1083,7 +1083,7 @@ for_hihat:														@ for( i=length-1; i >= 0 ; i-- ) {
 	bmi		decay_hihat											@ Go to decay if we went over max volume
 	rsbccs	r1, r8, r4, lsl #16									@ Did we go under the SUSTAIN level (and we are not in attack phase)? Carry clear if we did.
 	bcc		sustain_hihat										@ Yep, go adjust the volume
-env_done_hihat:	
+env_done_hihat:
 	str		r3,[lr], #4
 	@-------
 	@ Calculate phase generator values for SLOT 1
@@ -1157,10 +1157,10 @@ env_done_hihat:
 	ldr		r8, [r0, #SLOT_VOLUME]								@ r8 = SLOT volume value << 16
 	ldr		r9, [r0, #SLOT_TLL]									@ r9 = SLOT TLL value
 	ldr		r10,[r0, #SLOT_WAVETABLE]							@ r10 = SLOT wavetable value
-	
+
 	bic		r12, #0xFF00
 	orr		r12, r1, lsl #8										@ Put all bit values of SLOT1 into r12 second byte (needed in envelope calculations)
-	
+
 	@-------
 	@ Init the sample counter
 	@-------
@@ -1187,7 +1187,7 @@ for_snare:
 	bmi		decay_snare											@ Go to decay if we went over max volume
 	rsbccs	r1, r8, r4, lsl #16									@ Did we go under the SUSTAIN level?
 	bcc		sustain_snare										@ Yep, go adjust the volume
-env_done_snare:	
+env_done_snare:
 	@-------
 	@ Calculate phase generator values for SLOT 2
 	@-------
@@ -1243,7 +1243,7 @@ env_done_snare:
 	@ Init the sample counter
 	@-------
 	orr		r12, #(((ADLIB_BUFFER_SAMPLES>>1)-1)<<20)
-	
+
 for_tomtom:														@ for( i=length-1; i >= 0 ; i-- ) {
 	and		r1, r7, r4											@ Use only SLOT->Cnt
 	ldr		r1, [r10, r1, lsr #(16-2)]							@ r1 = sin_tab[SLOT->wavetable + ((((signed int)((SLOT->Cnt & ~FREQ_MASK) + (out<<SLOT->FB))) >> FREQ_SH ) & SIN_MASK) ];
@@ -1260,7 +1260,7 @@ for_tomtom:														@ for( i=length-1; i >= 0 ; i-- ) {
 	bmi		decay_tomtom										@ Go to decay if we went over max volume
 	rsbccs	r1, r8, r4, lsl #16									@ Did we go under the SUSTAIN level?
 	bcc		sustain_tomtom										@ Yep, go adjust the volume
-env_done_tomtom:	
+env_done_tomtom:
 	str		r3,[lr], #4
 	@-------
 	@ Calculate phase generator values for SLOT 1
@@ -1358,7 +1358,7 @@ for_cymbal:
 	bmi		decay_cymbal										@ Go to decay if we went over max volume
 	rsbccs	r1, r8, r4, lsl #16									@ Did we go under the SUSTAIN level?
 	bcc		sustain_cymbal										@ Yep, go adjust the volume
-env_done_cymbal:	
+env_done_cymbal:
 	@-------
 	@ Calculate phase generator values for SLOT 2
 	@-------
@@ -1393,7 +1393,7 @@ env_done_cymbal:
 	str		r7, [r0, #SLOT_CNT]									@ r7 = SLOT Cnt value
 
 	.global	slots_done
-slots_done:	
+slots_done:
 	@-------
 	@ Calculate new LFO_AM value. The value is a triangle waveform, values between 0 and 26.
 	@ Value should change after every 168 samples, but we change it after every 3*64 samples.
@@ -1429,7 +1429,7 @@ slots_done:
 	orr		r2, r3
 	str		r2, [sp]
 1:	str		r1, [r0, #(lfo_pm_cnt-lfo_am_cnt)]
-#if USEBUFFER	
+#if USEBUFFER
 	@-------
 	@ Handle AdLib commands from the command buffer
 	@-------
@@ -1456,11 +1456,11 @@ cmnd_loop:
 	.word	cmnd_E0_F0
 #else
 	b		adlib_loop
-#endif	
+#endif
 	@=======
 
 	.ltorg
-	
+
 	@=======
 	@ SLOT1 buffer fill loop when feedback is inactive
 	@ Output goes always to the output buffer, SLOT2 uses it as phase_modulation or direct output depending on connect
@@ -1500,7 +1500,7 @@ for_SLOT1_no_FB:												@ for( i=length-1; i >= 0 ; i-- ) {
 	bmi		decay_op1_no_FB										@ Go to decay if we went over max volume
 	rsbccs	r1, r8, r4, lsl #16									@ Did we go under the SUSTAIN level?
 	bcc		sustain_op1_no_FB									@ Yep, go adjust the volume
-env_done_op1_no_FB:	
+env_done_op1_no_FB:
 	str		r3,[lr], #4
 	@-------
 	@ Calculate phase generator values for SLOT 1
@@ -1530,7 +1530,7 @@ env_done_op1_no_FB:
 	@ Need to mix the values to the output buffer.
 	@ This code is used much more rarely than the phase version.
 	@
-	@ 	env = ((SLOT)->TLL + ((UINT32)(SLOT)->volume) + (LFO_AM & (SLOT)->AMmask));
+	@	env = ((SLOT)->TLL + ((UINT32)(SLOT)->volume) + (LFO_AM & (SLOT)->AMmask));
 	@	if( env < ENV_QUIET )
 	@	{
 	@		UINT32 p = (env<<4) + sin_tab[SLOT->wavetable + ((((signed int)((SLOT->Cnt & ~FREQ_MASK) + (phase_modulation<<16))) >> FREQ_SH ) & SIN_MASK) ];
@@ -1558,7 +1558,7 @@ for_SLOT2_add:													@ for( i=length-1; i >= 0 ; i-- ) {
 	bmi		decay_op2_add										@ Go to decay if we went over max volume
 	rsbccs	r1, r8, r4, lsl #16									@ Did we go under the SUSTAIN level?
 	bcc		sustain_op2_add										@ Yep, go adjust the volume
-env_done_op2_add:	
+env_done_op2_add:
 	@-------
 	@ Calculate phase generator values for SLOT 2
 	@-------
@@ -1604,11 +1604,11 @@ decay_\item:
 	@-------
 sustain_\item:
 	mov		r8, r4, lsl #16										@ Fix the volume to be exactly the SUSTAIN level ...
-#if !USEBUFFER	
+#if !USEBUFFER
 	ldr		r5, [r0, #SLOT_ENV_INCR]				@ r5 = SLOT1 envelope counter & mode value
 	tst		r5, #0x80000000										@ Should we go to ATTACK phase?
 	bne		attack_\item										@ Yes, so go there instead of sustain/release
-#endif	
+#endif
 	mov		r5, #0												@ ... and stay at this volume level ...
 	tst		r12, #(2<<8)										@ ... unless EG type is clear (percussion mode) ...
 	strne	r5, [r0, #SLOT_ENV_INCR]				@ r5 = SLOT1 envelope counter & mode value
@@ -1625,39 +1625,39 @@ sustain_\item:
 	b		env_done_\item
 .endm
 
-	op_decay 	op1_FB
+	op_decay	op1_FB
 	op_sustain	op1_FB
-	op_decay 	op1_no_FB
+	op_decay	op1_no_FB
 	op_sustain	op1_no_FB
 
-	op_decay 	op2_add
+	op_decay	op2_add
 	op_sustain	op2_add
-	op_decay 	op2_phase
+	op_decay	op2_phase
 	op_sustain	op2_phase
 
-	op_decay 	bd_slot1
+	op_decay	bd_slot1
 	op_sustain	bd_slot1
-	op_decay 	bd_slot2
+	op_decay	bd_slot2
 	op_sustain	bd_slot2
-	op_decay 	bd_slot2_phase
+	op_decay	bd_slot2_phase
 	op_sustain	bd_slot2_phase
 
-	op_decay 	hihat
+	op_decay	hihat
 	op_sustain	hihat
 
-	op_decay 	snare
+	op_decay	snare
 	op_sustain	snare
 
-	op_decay 	tomtom
+	op_decay	tomtom
 	op_sustain	tomtom
 
-	op_decay 	cymbal
+	op_decay	cymbal
 	op_sustain	cymbal
 
 	@=======
 	@ Handle 0xA0..0xA8, 0xB0..0xB8 and 0xBD commands.
 	@=======
-cmnd_A0_B0:	
+cmnd_A0_B0:
 	and		r2, r0, #0xFF00
 	cmp		r2, #0xBD00												@ if (r == 0xbd)
 	beq		.cmnd_bd
@@ -1676,11 +1676,11 @@ cmnd_A0_B0:
 	@-------
 	@ r2 = current block_fnum of this channel
 	@-------
-	ldr		r2,[r1, #SLOT1_BLOCK_FNUM] 								@ r2 = CH->block_fnum
+	ldr		r2,[r1, #SLOT1_BLOCK_FNUM]								@ r2 = CH->block_fnum
 	tst		r0, #0x1000												@ if(!(r&0x10))
 	bne		.cmnd_bX												@ {	/* a0-a8 */
 	@-------
-	@ A0..A8: 
+	@ A0..A8:
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
 	@ |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
@@ -1707,15 +1707,15 @@ cmnd_A0_B0:
 	and		r4, r0, #0x1F
 	lsl		r4, #8
 	orr		r3, r4													@	block_fnum = ((v&0x1f)<<8) | (CH->block_fnum&0xff);
-	ldrb	r4, [r1, #(ch0_slot1_key-SLOT1)] 						@ r4 = current KEY_ON value
-	tst		r0, #0x20												@ 	if(v&0x20)
+	ldrb	r4, [r1, #(ch0_slot1_key-SLOT1)]						@ r4 = current KEY_ON value
+	tst		r0, #0x20												@	if(v&0x20)
 	beq		.keyoff													@	{
 	@-------
 	@ Key On => Go to ATTACK state => sustain level = SLOT sustain level, envelope = attack
 	@-------
 	cmp		r4, #0
 	orr		r4, #1
-	strb	r4, [r1, #(ch0_slot1_key-SLOT1)] 						@ SLOT->key |= key_set;
+	strb	r4, [r1, #(ch0_slot1_key-SLOT1)]						@ SLOT->key |= key_set;
 	bne		1f														@ if( !SLOT->key ) {
 	@-------
 	@ Key On: SLOT1 does not yet have key on, got to attack mode.
@@ -1726,12 +1726,12 @@ cmnd_A0_B0:
 	mvn		r4, #0xFC00
 	lsl		r4, #16
 	orr		r5, r4
-	str		r5, [r1, #SLOT_ENV_SUST] 				@ SLOT1->env_sustain = SLOT1->sl;
-	str		r7, [r1, #SLOT_ENV_INCR] 					@ SLOT1->envelope = attack rate | ATTACK phase
+	str		r5, [r1, #SLOT_ENV_SUST]				@ SLOT1->env_sustain = SLOT1->sl;
+	str		r7, [r1, #SLOT_ENV_INCR]					@ SLOT1->envelope = attack rate | ATTACK phase
 1:	ldrb	r4, [r1, #(SLOT_SIZE+(ch0_slot1_key-SLOT1))]			@ r4 = current KEY_ON value
 	cmp		r4, #0
 	orr		r4, #1
-	strb	r4, [r1, #(SLOT_SIZE+(ch0_slot1_key-SLOT1))] 			@ SLOT->key |= key_set;
+	strb	r4, [r1, #(SLOT_SIZE+(ch0_slot1_key-SLOT1))]			@ SLOT->key |= key_set;
 	bne		.cmnd_update											@ if( !SLOT->key ) {
 	@-------
 	@ Key On: SLOT2 does not yet have key on, got to attack mode.
@@ -1742,12 +1742,12 @@ cmnd_A0_B0:
 	mvn		r4, #0xFC00
 	lsl		r4, #16
 	orr		r5, r4
-	str		r5, [r1, #(SLOT_SIZE+SLOT_ENV_SUST)] 	@ SLOT2->env_sustain = SLOT2->sl;
-	str		r7, [r1, #(SLOT_SIZE+SLOT_ENV_INCR)] 		@ SLOT2->envelope = attack rate | ATTACK phase
+	str		r5, [r1, #(SLOT_SIZE+SLOT_ENV_SUST)]	@ SLOT2->env_sustain = SLOT2->sl;
+	str		r7, [r1, #(SLOT_SIZE+SLOT_ENV_INCR)]		@ SLOT2->envelope = attack rate | ATTACK phase
 	b		.cmnd_update											@	}
 
 .macro DRUM_KEY bit
-	ldrb	r4, [r1, #(ch0_slot1_key-SLOT1)] 						@ r4 = current KEY_ON value
+	ldrb	r4, [r1, #(ch0_slot1_key-SLOT1)]						@ r4 = current KEY_ON value
 	tst		r0, #\bit
 	beq		1f
 	@-------
@@ -1755,7 +1755,7 @@ cmnd_A0_B0:
 	@-------
 	cmp		r4, #0
 	orr		r4, #2
-	strb	r4, [r1, #(ch0_slot1_key-SLOT1)] 						@ SLOT->key |= key_set;
+	strb	r4, [r1, #(ch0_slot1_key-SLOT1)]						@ SLOT->key |= key_set;
 	bne		2f														@ if( !SLOT->key ) {
 	str		r4, [r1, #SLOT_CNT]						@	SLOT->Cnt = 0; /* restart Phase Generator */
 	ldr		r5, [r1, #(ch0_slot1_sl-SLOT1)]
@@ -1763,23 +1763,23 @@ cmnd_A0_B0:
 	mvn		r4, #0xFC00
 	lsl		r4, #16
 	orr		r5, r4
-	str		r5, [r1, #SLOT_ENV_SUST] 				@ SLOT1->env_sustain = SLOT1->sl;
-	str		r7, [r1, #SLOT_ENV_INCR] 					@ SLOT1->envelope = attack rate | ATTACK phase
+	str		r5, [r1, #SLOT_ENV_SUST]				@ SLOT1->env_sustain = SLOT1->sl;
+	str		r7, [r1, #SLOT_ENV_INCR]					@ SLOT1->envelope = attack rate | ATTACK phase
 	b		2f														@ }
 	@-------
 	@ KEY_OFF
 	@-------
 1:	cmp		r4, #0													@ if( SLOT->key )
 	beq		2f														@ {
-	bics	r4, #2													
-	strb	r4, [r1, #(ch0_slot1_key-SLOT1)] 						@	SLOT->key &= key_clr;
+	bics	r4, #2
+	strb	r4, [r1, #(ch0_slot1_key-SLOT1)]						@	SLOT->key &= key_clr;
 	bne		2f														@	if( !SLOT->key ) {
 	mvn		r5, #0xFC00
 	lsl		r5, #16
 	orr		r5, #MAX_ATT_INDEX
 	ldr		r6,[r1, #(ch0_slot1_env_rr_incr-SLOT1)]
 	str		r5,[r1, #SLOT_ENV_SUST]
-	str		r6,[r1, #SLOT_ENV_INCR] 								@ 		SLOT->state = EG_REL;
+	str		r6,[r1, #SLOT_ENV_INCR]								@		SLOT->state = EG_REL;
 2:																	@ }
 .endm
 
@@ -1835,7 +1835,7 @@ cmnd_A0_B0:
 	@-------
 	@ Rhythm section was just activated!
 	@-------
-.rhythm_started:	
+.rhythm_started:
 .handle_rhythm:
 	ldr		r1,=SLOT1
 	add		r1, #(6*CH_SIZE)
@@ -1878,9 +1878,9 @@ cmnd_A0_B0:
 	orr		r5, #MAX_ATT_INDEX
 	ldr		r6,[r1, #(ch0_slot1_env_rr_incr-SLOT1)]
 	ldr		r7,[r1, #(SLOT_SIZE+(ch0_slot1_env_rr_incr-SLOT1))]
-	str		r5,[r1, #SLOT_ENV_SUST] 				@ SLOT1->env_sustain = MAX_ATT_INDEX;
+	str		r5,[r1, #SLOT_ENV_SUST]				@ SLOT1->env_sustain = MAX_ATT_INDEX;
 	str		r5,[r1, #(SLOT_SIZE+SLOT_ENV_SUST)]		@ SLOT2->env_sustain = MAX_ATT_INDEX;
-	str		r6,[r1, #SLOT_ENV_INCR] 					@ SLOT1->envelope = release rate
+	str		r6,[r1, #SLOT_ENV_INCR]					@ SLOT1->envelope = release rate
 	str		r7,[r1, #(SLOT_SIZE+SLOT_ENV_INCR)]		@ SLOT2->envelope = release rate
 	ldr		r6,[r1, #(2*SLOT_SIZE+(ch0_slot1_env_rr_incr-SLOT1))]
 	ldr		r7,[r1, #(3*SLOT_SIZE+(ch0_slot1_env_rr_incr-SLOT1))]
@@ -1894,12 +1894,12 @@ cmnd_A0_B0:
 	str		r5,[r1, #(5*SLOT_SIZE+SLOT_ENV_SUST)]	@ SLOT2->env_sustain = MAX_ATT_INDEX;
 	str		r6,[r1, #(4*SLOT_SIZE+SLOT_ENV_INCR)]		@ SLOT2->envelope = release rate
 	str		r7,[r1, #(5*SLOT_SIZE+SLOT_ENV_INCR)]		@ SLOT2->envelope = release rate
-	strb	r4, [r1, #(ch0_slot1_key-SLOT1)] 						@ Tell the key is off
-	strb	r4, [r1, #(SLOT_SIZE+(ch0_slot1_key-SLOT1))] 			@ Tell the key is off
-	strb	r4, [r1, #(2*SLOT_SIZE+(ch0_slot1_key-SLOT1))] 			@ Tell the key is off
-	strb	r4, [r1, #(3*SLOT_SIZE+(ch0_slot1_key-SLOT1))] 			@ Tell the key is off
-	strb	r4, [r1, #(4*SLOT_SIZE+(ch0_slot1_key-SLOT1))] 			@ Tell the key is off
-	strb	r4, [r1, #(5*SLOT_SIZE+(ch0_slot1_key-SLOT1))] 			@ Tell the key is off
+	strb	r4, [r1, #(ch0_slot1_key-SLOT1)]						@ Tell the key is off
+	strb	r4, [r1, #(SLOT_SIZE+(ch0_slot1_key-SLOT1))]			@ Tell the key is off
+	strb	r4, [r1, #(2*SLOT_SIZE+(ch0_slot1_key-SLOT1))]			@ Tell the key is off
+	strb	r4, [r1, #(3*SLOT_SIZE+(ch0_slot1_key-SLOT1))]			@ Tell the key is off
+	strb	r4, [r1, #(4*SLOT_SIZE+(ch0_slot1_key-SLOT1))]			@ Tell the key is off
+	strb	r4, [r1, #(5*SLOT_SIZE+(ch0_slot1_key-SLOT1))]			@ Tell the key is off
 	b		cmnd_loop
 	@-------
 	@ Key Off => Go to RELEASE state => sustain level = MAX_ATT_INDEX, envelope = release speed
@@ -1911,14 +1911,14 @@ cmnd_A0_B0:
 	cmp		r4, #0													@ if( SLOT->key )
 	beq		2f														@ {
 	bics	r4, #1
-	strb	r4, [r1, #(ch0_slot1_key-SLOT1)] 						@	SLOT->key &= key_clr;
+	strb	r4, [r1, #(ch0_slot1_key-SLOT1)]						@	SLOT->key &= key_clr;
 	bne		2f														@	if( !SLOT->key ) {
 	mvn		r5, #0xFC00
 	lsl		r5, #16
 	orr		r5, #MAX_ATT_INDEX
 	ldr		r6,[r1, #(ch0_slot1_env_rr_incr-SLOT1)]
-	str		r5,[r1, #SLOT_ENV_SUST] 				@ 		SLOT1->env_sustain = MAX_ATT_INDEX;
-	str		r6,[r1, #SLOT_ENV_INCR] 					@ 		SLOT1->envelope = release rate
+	str		r5,[r1, #SLOT_ENV_SUST]				@		SLOT1->env_sustain = MAX_ATT_INDEX;
+	str		r6,[r1, #SLOT_ENV_INCR]					@		SLOT1->envelope = release rate
 	@-------
 	@ Handle SLOT2
 	@-------
@@ -1949,21 +1949,21 @@ cmnd_A0_B0:
 	@ r2 = CH->ksl_base = ksl_tab[block_fnum>>6];
 	@-------
 	ldr		r2, =ksl_tab
-	str		r3, [r1, #SLOT1_BLOCK_FNUM] 							@   Save the new CH->block_fnum = block_fnum;
+	str		r3, [r1, #SLOT1_BLOCK_FNUM]							@   Save the new CH->block_fnum = block_fnum;
 	ldrb	r2, [r2, r3, lsr #6]									@   r2 = ksl_tab[block_fnum>>6];
 	mov		r6, r3, lsr #10											@	UINT8 block  = block_fnum >> 10;
 	rsb		r6, #7													@	r6 = (7-block)
-	str		r2, [r1, #SLOT1_KSL_BASE] 								@ 	Save CH->ksl_base = ksl_tab[block_fnum>>6];
+	str		r2, [r1, #SLOT1_KSL_BASE]								@	Save CH->ksl_base = ksl_tab[block_fnum>>6];
 	@-------
 	@ Then get the new sound frequency.
 	@ r4 = CH->fc = OPL->fn_tab[block_fnum&0x03ff] >> (7-block);
 	@-------
-	mvn		r5, #0xFC000000											@ 	r5 = 0x3FF<<16
+	mvn		r5, #0xFC000000											@	r5 = 0x3FF<<16
 	and		r4, r3, r5, lsr #16										@	r4 = block_fnum&0x03ff
 	ldr		r5, =fn_tab
 	ldr		r4, [r5, r4, lsl #2]									@	r4 = OPL->fn_tab[block_fnum&0x03ff]
 	lsr		r4, r6													@	r4 = (OPL->fn_tab[block_fnum&0x03ff] >> (7-block))
-	str		r4, [r1, #SLOT1_FC] 									@ CH->fc       = OPL->fn_tab[block_fnum&0x03ff] >> (7-block);
+	str		r4, [r1, #SLOT1_FC]									@ CH->fc       = OPL->fn_tab[block_fnum&0x03ff] >> (7-block);
 	@-------
 	@ Then get the new kcode value.
 	@ r5 = CH->kcode = (CH->block_fnum&0x1c00)>>9;
@@ -1993,32 +1993,32 @@ cmnd_A0_B0:
 	@ Destroys:
 	@	r6, r7, r8
 	@-------
-	ldrb	r6, [r1, #(ch0_slot1_ksl-SLOT1)] 						@ r6 = CH->SLOT[SLOT1].ksl
-	ldr		r8, [r1, #(ch0_slot1_TL-SLOT1)] 						@ r8 = CH->SLOT[SLOT1].TL
+	ldrb	r6, [r1, #(ch0_slot1_ksl-SLOT1)]						@ r6 = CH->SLOT[SLOT1].ksl
+	ldr		r8, [r1, #(ch0_slot1_TL-SLOT1)]						@ r8 = CH->SLOT[SLOT1].TL
 	mov		r7, r2, lsr r6											@ r7 = (CH->ksl_base>>CH->SLOT[SLOT1].ksl)
 	add		r7, r8
-	str		r7, [r1, #SLOT_TLL] 									@ CH->SLOT[SLOT1].TLL = CH->SLOT[SLOT1].TL + (CH->ksl_base>>CH->SLOT[SLOT1].ksl);
+	str		r7, [r1, #SLOT_TLL]									@ CH->SLOT[SLOT1].TLL = CH->SLOT[SLOT1].TL + (CH->ksl_base>>CH->SLOT[SLOT1].ksl);
 	@-------
 	@ Calculate	SLOT->Incr = CH->fc * SLOT->mul;
 	@ Input:
 	@	r4 = CH->fc
 	@-------
-	ldrb	r6, [r1, #SLOT_MUL] 									@ r6 = CH->SLOT[SLOT1].mul
+	ldrb	r6, [r1, #SLOT_MUL]									@ r6 = CH->SLOT[SLOT1].mul
 	mul		r7, r4, r6
-	str		r7, [r1, #SLOT_INCR] 									@ SLOT->Incr = CH->fc * SLOT->mul;
+	str		r7, [r1, #SLOT_INCR]									@ SLOT->Incr = CH->fc * SLOT->mul;
 	@-------
 	@ Calculate	SLOT->ksr = CH->kcode >> SLOT->KSR;
 	@ Input:
 	@	r5 = CH->kcode
 	@-------
-	ldrb	r6, [r1, #SLOT_BITS] 									@ r6 = bits (lowest bit = KSR value)
+	ldrb	r6, [r1, #SLOT_BITS]									@ r6 = bits (lowest bit = KSR value)
 	and		r6, #1
 	lsl		r6, #1													@ r6 = 0 or 2
-	ldrb	r7, [r1, #(ch0_slot1_ksr-SLOT1)] 						@ r7 = CH->SLOT[SLOT1].ksr
+	ldrb	r7, [r1, #(ch0_slot1_ksr-SLOT1)]						@ r7 = CH->SLOT[SLOT1].ksr
 	mov		r6, r5, lsr r6											@ ksr = CH->kcode >> SLOT->KSR;
 	cmp		r6, r7													@ if( SLOT->ksr != ksr )
 	beq		.cmnd_slot1_done										@ {
-	strb	r6, [r1, #(ch0_slot1_ksr-SLOT1)] 						@ 	SLOT->ksr = ksr;
+	strb	r6, [r1, #(ch0_slot1_ksr-SLOT1)]						@	SLOT->ksr = ksr;
 	@-------
 	@ Calculate env_ar_incr, env_dr_incr and env_rr_incr
 	@-------
@@ -2050,11 +2050,11 @@ cmnd_A0_B0:
 	@ Destroys:
 	@	r6, r7, r8
 	@-------
-	ldrb	r6, [r1, #(ch0_slot1_ksl-SLOT1)] 						@ r6 = CH->SLOT[SLOT1].ksl
-	ldr		r8, [r1, #(ch0_slot1_TL-SLOT1)] 						@ r8 = CH->SLOT[SLOT1].TL
+	ldrb	r6, [r1, #(ch0_slot1_ksl-SLOT1)]						@ r6 = CH->SLOT[SLOT1].ksl
+	ldr		r8, [r1, #(ch0_slot1_TL-SLOT1)]						@ r8 = CH->SLOT[SLOT1].TL
 	mov		r7, r2, lsr r6											@ r7 = (CH->ksl_base>>CH->SLOT[SLOT1].ksl)
 	add		r7, r8
-	str		r7, [r1, #SLOT_TLL] 									@ CH->SLOT[SLOT1].TLL = CH->SLOT[SLOT1].TL + (CH->ksl_base>>CH->SLOT[SLOT1].ksl);
+	str		r7, [r1, #SLOT_TLL]									@ CH->SLOT[SLOT1].TLL = CH->SLOT[SLOT1].TL + (CH->ksl_base>>CH->SLOT[SLOT1].ksl);
 calc_fcslot:
 	@-------
 	@ Calculate	SLOT->Incr = CH->fc * SLOT->mul;
@@ -2063,23 +2063,23 @@ calc_fcslot:
 	@	r4 = CH->fc
 	@ TODO! We are skipping the envelope KSR handling
 	@-------
-	ldrb	r6, [r1, #SLOT_MUL] 									@ r6 = CH->SLOT[SLOT1].mul
+	ldrb	r6, [r1, #SLOT_MUL]									@ r6 = CH->SLOT[SLOT1].mul
 	mul		r7, r4, r6
-	str		r7, [r1, #SLOT_INCR] 									@ SLOT->Incr = CH->fc * SLOT->mul;
+	str		r7, [r1, #SLOT_INCR]									@ SLOT->Incr = CH->fc * SLOT->mul;
 	@-------
 	@ Calculate	SLOT->ksr = CH->kcode >> SLOT->KSR;
 	@ Input:
 	@	r1 = SLOT pointer
 	@	r5 = CH->kcode
 	@-------
-	ldrb	r6, [r1, #SLOT_BITS] 									@ r6 = CH->SLOT[SLOT1].KSR
+	ldrb	r6, [r1, #SLOT_BITS]									@ r6 = CH->SLOT[SLOT1].KSR
 	and		r6, #1
 	lsl		r6, #1													@ r6 = 0 or 2
-	ldrb	r7, [r1, #(ch0_slot1_ksr-SLOT1)] 						@ r7 = CH->SLOT[SLOT1].ksr
+	ldrb	r7, [r1, #(ch0_slot1_ksr-SLOT1)]						@ r7 = CH->SLOT[SLOT1].ksr
 	mov		r6, r5, lsr r6											@ ksr = CH->kcode >> SLOT->KSR;
 	cmp		r6, r7													@ if( SLOT->ksr != ksr )
 	beq		cmnd_loop												@ {
-	strb	r6, [r1, #(ch0_slot1_ksr-SLOT1)] 						@ 	SLOT->ksr = ksr;
+	strb	r6, [r1, #(ch0_slot1_ksr-SLOT1)]						@	SLOT->ksr = ksr;
 	@-------
 	@ Calculate env_ar_incr, env_dr_incr and env_rr_incr
 	@-------
@@ -2100,7 +2100,7 @@ calc_fcslot:
 	str		r7, [r1, #(ch0_slot1_env_rr_incr-SLOT1)]				@ Save new env_rr_incr value
 	b		cmnd_loop
 	@=======
-	
+
 .macro r1r2_slot_from_r0
 	ldr		r2, =slot_array
 	and		r1, r0, #0x1F00
@@ -2114,14 +2114,14 @@ calc_fcslot:
 .endm
 
 	@=======
-	@ 80..95: 
+	@ 80..95:
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
 	@ |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
 	@ |     Sustain Level     |     Release Rate      |
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
 	@=======
-cmnd_80_90:	
+cmnd_80_90:
 	r1r2_slot_from_r0
 	@-------
 	@ First calculate and store the sustain level
@@ -2143,7 +2143,7 @@ cmnd_80_90:
 	@-------
 	@ Also calculate env_rr_incr
 	@-------
-	ldrb	r6, [r1, #(ch0_slot1_ksr-SLOT1)] 						@ Get SLOT->ksr
+	ldrb	r6, [r1, #(ch0_slot1_ksr-SLOT1)]						@ Get SLOT->ksr
 	ldr		r8, =env_tab
 	add		r0, r6
 	ldr		r7, [r8, r0, lsl #2]									@ r7 = env_tab[SLOT->rr + SLOT->ksr]
@@ -2152,7 +2152,7 @@ cmnd_80_90:
 
 
 	@=======
-	@ 40..55: 
+	@ 40..55:
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
 	@ |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
@@ -2160,12 +2160,12 @@ cmnd_80_90:
 	@ |Level      |  dB |  dB | dB  | dB  | dB  | dB  |
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
 	@ Bits 7-6:
-	@ 	00 = no change
+	@	00 = no change
 	@	01 = 3dB/Octave
 	@	10 = 1.5dB/Octave
 	@	11 = 6dB/Octave
 	@=======
-cmnd_40_50:	
+cmnd_40_50:
 	r1r2_slot_from_r0
 	@-------
 	@ Calculate and store the ksl value
@@ -2192,16 +2192,16 @@ cmnd_40_50:
 	str		r3, [r1, #SLOT_TLL]					@ SLOT->TLL = SLOT->TL + (CH->ksl_base>>SLOT->ksl);
 	b		cmnd_loop
 
-	
+
 	@=======
-	@ 60..75: 
+	@ 60..75:
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
 	@ |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
 	@ |     Attack Rate       |     Decay Rate        |
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
 	@=======
-cmnd_60_70:	
+cmnd_60_70:
 	r1r2_slot_from_r0
 	@-------
 	@ Calculate and store the attack rate.
@@ -2215,7 +2215,7 @@ cmnd_60_70:
 	@-------
 	@ Also calculate env_ar_incr
 	@-------
-	ldrb	r6, [r1, #(ch0_slot1_ksr-SLOT1)] 						@ Get SLOT->ksr
+	ldrb	r6, [r1, #(ch0_slot1_ksr-SLOT1)]						@ Get SLOT->ksr
 	ldr		r8, =att_tab
 	add		r2, r6
 	ldr		r7, [r8, r2, lsl #2]									@ r7 = env_tab[SLOT->ar + SLOT->ksr]
@@ -2238,39 +2238,39 @@ cmnd_60_70:
 	str		r7, [r1, #(ch0_slot1_env_dr_incr-SLOT1)]				@ Save new env_dr_incr value
 	b		cmnd_loop
 
-	
+
 	@=======
-	@ 20..35: 
+	@ 20..35:
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
 	@ |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
 	@ | Amp | Vib | EG  | KSR |  Modulator Frequency  |
 	@ | Mod |     |type |     |       Multiple        |
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
-	@ bit 7 - Apply amplitude modulation when set, AM depth is controlled by the AM-Depth flag in address BD.  
-	@ bit 6 - Apply vibrato when set, vibrato depth is controlled by the Vib-Depth flag in address BD.  
+	@ bit 7 - Apply amplitude modulation when set, AM depth is controlled by the AM-Depth flag in address BD.
+	@ bit 6 - Apply vibrato when set, vibrato depth is controlled by the Vib-Depth flag in address BD.
 	@ bit 5 - When set, the sustain level of the voice is maintained until released,
-	@		  when clear, the sound begins to decay immediately after hitting the SUSTAIN phase.  
+	@		  when clear, the sound begins to decay immediately after hitting the SUSTAIN phase.
 	@ bit 4 - Keyboard scaling rate. If this bit is set, the envelope is foreshortened as it rises in pitch.
 	@ bits 3-0 - These bits indicate which harmonic the operator will produce sound (or modulation) in relation to the specified frequency:
-	@  0 - one octave below 
-	@  1 - at the specified frequency 
-	@  2 - one octave above 
-	@  3 - an octave and a fifth above 
-	@  4 - two octaves above 
-	@  5 - two octaves and a major third above 
-	@  6 - two octaves and a fifth above 
-	@  7 - two octaves and a minor seventh above 
-	@  8 - three octaves above 
-	@  9 - three octaves and a major second above 
-	@  A - three octaves and a major third above 
-	@  B - three octaves and a major third above 
-	@  C - three octaves and a fifth above 
-	@  D - three octaves and a fifth above 
-	@  E - three octaves and a major seventh above 
-	@  F - three octaves and a major seventh above 
+	@  0 - one octave below
+	@  1 - at the specified frequency
+	@  2 - one octave above
+	@  3 - an octave and a fifth above
+	@  4 - two octaves above
+	@  5 - two octaves and a major third above
+	@  6 - two octaves and a fifth above
+	@  7 - two octaves and a minor seventh above
+	@  8 - three octaves above
+	@  9 - three octaves and a major second above
+	@  A - three octaves and a major third above
+	@  B - three octaves and a major third above
+	@  C - three octaves and a fifth above
+	@  D - three octaves and a fifth above
+	@  E - three octaves and a major seventh above
+	@  F - three octaves and a major seventh above
 	@=======
-cmnd_20_30:	
+cmnd_20_30:
 	r1r2_slot_from_r0
 	@-------
 	@ Calculate and store the Modulator Multiple
@@ -2298,9 +2298,9 @@ cmnd_20_30:
 	ldrneb	r5, [r1, #SLOT2_KCODE]									@ SLOT 2, so kcode is in this slot
 	ldreqb	r5, [r1, #SLOT1_KCODE]									@ SLOT 1, so kcode is in the next slot
 	b		calc_fcslot
-	
+
 	@=======
-	@ E0..F5: 
+	@ E0..F5:
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
 	@ |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
@@ -2308,7 +2308,7 @@ cmnd_20_30:
 	@ |                                   |  select   |
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
 	@=======
-cmnd_E0_F0:	
+cmnd_E0_F0:
 	r1r2_slot_from_r0
 	@-------
 	@ Calculate and store the new waveform.
@@ -2319,9 +2319,9 @@ cmnd_E0_F0:
 	add		r0, r2
 	str		r0, [r1, #SLOT_WAVETABLE]								@ SLOT->wavetable = sin_tab + (v&0x3)*SIN_LEN;
 	b		cmnd_loop
-	
+
 	@=======
-	@ C0..C8: 
+	@ C0..C8:
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
 	@ |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
 	@ +-----+-----+-----+-----+-----+-----+-----+-----+
@@ -2331,7 +2331,7 @@ cmnd_E0_F0:
 	@ First calculate the channel (0..8) of the operation and make
 	@ r1 = channel SLOT1 pointer
 	@=======
-cmnd_C0_D0:	
+cmnd_C0_D0:
 	and		r1, r0, #0x0F00
 	cmp		r1, #0x0800							@ if( (r&0x0f) > 8)
 	bgt		cmnd_loop							@	 return;
@@ -2362,7 +2362,7 @@ cmnd_C0_D0:
 
 	.section	.rodata
 	.align	2
-	
+
 	.type	env_tab, %object
 	.size	env_tab, (16+64+16)*4
 env_tab:
@@ -2394,7 +2394,7 @@ att_tab:
 	.word	 -5581483, -7441977, -9568257, -11162965, -13395559, -13395559, -13395559, -13395559
 	.word	 -66977793, -66977793, -66977793, -66977793, -66977793, -66977793, -66977793, -66977793
 	.word	 -66977793, -66977793, -66977793, -66977793, -66977793, -66977793, -66977793, -66977793
-	
+
 	.type	ksl_tab, %object
 	.size	ksl_tab, 128
 ksl_tab:

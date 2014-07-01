@@ -8,7 +8,7 @@ TEXT FORMATTING COMMANDS
 ^G<y>,<x>,<pic>[enter]  Draw a graphic and push margins
 ^P[enter]               start new page, must be the first chars in a layout
 ^L<x>,<y>[ENTER]        Locate to a specific spot, x in pixels, y in lines
-^T<x>,<y>,<pic>,<t>     Timed draw graphic command  
+^T<x>,<y>,<pic>,<t>     Timed draw graphic command
 
 =============================================================================
 */
@@ -89,7 +89,7 @@ static void HandleCommand(void);
 static void TimedPicCommand(void);
 static void BackPage(void);
 
-/* 
+/*
 ================================================================
 =
 = Function: HelpScreens
@@ -98,27 +98,27 @@ static void BackPage(void);
 =
 = display help screen
 =
-================================================================ 
+================================================================
 */
 void HelpScreens(void)
 {
     S32  artnum;
     char *text;
-    
+
     artnum = helpextern;
     CA_CacheGrChunk(artnum);
     text = (char *)grsegs[artnum];
-    
+
     ShowArticle(text);
-    
+
     CA_UnCacheGrChunk(artnum);
-    
+
     VW_FadeOut();
 
     FreeMusic();
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: ShowArticle
@@ -127,7 +127,7 @@ void HelpScreens(void)
 =
 = displays a help page on screen
 =
-================================================================ 
+================================================================
 */
 static void ShowArticle(char *article)
 {
@@ -135,35 +135,35 @@ static void ShowArticle(char *article)
     U8 newpage;
     U8 firstpage;
     ControlInfo ci;
-    
+
     text = article;
     oldfontnumber = GetFontNum();
     SetFontNum(0);
-    
+
     CA_CacheGrChunk(STARTFONT);
     VL_Bar(0,0,320,200,BACKCOLOR);
-    
+
     CacheLayoutGraphics();
 
     newpage = 1;
     firstpage = 1;
-    
+
     do
     {
         if(newpage == 1)
         {
             newpage = 0;
             PageLayout(1);
-            
+
             UpdateScreen(0);
-            
+
             if(firstpage == 1)
             {
                 MenuFadeIn();
                 firstpage = 0;
             }
         }
-        
+
         Delay_ms(10);
         /* clear last button read */
         ci.button0 = 0;
@@ -176,16 +176,16 @@ static void ShowArticle(char *article)
         ci.pause = 0;
         ci.esc = 0;
         IN_ReadControl(&ci);
-        
+
         Direction dir = ci.dir;
-        
+
         switch(dir)
         {
             case dir_North:
             case dir_South:
                 /* DO NOTHING DIRECTION ALREADY SET */
             break;
-        
+
             default:
                 if(ci.button0 == 1)
                 {
@@ -193,7 +193,7 @@ static void ShowArticle(char *article)
                 }
             break;
         }
-        
+
         switch(dir)
         {
             case dir_North:
@@ -206,7 +206,7 @@ static void ShowArticle(char *article)
                 }
                 TicDelay(20);
             break;
-            
+
             case dir_South:
             case dir_East:
                 if(pagenum < numpages)
@@ -215,18 +215,18 @@ static void ShowArticle(char *article)
                 }
                 TicDelay(20);
             break;
-            
+
             default:
                 /* do nothing */
             break;
         }
-        
+
     }while(ci.button1 == 0);
-    
+
     SetFontNum(oldfontnumber);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CacheLayoutGraphics
@@ -236,7 +236,7 @@ static void ShowArticle(char *article)
 = Scans an entire layout file (until a ^E) marking all graphics used, and
 = counting pages, then caches the graphics in
 =
-================================================================ 
+================================================================
 */
 static void CacheLayoutGraphics(void)
 {
@@ -252,12 +252,12 @@ static void CacheLayoutGraphics(void)
         if(*text == '^')
         {
             ch = (char)toupper((S32)*++text);
-            
+
             if(ch == 'P')          /* start of a page */
             {
                 numpages++;
             }
-            
+
             if(ch == 'E')          /* end of file, so load graphics and return */
             {
                 CA_CacheGrChunk(H_TOPWINDOWPIC);
@@ -267,13 +267,13 @@ static void CacheLayoutGraphics(void)
                 text = textstart;
                 return;
             }
-            
+
             if(ch == 'G')          /* draw graphic command, so mark graphics */
             {
                 ParsePicCommand();
                 CA_CacheGrChunk(picnum);
             }
-            
+
             if(ch == 'T')        /* timed draw graphic command, so mark graphics */
             {
                 ParseTimedCommand();
@@ -284,15 +284,15 @@ static void CacheLayoutGraphics(void)
         {
             text++;
         }
-    
+
     }while(text<bombpoint);
-    
+
     printf("CacheLayoutGraphics: No ^E to terminate file! \n");
     while(1){};     /* hang system */
-    
+
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: ParsePicCommand
@@ -302,7 +302,7 @@ static void CacheLayoutGraphics(void)
 = Call with text pointing just after a ^G
 = Upon exit text points to the start of next line
 =
-================================================================ 
+================================================================
 */
 static void ParsePicCommand(void)
 {
@@ -312,7 +312,7 @@ static void ParsePicCommand(void)
     RipToEOL();
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: ParseTimedCommand
@@ -322,7 +322,7 @@ static void ParsePicCommand(void)
 = Call with text pointing just after a ^T
 = Upon exit text points to the start of next line
 =
-================================================================ 
+================================================================
 */
 
 static void ParseTimedCommand(void)
@@ -334,7 +334,7 @@ static void ParseTimedCommand(void)
     RipToEOL();
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: ParseNumber
@@ -343,7 +343,7 @@ static void ParseTimedCommand(void)
 =
 = search for and return a number value after ^G / ^T commands
 =
-================================================================ 
+================================================================
 */
 static S32 ParseNumber(void)
 {
@@ -366,13 +366,13 @@ static S32 ParseNumber(void)
         *numptr++ = ch;
         ch = *++text;
     } while (ch >= '0' && ch <= '9');
-    
+
     *numptr = 0;
 
     return atoi(num);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: RipToEOL
@@ -381,7 +381,7 @@ static S32 ParseNumber(void)
 =
 = scan to end of line
 =
-================================================================ 
+================================================================
 */
 
 static void RipToEOL(void)
@@ -389,17 +389,17 @@ static void RipToEOL(void)
     while (*text++ != '\n'){ /* do nothing */};
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: PageLayout
 =
 = Description:
 =
-= Clears the screen, draws the pics on the page, and word wraps 
+= Clears the screen, draws the pics on the page, and word wraps
 = the text. Returns a pointer to the terminating command
 =
-================================================================ 
+================================================================
 */
 
 static void PageLayout(U8 shownumber)
@@ -419,32 +419,32 @@ static void PageLayout(U8 shownumber)
     VWB_DrawPic(0,8,H_LEFTWINDOWPIC);
     VWB_DrawPic(312,8,H_RIGHTWINDOWPIC);
     VWB_DrawPic(8,176,H_BOTTOMINFOPIC);
-    
+
     for(i = 0; i < TEXTROWS; i++)
     {
         leftmargin[i] = LEFTMARGIN;
         rightmargin[i] = SCREENPIXWIDTH-RIGHTMARGIN;
     }
-    
+
     px = LEFTMARGIN;
     py = TOPMARGIN;
     rowon = 0;
     layoutdone = 0;
-    
+
     /* make sure we are starting layout text (^P first command) */
     while(*text <= 32)
     {
         text++;
     }
-    
+
     if((*text != '^') || ((char)toupper((S32)*++text) != 'P'))
     {
         printf("PageLayout: Text not headed with ^P \n");
         while(1){}; /* hang system */
     }
-    
+
     while (*text++ != '\n'){ /* do nothing */};
-    
+
     /* process text stream */
     do
     {
@@ -473,9 +473,9 @@ static void PageLayout(U8 shownumber)
             }
         }
     }while(layoutdone == 0);
-    
+
     pagenum++;
-    
+
     if(shownumber == 1)
     {
         sprintf(str, "pg %d of %d", pagenum, numpages);
@@ -484,11 +484,11 @@ static void PageLayout(U8 shownumber)
         SetFontColor(0x4f, oldbackcolor);   /* 12^BACKCOLOR */
         VWB_DrawPropString(str);
     }
-    
+
     SetFontColor(oldfontcolor, oldbackcolor);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: HandleCtrls
@@ -497,7 +497,7 @@ static void PageLayout(U8 shownumber)
 =
 = check for new line control character
 =
-================================================================ 
+================================================================
 */
 
 static void HandleCtrls(void)
@@ -513,7 +513,7 @@ static void HandleCtrls(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: NewLine
@@ -522,7 +522,7 @@ static void HandleCtrls(void)
 =
 = move cursor to new row
 =
-================================================================ 
+================================================================
 */
 static void NewLine(void)
 {
@@ -546,12 +546,12 @@ static void NewLine(void)
             text++;
         } while (1);
     }
-    
+
     px = leftmargin[rowon];
     py+= FONTHEIGHT;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: HandleWord
@@ -560,7 +560,7 @@ static void NewLine(void)
 =
 = write word into screen buffer
 =
-================================================================ 
+================================================================
 */
 static void HandleWord(void)
 {
@@ -569,11 +569,11 @@ static void HandleWord(void)
     U16  wwidth;
     U16  wheight;
     U16  newpos;
-    
+
     /* copy the next word into [word] */
     wword[0] = *text++;
     wordindex = 1;
-    
+
     /* while character is not a space fill up word buffer */
     while(*text>32)
     {
@@ -585,10 +585,10 @@ static void HandleWord(void)
         }
     }
     wword[wordindex] = '\0';    /* stick a null at end for correct C string formatting */
-    
+
     /* see if it fits on this line */
     VW_MeasurePropString(wword,&wwidth,&wheight);
-    
+
     while((px + wwidth) > (S32)rightmargin[rowon])
     {
         NewLine ();
@@ -597,12 +597,12 @@ static void HandleWord(void)
             return;         /* overflowed page */
         }
     }
-    
+
     /* print it */
     newpos = px+wwidth;
     VWB_DrawPropString(wword);
     px = newpos;
-    
+
     /* suck up any extra spaces */
     while(*text == ' ')
     {
@@ -611,7 +611,7 @@ static void HandleWord(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: HandleCommand
@@ -620,7 +620,7 @@ static void HandleWord(void)
 =
 = handles the commands embedded within the help file
 =
-================================================================ 
+================================================================
 */
 static void HandleCommand(void)
 {
@@ -633,9 +633,9 @@ static void HandleCommand(void)
     S32     picmid;
     S32     Newfontcolor = 0;
     U8      oldbackcolor = 0;
-    
+
     oldbackcolor = GetBackColour();
-    
+
     /* test for supported commands */
     switch((char)toupper((S32)*++text))
     {
@@ -647,20 +647,20 @@ static void HandleCommand(void)
             VL_Bar(picx,picy,picwidth,picheight,BACKCOLOR);
             RipToEOL();
         break;
-        
+
         case ';':           /* comment */
             RipToEOL();
         break;
-        
+
         case 'P':           /* ^P is start of next page, ^E is end of file */
         case 'E':
             layoutdone = 1;
             text--;         /* back up to the '^' */
         break;
-        
+
         case 'C':           /* ^c<hex digit> changes text color */
             i = toupper((S32)*++text);
-            
+
             if((i >= '0') && (i <= '9'))
             {
                 Newfontcolor = i - '0';
@@ -672,7 +672,7 @@ static void HandleCommand(void)
 
             Newfontcolor *= 16;
             i = toupper((S32)*++text);
-            
+
             if ((i >= '0') && (i <= '9'))
             {
                 Newfontcolor += i-'0';
@@ -681,11 +681,11 @@ static void HandleCommand(void)
             {
                 Newfontcolor += i-'A' + 10;
             }
-            
+
             SetFontColor(Newfontcolor, oldbackcolor);
             text++;
         break;
-        
+
         case '>':
             px = 160;
             text++;
@@ -698,11 +698,11 @@ static void HandleCommand(void)
             px = ParseNumber();
             while (*text++ != '\n'){};      /* scan to end of line */
         break;
-        
+
         case 'T':       /*  ^Tyyy,xxx,ppp,ttt waits ttt tics, then draws pic */
             TimedPicCommand();
         break;
-        
+
          case 'G':      /* ^Gyyy,xxx,ppp draws graphic */
             ParsePicCommand();
             VWB_DrawPic(((U32)picx & ~7),picy,picnum);
@@ -725,9 +725,9 @@ static void HandleCommand(void)
             {
                 top = 0;
             }
-            
+
             bottom = (picy+picheight-TOPMARGIN)/FONTHEIGHT;
-            
+
             if(bottom>=TEXTROWS)
             {
                 bottom = TEXTROWS - 1;
@@ -750,16 +750,16 @@ static void HandleCommand(void)
             {
                 px = leftmargin[rowon];
             }
-            
+
         break;
-        
+
         default:
             /* do nothing */
         break;
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: TimedPicCommand
@@ -768,7 +768,7 @@ static void HandleCommand(void)
 =
 = wait for a set amount of time and the display pic
 =
-================================================================ 
+================================================================
 */
 static void TimedPicCommand(void)
 {
@@ -777,7 +777,7 @@ static void TimedPicCommand(void)
     /* update the screen, and wait for time delay */
     UpdateScreen(0);
 
- 
+
     /* wait for time */
     Delay_ms(picdelay);
 
@@ -785,7 +785,7 @@ static void TimedPicCommand(void)
     VWB_DrawPic(((U32)picx & ~7),picy,picnum);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: BackPage
@@ -794,12 +794,12 @@ static void TimedPicCommand(void)
 =
 = Scans for a previous ^P
 =
-================================================================ 
+================================================================
 */
 static void BackPage(void)
 {
     pagenum--;
-    
+
     do
     {
         text--;
@@ -810,7 +810,7 @@ static void BackPage(void)
     } while (1);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: EndText
@@ -819,7 +819,7 @@ static void BackPage(void)
 =
 = END ARTICLES
 =
-================================================================ 
+================================================================
 */
 void EndText(void)
 {

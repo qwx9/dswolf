@@ -41,7 +41,7 @@ static musicnames lastmusicchunk = (musicnames) 0;
 
 /* LIST OF SONGS FOR EACH VERSION */
 static S32 songs[] = {
-    
+
     /* Episode One */
     GETTHEM_MUS,
     SEARCHN_MUS,
@@ -155,14 +155,14 @@ static void ClearPaletteShifts(void);
 static void UpdatePaletteShifts (void);
 static void RemoveObj(objtype * gone);
 
-/* 
+/*
 ================================================================
 =
 = Function: PlayLoop
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -179,38 +179,38 @@ void PlayLoop(void)
     do
     {
         PollControls();
-    
+
         madenoise = 0;
-    
+
         MoveDoors();
-    
+
         for(obj = player; obj != NULL; obj = obj->next)
         {
             DoActor(obj);
         }
-        
+
         UpdatePaletteShifts();
 
         ThreeDRefresh();
-        
+
         gamestate.TimeCount += tics;
-        
+
         if(screenfaded == 1)
         {
             VW_FadeIn();
         }
-        
+
         CheckKeys();
-        
+
     }while((playstate == ex_stillplaying) && (startgame == 0));
-    
+
     if(playstate != ex_died)
     {
         FinishPaletteShifts();
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CheckKeys
@@ -235,7 +235,7 @@ static void CheckKeys(void)
         lasttimecount = GetTimeCount();
         return;
     }
-    
+
     if(buttonstate[bt_esc] == 1)
     {
         lastoffs = StopMusic();
@@ -244,34 +244,34 @@ static void CheckKeys(void)
         US_ControlPanel(0);
 
         SetFontColor(0, 15);
-        
+
         if(screenfaded != 1)
         {
             VW_FadeOut();
         }
-        
+
         if(viewsize != 21)
         {
             DrawPlayScreen();
         }
-        
+
         if((startgame == 0) && (loadedgame == 0))
         {
             ContinueMusic(lastoffs);
         }
-        
+
         if(loadedgame == 1)
         {
             playstate = ex_abort;
         }
-        
+
         lasttimecount = GetTimeCount();
-        
+
         return;
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: PollControls
@@ -283,7 +283,7 @@ static void CheckKeys(void)
 = controlx              set between -100 and 100 per tic
 = controly
 = buttonheld[]  the state of the buttons LAST frame
-= buttonstate[] the state of the buttons THIS frame 
+= buttonstate[] the state of the buttons THIS frame
 =
 ================================================================
 */
@@ -291,21 +291,21 @@ static void PollControls(void)
 {
     S32 max;
     S32 min;
-    
+
     CalcTics();
-    
+
     controlx = 0;
     controly = 0;
-    
+
     memcpy(buttonheld,buttonstate,sizeof(buttonstate));
     memset(buttonstate,0,sizeof(buttonstate));
-    
+
     PollJoystickButtons();
-    
+
     /* bound movement to a maximum */
     max = 100 * tics;
     min = -max;
-    
+
     if(controlx > max)
     {
         controlx = max;
@@ -325,7 +325,7 @@ static void PollControls(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: PollJoystickButtons
@@ -340,7 +340,7 @@ static void PollJoystickButtons(void)
 {
     ControlInfo ci;
     S32 delta;
-    
+
     /* clear button struct */
     ci.button0 = 0;
     ci.button1 = 0;
@@ -351,30 +351,30 @@ static void PollJoystickButtons(void)
     ci.strafeleft = 0;
     ci.pause = 0;
     ci.esc = 0;
-    
+
     /* read nds buttons */
     IN_ReadControl(&ci);
-    
+
     if(ci.button0 == 1)
     {
         buttonstate[buttonjoy[0]] = 1;
     }
-    
+
     if(ci.button1 == 1)
     {
         buttonstate[buttonjoy[1]] = 1;
     }
-    
+
     if(ci.button2 == 1)
     {
         buttonstate[buttonjoy[2]] = 1;
     }
-    
+
     if(ci.button3 == 1)
     {
         buttonstate[buttonjoy[3]] = 1;
     }
-    
+
     delta = (buttonstate[bt_run] == 1) ? (RUNMOVE * tics) : (BASEMOVE * tics);
 
     if(ci.dir == dir_North)
@@ -396,55 +396,55 @@ static void PollJoystickButtons(void)
     {
         controlx += delta;
     }
-    
+
     if(ci.straferight == 1)
     {
         buttonstate[bt_straferight] = 1;
     }
-    
+
     if(ci.strafeleft == 1)
     {
         buttonstate[bt_strafeleft] = 1;
     }
-    
+
     if(ci.pause == 1)
     {
         buttonstate[bt_pause] = 1;
     }
-    
+
     if(ci.esc == 1)
     {
         buttonstate[bt_esc] = 1;
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DoActo
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
 static void DoActor(objtype * ob)
 {
     void (*think) (objtype *);
-    
+
     /* if object is not active and is not in same */
     /* area as player return                      */
     if (!ob->active && !areabyplayer[ob->areanumber])
     {
         return;
     }
-    
+
     if(!(ob->flags & (FL_NONMARK | FL_NEVERMARK)))
     {
         actorat[ob->tilex][ob->tiley] = NULL;
     }
-    
+
     /* non transitional object */
     if(ob->ticcount == 0)
     {
@@ -527,10 +527,10 @@ static void DoActor(objtype * ob)
         return;
     }
 
-    actorat[ob->tilex][ob->tiley] = ob;    
+    actorat[ob->tilex][ob->tiley] = ob;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: StopMusic
@@ -548,7 +548,7 @@ S32 StopMusic(void)
     return lastoffs;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: StartMusic
@@ -566,7 +566,7 @@ void StartMusic(void)
     SD_StartMusic(STARTMUSIC + lastmusicchunk);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function:  ContinueMusic
@@ -605,14 +605,14 @@ next element.
 #############################################################################
 */
 
-/* 
+/*
 ================================================================
 =
 = Function:  InitActorList
 =
 = Description:
 =
-= Call to clear out the actor object lists returning them 
+= Call to clear out the actor object lists returning them
 = all to the free list. Allocates a special spot for the player.
 =
 ================================================================
@@ -643,7 +643,7 @@ void InitActorList(void)
 
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: GetNewActor
@@ -653,7 +653,7 @@ void InitActorList(void)
 = Sets the global variable new to point to a free spot in objlist.
 = The free spot is inserted at the end of the liked list
 =
-= When the object list is full, the caller can either have it bomb 
+= When the object list is full, the caller can either have it bomb
 = out ot return a dummy object pointer that will never get used
 =
 ================================================================
@@ -666,35 +666,35 @@ void GetNewActor(void)
         iprintf("GetNewActor: No free spots in objlist!");
         while(1) { /* hang system */ };
     }
-    
+
     /* point the newobj at the next free space on the list */
     newobj = objfreelist;
-    
+
     /* move the free space list pointer along on */
     objfreelist = newobj->prev;
-    
+
     /* clear the object before it is used */
     memset(newobj, 0, sizeof (*newobj));
-    
+
     /* do we already have a object on the active link list ?*/
     if(lastobj != NULL)
     {
         lastobj->next = newobj;    /* yes, link last object to new object */
     }
-    
+
     /* link new object to last object */
     newobj->prev = lastobj;     /* new->next is allready NULL from memset */
-    
+
     newobj->active = ac_no;
-    
+
     /* update lastobj with current ojects */
     lastobj = newobj;
-    
+
     /* keep a count of active objects */
     objcount++;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: StartBonusFlash
@@ -710,7 +710,7 @@ void StartBonusFlash(void)
     bonuscount = NUMWHITESHIFTS * WHITETICS;    /* white shift palette */
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: ClearPaletteShifts
@@ -729,7 +729,7 @@ static void ClearPaletteShifts(void)
 }
 
 
-/* 
+/*
 ================================================================
 =
 = Function: StartDamageFlash
@@ -746,7 +746,7 @@ void StartDamageFlash (S32 damage)
     damagecount += damage;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: UpdatePaletteShifts
@@ -765,14 +765,14 @@ static void UpdatePaletteShifts(void)
     if(bonuscount != 0)
     {
         white = bonuscount / WHITETICS + 1;
-        
+
         if (white > NUMWHITESHIFTS)
         {
             white = NUMWHITESHIFTS;
         }
-        
+
         bonuscount -= tics;
-        
+
         if (bonuscount < 0)
         {
             bonuscount = 0;
@@ -787,14 +787,14 @@ static void UpdatePaletteShifts(void)
     if(damagecount != 0)
     {
         red = damagecount / 10 + 1;
-        
+
         if (red > NUMREDSHIFTS)
         {
             red = NUMREDSHIFTS;
         }
 
         damagecount -= tics;
-        
+
         if (damagecount < 0)
         {
             damagecount = 0;
@@ -819,17 +819,17 @@ static void UpdatePaletteShifts(void)
     {
         FinishPaletteShifts();    /* back to normal */
     }
-    
+
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: RemoveObj
 =
 = Description:
 =
-= Add the given object back into the free list, and unlink 
+= Add the given object back into the free list, and unlink
 = it from it's neighbors
 =
 ================================================================

@@ -24,7 +24,7 @@ extern gametype gamestate;
 
 static U32 rndindex;
 
-static U8 rndtable[] = 
+static U8 rndtable[] =
 {
       0,   8, 109, 220, 222, 241, 149, 107,  75, 248, 254, 140,  16,  66,
     74,  21, 211,  47,  80, 242, 154,  27, 205, 128, 161,  89,  77,  36,
@@ -60,7 +60,7 @@ U16 PrintY;
 
 static void US_CPrintLine(const char *s);
 
-/* 
+/*
 ================================================================
 =
 = Function: US_Print
@@ -69,7 +69,7 @@ static void US_CPrintLine(const char *s);
 =
 = Prints a string in the current window. Newlines are supported.
 =
-================================================================ 
+================================================================
 */
 void US_Print(const char *sorg)
 {
@@ -90,7 +90,7 @@ void US_Print(const char *sorg)
         {
             se++;
         }
-        
+
         *se = '\0';
 
         /* print the string to screen */
@@ -100,7 +100,7 @@ void US_Print(const char *sorg)
         VWB_DrawPropString(s);
 
         s = se;
-        
+
         /* check to see if this is the first of the two strings to print  */
         /* if it make sure screen position is correct for this string */
         if(c != '\0')
@@ -115,21 +115,21 @@ void US_Print(const char *sorg)
             PrintX += w;
         }
     }
-    
+
     free(sstart);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: US_CPrint
 =
 = Description:
 =
-= Prints a string centered in the current window Newlines 
+= Prints a string centered in the current window Newlines
 = are supported.
 =
-================================================================ 
+================================================================
 */
 
 void US_CPrint(const char *sorg)
@@ -149,7 +149,7 @@ void US_CPrint(const char *sorg)
         {
             se++;
         }
-        
+
         *se = '\0';
 
         /* print the string to screen */
@@ -162,21 +162,21 @@ void US_CPrint(const char *sorg)
             s++;
         }
     }
-    
+
     free(sstart);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: US_CPrintLine
 =
 = Description:
 =
-= Prints a string centered on the current line and advances to 
+= Prints a string centered on the current line and advances to
 = the next line. Newlines are not supported.
 =
-================================================================ 
+================================================================
 */
 static void US_CPrintLine(const char *s)
 {
@@ -197,7 +197,7 @@ static void US_CPrintLine(const char *s)
     PrintY += h;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: US_InitRndT
@@ -205,10 +205,10 @@ static void US_CPrintLine(const char *s)
 = Description:
 =
 = Initializes the pseudo random number generator.
-= If randomize is true, the seed will be initialized depending 
+= If randomize is true, the seed will be initialized depending
 = on the current time
 =
-================================================================ 
+================================================================
 */
 void US_InitRndT(S32 randomize)
 {
@@ -222,7 +222,7 @@ void US_InitRndT(S32 randomize)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: US_RndT
@@ -231,7 +231,7 @@ void US_InitRndT(S32 randomize)
 =
 = Returns the next 8-bit pseudo random number
 =
-================================================================ 
+================================================================
 */
 U8 US_RndT(void)
 {
@@ -239,7 +239,7 @@ U8 US_RndT(void)
     return rndtable[rndindex];
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: US_LineInput
@@ -248,7 +248,7 @@ U8 US_RndT(void)
 =
 = Print savegame name into save game screen menu
 =
-================================================================ 
+================================================================
 */
 U8 US_LineInput(S32 x,S32 y,char *buf, S32 maxchars,S32 maxwidth)
 {
@@ -269,17 +269,17 @@ U8 US_LineInput(S32 x,S32 y,char *buf, S32 maxchars,S32 maxwidth)
     strcat(string,episode);
     strcat(string,"M");
     strcat(string,map);
-    
+
     px = x;
     py = y;
-    
+
     /* draw string into screen */
     VWB_DrawPropString(string);
-    
+
     x = px;
     y = py;
     lastBlinkTime = GetTimeCount();
-    
+
     UpdateScreen(0);
 
     do
@@ -296,7 +296,7 @@ U8 US_LineInput(S32 x,S32 y,char *buf, S32 maxchars,S32 maxwidth)
         ci.esc = 0;
 
         IN_ReadControl(&ci);
-        
+
         if((GetTimeCount() - lastBlinkTime) >= 10)
         {
             switch(tick)
@@ -304,13 +304,13 @@ U8 US_LineInput(S32 x,S32 y,char *buf, S32 maxchars,S32 maxwidth)
                 case 0:
                     VL_Bar(x, y, 8, 9, BKGDCOLOR);
                 break;
-                
+
                 case 1:
                     PrintX = x;
                     PrintY = y;
                     US_Print("|");
                 break;
-                
+
                 default:
                     /* do nothing */
                 break;
@@ -323,14 +323,14 @@ U8 US_LineInput(S32 x,S32 y,char *buf, S32 maxchars,S32 maxwidth)
         {
             Delay_ms(5);
         }
-    
+
     }while((ci.button0 == 0) && (ci.button1 == 0));
-    
+
     if(ci.button0 == 1)
     {
         strcpy(buf,string);
         savename = 1;
     }
-    
+
     return savename;
 }

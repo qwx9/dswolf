@@ -75,7 +75,7 @@ static void CAL_SetupAudioFile(void);
 static void CA_RLEWexpand(U16 *source, U16 *dest, S32 length, U16 rlewtag);
 static void CAL_CarmackExpand(U8 *source, U16 *dest, S32 length);
 
-/* 
+/*
 ================================================================
 =
 = Function: READWORD
@@ -93,7 +93,7 @@ inline U16 READWORD(U8 *ptr)
     return val;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: READLONGWORD
@@ -110,7 +110,7 @@ static inline U32 READLONGWORD(U8 *ptr)
     return val;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CAL_SetupGrFile
@@ -137,7 +137,7 @@ static void CAL_SetupGrFile(void)
 
     strcpy(fname,gdictname);
     strcat(fname,graphext);
-    
+
     handle = fopen(fname, "rb");
     if (handle == NULL)
     {
@@ -151,26 +151,26 @@ static void CAL_SetupGrFile(void)
     /* load the data offsets from VGAhead.ext */
     strcpy(fname,gheadname);
     strcat(fname,graphext);
-    
+
     handle = fopen(fname, "rb");
     if (handle == NULL)
     {
         CA_CannotOpen(fname);
     }
-    
+
     fseek(handle, 0, SEEK_END);
     headersize = ftell(handle);
     fseek(handle, 0, SEEK_SET);
-    
+
     /* allocate memory for temp buffer with size of offset data*/
     data = (U8 *) malloc(headersize);
     CheckMallocResult(data);
-    
+
     /* read offset data into temp buffer */
     fread(data,1,headersize,handle);
     fclose(handle);
     handle = NULL;
-    
+
     /*swap around bytes in offset data and store result in grstarts array */
     for (i = grstarts; i != (grstarts + (sizeof(grstarts) / sizeof(S32))) ; ++i)
     {
@@ -178,22 +178,22 @@ static void CAL_SetupGrFile(void)
         *i = ((val == 0x00FFFFFF) ? -1 : val);
         data += 3;
     }
-    
+
     /* Open the graphics file, leaving it open until the game is finished */
     strcpy(fname,gfilename);
     strcat(fname,graphext);
-    
+
     grhandle = fopen(fname, "rb");
     if (grhandle == NULL)
     {
         CA_CannotOpen(fname);
     }
-    
+
     /* allocate memory for pictable buffer */
     pictable = (pictabletype *) malloc(NUMPICS*sizeof(pictabletype));
     CheckMallocResult(pictable);
     /* position file pointer to start of compressed pictable data */
-    CAL_GetGrChunkLength(STRUCTPIC);       
+    CAL_GetGrChunkLength(STRUCTPIC);
     /* allocate memory for compressed pictable data */
     compseg = (U8 *) malloc(chunkcomplen);
     CheckMallocResult(compseg);
@@ -204,7 +204,7 @@ static void CAL_SetupGrFile(void)
     free(compseg);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CAL_SetupAudioFile
@@ -227,7 +227,7 @@ static void CAL_SetupAudioFile(void)
     strcpy(fname,aheadname);
     strcat(fname,audioext);
 
-   
+
     if (CA_LoadFile(fname, &ptr) == 0)
     {
         CA_CannotOpen(fname);
@@ -248,7 +248,7 @@ static void CAL_SetupAudioFile(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CA_CannotOpen
@@ -268,7 +268,7 @@ static void CA_CannotOpen(const char *string)
     strcpy(str,"Can't open ");
     strcat(str,string);
     strcat(str,"!\n");
-    
+
     printf("%s",str);
     while(1){} /* hang system */
 }
@@ -292,26 +292,26 @@ static U8 CA_LoadFile (const char *filename, memptr *ptr)
     {
         return 0;
     }
-    
+
 
     fseek(handle, 0, SEEK_END);
     size = ftell(handle);
     fseek(handle, 0, SEEK_SET);
-    
+
     *ptr = malloc(size);
     CheckMallocResult(*ptr);
-    
+
     if(fread(*ptr,1,size,handle) < size)
     {
         fclose (handle);
         return 0;
     }
     fclose (handle);
-    
+
     return 1;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CA_UncacheAudioChunk
@@ -326,16 +326,16 @@ static U8 CA_LoadFile (const char *filename, memptr *ptr)
 void CA_UncacheAudioChunk(S32 chunk)
 {
 
-    if(audiosegs[chunk] != NULL) 
+    if(audiosegs[chunk] != NULL)
     {
-        free(audiosegs[chunk]); 
+        free(audiosegs[chunk]);
         audiosegs[chunk]=NULL;
     }
 
 }
 
 
-/* 
+/*
 ================================================================
 =
 = Function: CA_CacheAudioChunk
@@ -366,7 +366,7 @@ S32 CA_CacheAudioChunk(S32 chunk)
     return size;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CA_CacheAdlibSoundChunk
@@ -381,20 +381,20 @@ static void CA_CacheAdlibSoundChunk(S32 chunk)
 {
     S32 pos = audiostarts[chunk];
     S32 size = audiostarts[chunk+1]-pos;
-    
+
     if(audiosegs[chunk] != NULL)
     {
         return;                        /* already in memory */
     }
-    
+
     /* read raw data into bufferseg */
     fseek(audiohandle,pos,SEEK_SET);
     fread(bufferseg,1,(ORIG_ADLIBSOUND_SIZE - 1),audiohandle);    /* without data[1] */
-    
+
     /* malloc some memory for adlib struct (plus any padding) */
     AdLibSound *sound = (AdLibSound *) malloc(size + sizeof(AdLibSound) - ORIG_ADLIBSOUND_SIZE);
     CheckMallocResult(sound);
-    
+
     /* put raw data from buffer into adlib struct */
     U8 *ptr = (U8 *) bufferseg;
     sound->common.length = READLONGWORD(ptr);
@@ -418,22 +418,22 @@ static void CA_CacheAdlibSoundChunk(S32 chunk)
     sound->inst.unused[1] = *ptr++;
     sound->inst.unused[2] = *ptr++;
     sound->block = *ptr++;
-    
+
     /* read data variable into adlib struct*/
-    fread(sound->data,1,(size - ORIG_ADLIBSOUND_SIZE + 1),audiohandle);    /* + 1 because of byte data[1] */ 
+    fread(sound->data,1,(size - ORIG_ADLIBSOUND_SIZE + 1),audiohandle);    /* + 1 because of byte data[1] */
 
     /* store pointer to new adlib struct in audioseg */
     audiosegs[chunk]=(U8 *) sound;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CheckMallocResult
 =
 = Description:
 =
-= checks malloc request assigned memory if not tell user 
+= checks malloc request assigned memory if not tell user
 = something is wrong !
 =
 ================================================================
@@ -448,7 +448,7 @@ void CheckMallocResult(void *ptr)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CA_Shutdown
@@ -473,26 +473,26 @@ void CA_Shutdown(void)
     {
         free(audiostarts);
     }
-    
+
     if(audiohandle != NULL)
     {
         fclose(audiohandle);
     }
-    
+
     for(i=0; i<NUMCHUNKS; i++)
     {
         CA_UnCacheGrChunk(i);
     }
-    
+
     free(pictable);
-    
+
     if(grhandle != NULL)
     {
         fclose(grhandle);
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CAL_GetGrChunkLength
@@ -502,7 +502,7 @@ void CA_Shutdown(void)
 = Gets the length of an explicit length chunk (not tiles)
 = The file pointer is positioned so the compressed data can be read in next.
 =
-================================================================ 
+================================================================
 */
 
 static void CAL_GetGrChunkLength (S32 chunk)
@@ -512,7 +512,7 @@ static void CAL_GetGrChunkLength (S32 chunk)
     chunkcomplen = GrFilePos(chunk+1)-GrFilePos(chunk)-4;   /* return chunk length minus 4 header bytes*/
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: GrFilePos
@@ -521,7 +521,7 @@ static void CAL_GetGrChunkLength (S32 chunk)
 =
 = returns the offset within file for requested graphics chunk
 =
-================================================================ 
+================================================================
 */
 
 static S32 GrFilePos(const S32 idx)
@@ -553,7 +553,7 @@ static S32 GrFilePos(const S32 idx)
 static void CAL_HuffExpand(U8 *source, U8 *dest, S32 length, huffnode *hufftable)
 {
     U8 *end;
-    huffnode *headptr; 
+    huffnode *headptr;
     huffnode *huffptr;
     S32 written = 0;
     U8 val = *source++;
@@ -569,7 +569,7 @@ static void CAL_HuffExpand(U8 *source, U8 *dest, S32 length, huffnode *hufftable
     headptr = hufftable+254;        /* head node is always node 254 */
     end = dest + length;
     huffptr = headptr;
-    
+
     while(1)
     {
         if((val & mask) == 0)
@@ -580,13 +580,13 @@ static void CAL_HuffExpand(U8 *source, U8 *dest, S32 length, huffnode *hufftable
         {
             nodeval = huffptr->bit1;
         }
-        
+
         if(mask==0x80)
         {
             val = *source++;
             mask = 1;
         }
-        else 
+        else
         {
             mask <<= 1;
         }
@@ -608,7 +608,7 @@ static void CAL_HuffExpand(U8 *source, U8 *dest, S32 length, huffnode *hufftable
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CA_CacheGrChunk
@@ -637,21 +637,21 @@ void CA_CacheGrChunk(S32 chunk)
     {
         return;
     }
-    
+
     next = chunk + 1;
-    
+
     /* skip past any sparse tiles */
     while(GrFilePos(next) == -1)
     {
         next++;
     }
-    
+
     /* store compressed chunk length */
     compressed = GrFilePos(next)-pos;
-    
+
     /* set file pointer to compressed chunk required */
     fseek(grhandle,pos,SEEK_SET);
-    
+
     /* load the chunk into a buffer, either the miscbuffer if it fits, or allocate a larger buffer */
     if (compressed <= BUFFERSIZE)
     {
@@ -664,7 +664,7 @@ void CA_CacheGrChunk(S32 chunk)
         CheckMallocResult(source);
         fread(source,1,compressed,grhandle);
     }
-    
+
     CAL_ExpandGrChunk(chunk,source);
 
     /* if we used the heap to store compressed chunk then return memory */
@@ -672,7 +672,7 @@ void CA_CacheGrChunk(S32 chunk)
     {
         free(source);
     }
-    
+
 }
 
 /*
@@ -698,12 +698,12 @@ void CA_CacheMap(S32 mapnum)
     U16     *source;
     U16     *buffer2seg;
     S32     expanded;
-    
+
     mapon = mapnum;
-    
+
     /* load the planes into the allready allocated buffers */
     size = MAPAREA*2;
-    
+
     for(plane = 0; plane<MAPPLANES; plane++)
     {
         /* get the start position of this maps plane */
@@ -711,9 +711,9 @@ void CA_CacheMap(S32 mapnum)
         pos = mapheaderseg[mapnum]->planestart[plane];
         compressed = mapheaderseg[mapnum]->planelength[plane];
         dest = mapsegs[plane];
-        
+
         fseek(maphandle,pos,SEEK_SET);
-        
+
         /* grab some memory for the uncompressed file*/
         if (compressed<=BUFFERSIZE)
         {
@@ -727,20 +727,20 @@ void CA_CacheMap(S32 mapnum)
         }
 
         fread(source,1,compressed,maphandle);
-        
+
         /* unhuffman, then un-RLEW (run length encoding) */
         /* The huffman'd chunk has a two byte expanded length first */
         /* The resulting RLEW chunk also does, even though it's not */
         /* really needed */
         expanded = *source;
-        
+
         source++;
         buffer2seg = (U16 *) malloc(expanded);
         CheckMallocResult(buffer2seg);
         CAL_CarmackExpand((U8 *) source, buffer2seg,expanded);
         CA_RLEWexpand((buffer2seg + 1),dest,size,RLEWtag);
         free(buffer2seg);
-        
+
         if(compressed>BUFFERSIZE)
         {
             free(bigbufferseg);
@@ -766,20 +766,20 @@ static void CAL_CarmackExpand(U8 *source, U16 *dest, S32 length)
     U16 count;
     U16 offset;
     U8 *inptr;
-    U16 *copyptr; 
+    U16 *copyptr;
     U16 *outptr;
-    
+
     length /= 2;
 
     inptr = (U8 *) source;
     outptr = dest;
-    
+
     while(length > 0)
     {
         ch = READWORD(inptr);
         inptr += 2;
         chhigh = (ch >> 8) & 0x00FF;
-        
+
         if(chhigh == NEARTAG)
         {
             count = ch & 0xff;
@@ -798,7 +798,7 @@ static void CAL_CarmackExpand(U8 *source, U16 *dest, S32 length)
                 {
                     return;
                 }
-                
+
                 while(count--)
                 {
                     *outptr++ = *copyptr++;
@@ -824,7 +824,7 @@ static void CAL_CarmackExpand(U8 *source, U16 *dest, S32 length)
                 {
                     return;
                 }
-                
+
                 while(count--)
                 {
                     *outptr++ = *copyptr++;
@@ -858,12 +858,12 @@ static void CA_RLEWexpand(U16 *source, U16 *dest, S32 length, U16 rlewtag)
     U16 count;
     U16 i;
     U16 *end = dest + length / 2;
-    
+
     /* start expanding run length encoded data */
     do
     {
         value = *source++;
-        
+
         /* check to see if we need to uncompress data */
         if (value != rlewtag)
         {
@@ -904,46 +904,46 @@ void CA_CacheScreen(S32 chunk)
     S32    *source;
     S32    next;
     U8     *pic;
-    
+
     pos = GrFilePos(chunk);
-    
+
     next = chunk + 1;
-    
+
     /* skip past any sparse tiles */
     while (GrFilePos(next) == -1)
     {
         next++;
     }
-    
+
     /* store compressed chunk length */
     compressed = GrFilePos(next)-pos;
-    
+
     /* set file pointer to compressed chunk required */
     fseek(grhandle,pos,SEEK_SET);
-    
+
     /* load the chunk into a buffer */
     bigbufferseg = malloc(compressed);
     CheckMallocResult(bigbufferseg);
     fread(bigbufferseg,1,compressed,grhandle);
-    
+
     source = (S32 *) bigbufferseg;
-   
+
     expanded = *source++;
-    
+
     /* allocate final space, decompress it, and free bigbuffer */
     /* Sprites need to have shifts made and various other junk */
-    
+
     pic = (U8 *) malloc(64000);
     CheckMallocResult(pic);
     CAL_HuffExpand((U8 *) source, pic, expanded, grhuffman);
-    
+
     VL_MemToScreen(pic, 320, 200, 0, 0);
-    
+
     free(pic);
     free(bigbufferseg);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CA_UnCacheGrChunk
@@ -956,7 +956,7 @@ void CA_CacheScreen(S32 chunk)
 */
 void CA_UnCacheGrChunk(S32 chunk)
 {
-    if(grsegs[chunk] != NULL) 
+    if(grsegs[chunk] != NULL)
     {
         free(grsegs[chunk]);
         grsegs[chunk]=NULL;
@@ -1012,10 +1012,10 @@ static void CAL_ExpandGrChunk (S32 chunk, S32 *source)
         /* everything else has an explicit size longword */
         expanded = *source++;
     }
-    
+
     /*  allocate final space, decompress it, and free bigbuffer */
     /*  Sprites need to have shifts made and various other junk */
-    
+
     grsegs[chunk] = (U8 *) malloc(expanded);
     CheckMallocResult(grsegs[chunk]);
     CAL_HuffExpand((U8 *) source, grsegs[chunk], expanded, grhuffman);
@@ -1037,15 +1037,15 @@ void CA_LoadAllSounds(void)
 {
     U32 i;
     U32 start = STARTADLIBSOUNDS;
-    
+
     /* uncach all loaded sounds */
     for (i=0;i<NUMSOUNDS;i++,start++)
     {
         CA_UncacheAudioChunk(start);
     }
-    
+
     start = STARTADLIBSOUNDS;
-    
+
     /* load all sounds */
     for (i=0;i<NUMSOUNDS;i++,start++)
     {
@@ -1075,46 +1075,46 @@ static void CAL_SetupMapFile(void)
     U8 *tinf = NULL;
     U16 length = 0;
     U8 *ptr = NULL;
-    
+
     /* load maphead.ext (offsets and tileinfo for map file) */
     strcpy(fname,mheadname);
     strcat(fname,extension);
-    
+
     handle = fopen(fname, "rb");
-    
+
     if(handle == NULL)
     {
         CA_CannotOpen(fname);
     }
-    
+
     /* obtain file size */
     fseek (handle , 0 , SEEK_END);
     length = ftell(handle);
     rewind(handle);
-    /* read in the map file header */    
+    /* read in the map file header */
     tinf = (U8 *) malloc(length);
     CheckMallocResult(tinf);
     fread(tinf,1,length,handle);
-    
+
     fclose(handle);
     handle = NULL;
     RLEWtag = ((mapfiletype *) tinf)->RLEWtag;
-    
+
     /* open the data file */
     strcpy(fname,"/GAMES/WOLF/GAMEMAPS.");
     strcat(fname, extension);
     maphandle = fopen(fname, "rb");
-    
+
     if(maphandle == NULL)
     {
         CA_CannotOpen(fname);
     }
-    
+
     /* load all map header */
     for (i=0, j=2; i<NUMMAPS ;i++, j+=4)
     {
         pos = (S32)((tinf[j + 3] << 24)  | (tinf[j + 2] << 16) | (tinf[j + 1] << 8) | tinf[j]);
-        
+
         if(pos < 0)
         {
             continue;   /* $FFFFFFFF start is a sparse map */
@@ -1122,14 +1122,14 @@ static void CAL_SetupMapFile(void)
 
         mapheaderseg[i]=(maptype *) malloc(sizeof(maptype));
         CheckMallocResult(mapheaderseg[i]);
-        
+
         /* read raw data into bufferseg */
         fseek(maphandle,pos,SEEK_SET);
-        fread(bufferseg,1,(ORIG_MAPTYPE_SIZE),maphandle);   
-        
+        fread(bufferseg,1,(ORIG_MAPTYPE_SIZE),maphandle);
+
         /* put raw data from buffer into map struct */
         ptr = (U8 *) bufferseg;
-        
+
         mapheaderseg[i]->planestart[0] = READLONGWORD(ptr);
         ptr += 4;
         mapheaderseg[i]->planestart[1] = READLONGWORD(ptr);
@@ -1151,9 +1151,9 @@ static void CAL_SetupMapFile(void)
             mapheaderseg[i]->name[k] = *ptr++;
         }
     }
-    
+
     free(tinf);
-    
+
     /* allocate space for 2 64*64 planes */
     for(i = 0; i < MAPPLANES; i++)
     {

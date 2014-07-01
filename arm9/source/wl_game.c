@@ -65,7 +65,7 @@ U8 ingame = 0;
 static void ScanInfoPlane(void);
 static void Died(void);
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawPlayBorder
@@ -74,7 +74,7 @@ static void Died(void);
 =
 = Draw Players Borders
 =
-================================================================ 
+================================================================
 */
 
 void DrawPlayBorder(void)
@@ -107,7 +107,7 @@ void DrawPlayBorder(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: GameLoop
@@ -116,7 +116,7 @@ void DrawPlayBorder(void)
 =
 = Main game loop
 =
-================================================================ 
+================================================================
 */
 void GameLoop(void)
 {
@@ -126,37 +126,37 @@ void GameLoop(void)
     SetFontColor(0,15);
     DrawPlayScreen();
     died = 0;
-    
+
     do
-    {        
+    {
         if((startgame == 1) || (loadedgame == 1))
         {
             SetFontColor(0,15);
             died = 0;
         }
-    
+
         if(loadedgame == 0)
         {
             gamestate.score = gamestate.oldscore;
         }
-        
+
         if((died == 0) || (viewsize != 21))
         {
             DrawScore();
         }
-        
+
         startgame = 0;
-        
+
         if(loadedgame == 0)
         {
             SetupGameLevel();
         }
-        
+
         ingame = 1;
         loadedgame = 0;
-        
+
         StartMusic();
-        
+
         if(died == 0)
         {
             PreloadGraphics();    /* Load get psyched message */
@@ -166,25 +166,25 @@ void GameLoop(void)
             died = 0;
             //fizzlein = 1;
         }
-        
+
         DrawLevel();
-        
+
         PlayLoop();
-        
+
         StopMusic();
-        
+
         ingame = 0;
-        
+
         switch (playstate)
         {
             case ex_completed:
             case ex_secretlevel:
-            
+
                 if(viewsize == 21)
                 {
                     DrawPlayScreen();
                 }
-                
+
                 gamestate.keys = 0;
                 DrawKeys();
                 VW_FadeOut();
@@ -192,14 +192,14 @@ void GameLoop(void)
                 ClearMemory();
 
                 LevelCompleted();    /* do the intermission */
-                
+
                 if(viewsize == 21)
                 {
                     DrawPlayScreen();
                 }
-                
+
                 gamestate.oldscore = gamestate.score;
-                
+
                 /* COMING BACK FROM SECRET LEVEL */
                 if (gamestate.mapon == 9)
                 {
@@ -219,7 +219,7 @@ void GameLoop(void)
                     }
                 }
             break;
-        
+
             case ex_died:
                 Died();
                 died = 1;           /* don't "get psyched!" */
@@ -230,26 +230,26 @@ void GameLoop(void)
                 }
 
                 VW_FadeOut();
-                
+
                 ClearMemory ();
 
                 CheckHighScore(gamestate.score,gamestate.mapon + 1);
 
                 strcpy(MainMenu[viewscores].string,STR_VS);
-                
+
                 MainMenu[viewscores].pt2function = CP_ViewScores;
-                
+
                 MainMenu[savegame].active = 0;
-                
+
                 return;
-                
+
             case ex_victorious:
-            
+
                 if(viewsize == 21)
                 {
                     DrawPlayScreen();
                 }
-                
+
                 VW_FadeOut();
 
                 ClearMemory();
@@ -263,11 +263,11 @@ void GameLoop(void)
                 strcpy(MainMenu[viewscores].string,STR_VS);
 
                 MainMenu[viewscores].pt2function = CP_ViewScores;
-                
+
                 MainMenu[savegame].active = 0;
-                
+
                 return;
-                
+
             default:
                 if(viewsize == 21)
                 {
@@ -276,11 +276,11 @@ void GameLoop(void)
                 ClearMemory ();
             break;
         }
-     
+
     }while(1);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SetupGameLevel
@@ -289,14 +289,14 @@ void GameLoop(void)
 =
 = cache level data and setup level variables
 =
-================================================================ 
+================================================================
 */
 void SetupGameLevel(void)
 {
     S32  x,y;
     U16 *map;
     U16 tile;
-    
+
     if(loadedgame == 0)
     {
         gamestate.TimeCount     = 0;
@@ -309,20 +309,20 @@ void SetupGameLevel(void)
         //pwallstate              = 0;
         //pwallpos                = 0;
         facetimes               = 0;
-            
+
         LastAttacker = NULL;
         killerobj = NULL;
     }
-    
+
     /* load the level */
     CA_CacheMap(gamestate.mapon + 10 * gamestate.episode);
     mapon-=gamestate.episode*10;
-    
+
     /* copy the wall data to a data segment array */
     memset(tilemap,0,sizeof(tilemap));
     memset(actorat,0,sizeof(actorat));
     map = mapsegs[0];
-    
+
     for(y=0;y<MAPHEIGHT;y++)
     {
         for(x=0;x<MAPWIDTH;x++)
@@ -342,12 +342,12 @@ void SetupGameLevel(void)
             }
         }
     }
-    
+
     /* start spawning things with a clean slate */
-    InitActorList();   
+    InitActorList();
     InitDoorList();
     InitStaticList();
-    
+
     /* spawn doors */
     map = mapsegs[0];
     for(y=0;y<MAPHEIGHT;y++)
@@ -380,10 +380,10 @@ void SetupGameLevel(void)
             }
         }
     }
-    
+
     /* spawn actors */
     ScanInfoPlane();
-    
+
     /* take out the ambush markers */
     map = mapsegs[0];
     for (y=0;y<MAPHEIGHT;y++)
@@ -394,7 +394,7 @@ void SetupGameLevel(void)
             if (tile == AMBUSHTILE)
             {
                 tilemap[x][y] = 0;
-                
+
                 if ( (unsigned)(uintptr_t)actorat[x][y] == AMBUSHTILE)
                 {
                     actorat[x][y] = NULL;
@@ -404,17 +404,17 @@ void SetupGameLevel(void)
                 {
                     tile = *map;
                 }
-                
+
                 if (*(map-1-MAPWIDTH) >= AREATILE)
                 {
                     tile = *(map-1-MAPWIDTH);
                 }
-                
+
                 if (*(map-1+MAPWIDTH) >= AREATILE)
                 {
                     tile = *(map-1+MAPWIDTH);
                 }
-                
+
                 if ( *(map-2) >= AREATILE)
                 {
                     tile = *(map-2);
@@ -424,14 +424,14 @@ void SetupGameLevel(void)
             }
         }
     }
-    
-    /* have the caching manager load and purge stuff to make */ 
+
+    /* have the caching manager load and purge stuff to make */
     /* sure all marks are in memory */
     CA_LoadAllSounds();
-    
+
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: ScanInfoPlane
@@ -440,22 +440,22 @@ void SetupGameLevel(void)
 =
 = Spawn all actors and mark down special places
 =
-================================================================ 
+================================================================
 */
 static void ScanInfoPlane(void)
 {
     U32     x,y;
     S32     tile;
     U16    *start;
-    
+
     start = mapsegs[1];
-    
+
     for (y=0;y<MAPHEIGHT;y++)
     {
         for (x=0;x<MAPWIDTH;x++)
         {
             tile = *start++;
-            
+
             if(tile == 0)
             {
                 continue;
@@ -527,7 +527,7 @@ static void ScanInfoPlane(void)
                 case 72:
                     SpawnStatic(x,y,tile-23);
                 break;
-                
+
                 /* P wall */
                 case 98:
                     if (loadedgame == 0)
@@ -535,7 +535,7 @@ static void ScanInfoPlane(void)
                         gamestate.secrettotal++;
                     }
                 break;
-                
+
                 /* guard */
                 case 180:
                 case 181:
@@ -561,8 +561,8 @@ static void ScanInfoPlane(void)
                 case 111:
                     SpawnStand(en_guard,x,y,tile-108);
                 break;
-                    
-                
+
+
                 case 184:
                 case 185:
                 case 186:
@@ -587,11 +587,11 @@ static void ScanInfoPlane(void)
                 case 115:
                     SpawnPatrol(en_guard,x,y,tile-112);
                 break;
-                    
+
                 case 124:
                     SpawnDeadGuard (x,y);
                 break;
-                
+
                 /* officer */
                 case 188:
                 case 189:
@@ -617,7 +617,7 @@ static void ScanInfoPlane(void)
                 case 119:
                     SpawnStand(en_officer,x,y,tile-116);
                 break;
-                
+
                 case 192:
                 case 193:
                 case 194:
@@ -642,7 +642,7 @@ static void ScanInfoPlane(void)
                 case 123:
                     SpawnPatrol(en_officer,x,y,tile-120);
                 break;
-                    
+
                 /* ss */
                 case 198:
                 case 199:
@@ -668,7 +668,7 @@ static void ScanInfoPlane(void)
                 case 129:
                     SpawnStand(en_ss,x,y,tile-126);
                 break;
-                
+
                 case 202:
                 case 203:
                 case 204:
@@ -693,7 +693,7 @@ static void ScanInfoPlane(void)
                 case 133:
                     SpawnPatrol(en_ss,x,y,tile-130);
                 break;
-                
+
                 /* dogs */
                 case 206:
                 case 207:
@@ -719,7 +719,7 @@ static void ScanInfoPlane(void)
                 case 137:
                     SpawnStand(en_dog,x,y,tile-134);
                 break;
-                
+
                 case 210:
                 case 211:
                 case 212:
@@ -744,36 +744,36 @@ static void ScanInfoPlane(void)
                 case 141:
                     SpawnPatrol(en_dog,x,y,tile-138);
                 break;
-                
+
                 /* boss */
                 case 214:
                     SpawnBoss(x,y);
                 break;
-                
+
                 case 197:
                     SpawnGretel(x,y);
                 break;
-                
+
                 case 215:
                     SpawnGift(x,y);
                 break;
-                
+
                 case 179:
                     SpawnFat(x,y);
                 break;
-                
+
                 case 196:
                     SpawnSchabbs(x,y);
                 break;
-                
+
                 case 160:
                     SpawnFakeHitler(x,y);
                 break;
-                
+
                 case 178:
                     SpawnHitler(x,y);
                 break;
-                
+
                 /* mutants */
                 case 252:
                 case 253:
@@ -824,24 +824,24 @@ static void ScanInfoPlane(void)
                 case 223:
                     SpawnPatrol(en_mutant,x,y,tile-220);
                 break;
-                
+
                 /* ghosts */
                 case 224:
                     SpawnGhosts (en_blinky,x,y);
                 break;
-                
+
                 case 225:
                     SpawnGhosts (en_clyde,x,y);
                 break;
-                
+
                 case 226:
                     SpawnGhosts (en_pinky,x,y);
                 break;
-                
+
                 case 227:
                     SpawnGhosts (en_inky,x,y);
                 break;
-                
+
                 default:
                     /* do nothing */
                 break;
@@ -850,7 +850,7 @@ static void ScanInfoPlane(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawPlayScreen
@@ -859,7 +859,7 @@ static void ScanInfoPlane(void)
 =
 = Draw players screen (ie status bar with score etc)
 =
-================================================================ 
+================================================================
 */
 void DrawPlayScreen(void)
 {
@@ -876,7 +876,7 @@ void DrawPlayScreen(void)
     DrawScore();
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: Died
@@ -885,7 +885,7 @@ void DrawPlayScreen(void)
 =
 = handle action when player dies
 =
-================================================================ 
+================================================================
 */
 static void Died(void)
 {
@@ -903,10 +903,10 @@ static void Died(void)
         ThreeDRefresh();
         VW_FadeIn();
     }
-    
+
     gamestate.weapon = wp_none; /* take away weapon */
     SD_PlaySound(PLAYERDEATHSND);
-    
+
     /* swing around to face attacker */
     if(killerobj != NULL)
     {
@@ -914,7 +914,7 @@ static void Died(void)
         dy = player->y - killerobj->y;
 
         fangle = (float) atan2((float) dy, (float) dx);    /* returns -pi to pi */
-        
+
         if (fangle<0)
         {
             fangle = (float) (M_PI*2+fangle);
@@ -926,14 +926,14 @@ static void Died(void)
     {
         /* add 180 to players angle */
         iangle = player->angle + ANGLES / 2;
-        
+
         /* if over 360 minus 360 */
         if(iangle >= ANGLES)
         {
             iangle -= ANGLES;
         }
     }
-    
+
     /* work out counter and clockwise distance from current angle to new angle */
     if (player->angle > iangle)
     {
@@ -945,9 +945,9 @@ static void Died(void)
         clockwise = iangle - player->angle;
         counter = player->angle + ANGLES-iangle;
     }
-    
+
     curangle = player->angle;
-    
+
     /* is turning clockwise closer to new position */
     if(clockwise<counter)
     {
@@ -956,11 +956,11 @@ static void Died(void)
         {
             curangle -= ANGLES;
         }
-        
+
         do
         {
             change = tics*DEATHROTATE;
-            
+
             if(curangle + change > iangle)
             {
                 change = iangle-curangle;
@@ -968,7 +968,7 @@ static void Died(void)
 
             curangle += change;
             player->angle += change;
-            
+
             if (player->angle >= ANGLES)
             {
                 player->angle -= ANGLES;
@@ -976,7 +976,7 @@ static void Died(void)
 
             ThreeDRefresh();
             CalcTics();
-            
+
         } while(curangle != iangle);
     }
     else
@@ -986,11 +986,11 @@ static void Died(void)
         {
             curangle += ANGLES;
         }
-        
+
         do
         {
             change = -(S32)tics*DEATHROTATE;
-            
+
             if (curangle + change < iangle)
             {
                 change = iangle-curangle;
@@ -998,7 +998,7 @@ static void Died(void)
 
             curangle += change;
             player->angle += change;
-            
+
             if (player->angle < 0)
             {
                 player->angle += ANGLES;
@@ -1006,19 +1006,19 @@ static void Died(void)
 
             ThreeDRefresh();
             CalcTics();
-            
+
         } while(curangle != iangle);
     }
-    
+
     FinishPaletteShifts();
 
     /* fade to red */
     FizzleFade(viewscreenx,viewscreeny,viewwidth,viewheight,70);
 
     IN_UserInput(100);
-    
+
     SD_WaitSoundDone();
-    
+
     gamestate.lives--;
 
     if (gamestate.lives > -1)

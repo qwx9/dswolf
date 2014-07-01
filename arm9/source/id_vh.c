@@ -27,16 +27,16 @@ pictabletype *pictable = NULL;
 
 static void VWL_MeasureString(const char *string, U16 *width, U16 *height, fontstruct *font);
 
-/* 
+/*
 ================================================================
 =
 = Function: VWB_DrawPic
 =
 = Description:
 =
-= draws the requested graphics picture chunk to screen (at x,y) 
+= draws the requested graphics picture chunk to screen (at x,y)
 =
-================================================================ 
+================================================================
 */
 void VWB_DrawPic(S32 x, S32 y, S32 chunknum)
 {
@@ -53,7 +53,7 @@ void VWB_DrawPic(S32 x, S32 y, S32 chunknum)
     VL_MemToScreen(grsegs[chunknum],width,height,x,y);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VWB_Hlin
@@ -62,14 +62,14 @@ void VWB_DrawPic(S32 x, S32 y, S32 chunknum)
 =
 = draws horizontal line from x1 to x2
 =
-================================================================ 
+================================================================
 */
 void VWB_Hlin(S32 x1, S32 x2, S32 y, S32 color)
 {
     VW_Hlin(x1,x2,y,color);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VWB_Vlin
@@ -78,14 +78,14 @@ void VWB_Hlin(S32 x1, S32 x2, S32 y, S32 color)
 =
 = draws vertical line from y1 to y2
 =
-================================================================ 
+================================================================
 */
 void VWB_Vlin(S32 y1, S32 y2, S32 x, S32 color)
 {
     VW_Vlin(y1,y2,x,color);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function:  VW_MeasurePropString
@@ -95,7 +95,7 @@ void VWB_Vlin(S32 y1, S32 y2, S32 x, S32 color)
 = adds font used by string then passes info to string measure
 = function
 =
-================================================================ 
+================================================================
 */
 void VW_MeasurePropString(const char *string, U16 *width, U16 *height)
 {
@@ -103,7 +103,7 @@ void VW_MeasurePropString(const char *string, U16 *width, U16 *height)
     VWL_MeasureString(string,width,height,(fontstruct *)grsegs[STARTFONT+fontnumber]);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VWL_MeasureString
@@ -112,12 +112,12 @@ void VW_MeasurePropString(const char *string, U16 *width, U16 *height)
 =
 = measures string length
 =
-================================================================ 
+================================================================
 */
 static void VWL_MeasureString(const char *string, U16 *width, U16 *height, fontstruct *font)
 {
     *height = font->height;
-    
+
     for (*width = 0; *string != '\0'; string++)
     {
         *width += font->width[*((U8 *)string)];     /* proportional width */

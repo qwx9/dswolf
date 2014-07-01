@@ -168,7 +168,7 @@ extern objtype *killerobj;
 
 /* global variables */
 
-CP_itemtype MainMenu[] = 
+CP_itemtype MainMenu[] =
 {
     {1, STR_NG, CP_NewGame},
     {1, STR_SD, CP_Sound},
@@ -187,16 +187,16 @@ U8  ExitMenu = 0;
 
 /* local variables */
 
-enum 
-{ 
-    FIRE, 
-    STRAFE, 
-    RUN, 
-    OPEN 
+enum
+{
+    FIRE,
+    STRAFE,
+    RUN,
+    OPEN
 };
 
 enum
-{ 
+{
     CTL_MOUSEENABLE,
     CTL_MOUSESENS,
     CTL_JOYENABLE,
@@ -211,7 +211,7 @@ enum
     KEYBOARDMOVE
 };  /* FOR INPUT TYPES */
 
-static S32 color_hlite[] = 
+static S32 color_hlite[] =
 {
     DEACTIVE,
     HIGHLIGHT,
@@ -219,7 +219,7 @@ static S32 color_hlite[] =
     0x67
 };
 
-static S32 color_norml[] = 
+static S32 color_norml[] =
 {
     DEACTIVE,
     TEXTCOLOR,
@@ -227,7 +227,7 @@ static S32 color_norml[] =
     0x6b
 };
 
-static CP_itemtype SndMenu[] = 
+static CP_itemtype SndMenu[] =
 {
     {1, STR_NONE, 0},
     {0, STR_PC, 0},
@@ -243,7 +243,7 @@ static CP_itemtype SndMenu[] =
     {1, STR_ALSB, 0}
 };
 
-static CP_itemtype CtlMenu[] = 
+static CP_itemtype CtlMenu[] =
 {
     {0, STR_MOUSEEN, 0},
     {0, STR_SENS, 0},
@@ -251,7 +251,7 @@ static CP_itemtype CtlMenu[] =
     {1, STR_CUSTOM, CustomControls}
 };
 
-static CP_itemtype LSMenu[] = 
+static CP_itemtype LSMenu[] =
 {
     {1, "", 0},
     {1, "", 0},
@@ -278,7 +278,7 @@ static CP_itemtype CusMenu[] =
     {0, "", 0}
 };
 
-static CP_itemtype NewEmenu[] = 
+static CP_itemtype NewEmenu[] =
 {
     {1, "Episode 1\n" "Escape from Wolfenstein", 0},
     {0, "", 0},
@@ -293,7 +293,7 @@ static CP_itemtype NewEmenu[] =
     {3, "Episode 6\n" "Confrontation", 0}
 };
 
-static CP_itemtype NewMenu[] = 
+static CP_itemtype NewMenu[] =
 {
     {1, STR_DADDY, 0},
     {1, STR_HURTME, 0},
@@ -301,7 +301,7 @@ static CP_itemtype NewMenu[] =
     {1, STR_DEATH, 0}
 };
 
-static char endStrings[9][80] = 
+static char endStrings[9][80] =
 {
     ENDSTR1,
     ENDSTR2,
@@ -381,7 +381,7 @@ static void PrintLSEntry (S32 w, S32 color);
 static void TrackWhichGame (S32 w);
 static void DrawLSAction(S32 which);
 
-/* 
+/*
 ================================================================
 =
 = Function: StartCPMusic
@@ -390,7 +390,7 @@ static void DrawLSAction(S32 which);
 =
 = Starts playing requested music chunk
 =
-================================================================ 
+================================================================
 */
 S16 StartCPMusic(S32 song)
 {
@@ -403,14 +403,14 @@ S16 StartCPMusic(S32 song)
         lastoffs = SD_MusicOff();
         CA_UncacheAudioChunk(STARTMUSIC + lastmusic);
     }
-    
+
     lastmusic = song;
 
     SD_StartMusic(STARTMUSIC + song);
     return lastoffs;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: FreeMusic
@@ -419,14 +419,14 @@ S16 StartCPMusic(S32 song)
 =
 = uncache last song played
 =
-================================================================ 
+================================================================
 */
 void FreeMusic(void)
 {
     CA_UncacheAudioChunk(STARTMUSIC + lastmusic);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: IntroScreen
@@ -435,7 +435,7 @@ void FreeMusic(void)
 =
 = HANDLE INTRO SCREEN (SYSTEM CONFIG)
 =
-================================================================ 
+================================================================
 */
 void IntroScreen(void)
 {
@@ -446,19 +446,19 @@ void IntroScreen(void)
     {
         VL_Bar(49, 163 - 8 * i, 6, 5, MAINCOLOR - i);
     }
-    
+
     /* draw ems memory */
     for (i = 0; i < 10; i++)
     {
         VL_Bar(89, 163 - 8 * i, 6, 5, EMSCOLOR - i);
     }
-    
+
     /* draw xms memory */
     for (i = 0; i < 10; i++)
     {
         VL_Bar(129, 163 - 8 * i, 6, 5, XMSCOLOR - i);
     }
-    
+
     /* fill joystick slot */
     VL_Bar(164, 105, 12, 2, FILLCOLOR);
 
@@ -467,7 +467,7 @@ void IntroScreen(void)
     VL_Bar(164, 151, 12, 2, FILLCOLOR);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CacheLump
@@ -476,7 +476,7 @@ void IntroScreen(void)
 =
 = Cache a LUMP of graphics
 =
-================================================================ 
+================================================================
 */
 void CacheLump(S32 lumpstart, S32 lumpend)
 {
@@ -488,7 +488,7 @@ void CacheLump(S32 lumpstart, S32 lumpend)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: UnCacheLump
@@ -497,7 +497,7 @@ void CacheLump(S32 lumpstart, S32 lumpend)
 =
 = UnCache a LUMP of graphics
 =
-================================================================ 
+================================================================
 */
 void UnCacheLump(S32 lumpstart, S32 lumpend)
 {
@@ -512,7 +512,7 @@ void UnCacheLump(S32 lumpstart, S32 lumpend)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawStripes
@@ -521,7 +521,7 @@ void UnCacheLump(S32 lumpstart, S32 lumpend)
 =
 = DRAW SCREEN TITLE STRIPES
 =
-================================================================ 
+================================================================
 */
 void DrawStripes(S32 y)
 {
@@ -529,7 +529,7 @@ void DrawStripes(S32 y)
     VWB_Hlin(0, 319, y + 22, STRIPE);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawWindow
@@ -538,7 +538,7 @@ void DrawStripes(S32 y)
 =
 = Draw a window for a menu
 =
-================================================================ 
+================================================================
 */
 void DrawWindow(S32 x, S32 y, S32 w, S32 h, S32 wcolor)
 {
@@ -546,7 +546,7 @@ void DrawWindow(S32 x, S32 y, S32 w, S32 h, S32 wcolor)
     DrawOutline(x, y, w, h, BORD2COLOR, DEACTIVE);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawOutline
@@ -555,7 +555,7 @@ void DrawWindow(S32 x, S32 y, S32 w, S32 h, S32 wcolor)
 =
 = Draw a small frame (outline) around a given window
 =
-================================================================ 
+================================================================
 */
 static void DrawOutline (S32 x, S32 y, S32 w, S32 h, S32 color1, S32 color2)
 {
@@ -565,7 +565,7 @@ static void DrawOutline (S32 x, S32 y, S32 w, S32 h, S32 color1, S32 color2)
     VWB_Vlin(y, y + h, x + w, color1);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: ClearMScreen
@@ -574,14 +574,14 @@ static void DrawOutline (S32 x, S32 y, S32 w, S32 h, S32 color1, S32 color2)
 =
 = Clears screen buffer to a requested colour
 =
-================================================================ 
+================================================================
 */
 void ClearMScreen(void)
 {
     VL_Bar(0, 0, 320, 200, BORDCOLOR);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawMenu
@@ -591,7 +591,7 @@ void ClearMScreen(void)
 = Draws menu pointed to by items using information pointed to
 = by item_i
 =
-================================================================ 
+================================================================
 */
 void DrawMenu(CP_iteminfo * item_i, CP_itemtype * items)
 {
@@ -612,7 +612,7 @@ void DrawMenu(CP_iteminfo * item_i, CP_itemtype * items)
         SetTextColor(items + i, highlight_text);
 
         PrintY = item_i->y + i * 13;
-        
+
         if ((items + i)->active)
         {
             US_Print((items + i)->string);
@@ -628,7 +628,7 @@ void DrawMenu(CP_iteminfo * item_i, CP_itemtype * items)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SetTextColor
@@ -637,7 +637,7 @@ void DrawMenu(CP_iteminfo * item_i, CP_itemtype * items)
 =
 = SET TEXT COLOR (HIGHLIGHT OR NO)
 =
-================================================================ 
+================================================================
 */
 static void SetTextColor(CP_itemtype * items, U8 hlight)
 {
@@ -651,7 +651,7 @@ static void SetTextColor(CP_itemtype * items, U8 hlight)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: HandleMenu
@@ -660,7 +660,7 @@ static void SetTextColor(CP_itemtype * items, U8 hlight)
 =
 = Handle moving gun around a menu
 =
-================================================================ 
+================================================================
 */
 
 S32 HandleMenu(CP_iteminfo * item_i, CP_itemtype * items, void (*pt2function) (S32 w))
@@ -680,7 +680,7 @@ S32 HandleMenu(CP_iteminfo * item_i, CP_itemtype * items, void (*pt2function) (S
 
     /* Draw default gun picture to screen */
     VWB_DrawPic(x, y, C_CURSOR1PIC);
-    
+
     SetTextColor(items + which, 1);
     if(redrawitem != 0)
     {
@@ -688,14 +688,14 @@ S32 HandleMenu(CP_iteminfo * item_i, CP_itemtype * items, void (*pt2function) (S
         PrintY = item_i->y + which * 13;
         US_Print((items + which)->string);
     }
-    
-    
+
+
     /* CALL CUSTOM ROUTINE IF IT IS NEEDED */
     if(pt2function != NULL)
     {
         pt2function(which);
     }
-    
+
     UpdateScreen(0);
 
     /* set the default variable values before entering the do loop  */
@@ -703,15 +703,15 @@ S32 HandleMenu(CP_iteminfo * item_i, CP_itemtype * items, void (*pt2function) (S
     timer = 8;
     exit = 0;
     lastBlinkTime = GetTimeCount();
-    
+
     do
-    { 
+    {
         /* CHANGE GUN SHAPE IF NEEDED */
         if ((GetTimeCount() - lastBlinkTime) > timer)
         {
             /* reset timer */
             lastBlinkTime = GetTimeCount();
-            
+
             /* change gun pic */
             if (shape == C_CURSOR1PIC)
             {
@@ -723,21 +723,21 @@ S32 HandleMenu(CP_iteminfo * item_i, CP_itemtype * items, void (*pt2function) (S
                 shape = C_CURSOR1PIC;
                 timer = 70;
             }
-            
+
             VWB_DrawPic(x, y, shape);
-            
+
             if(pt2function != NULL)
             {
                 pt2function(which);
             }
-            
+
             UpdateScreen(0);
         }
         else
         {
             Delay_ms(5);
         }
-        
+
         /* clear last button read */
         ci.button0 = 0;
         ci.button1 = 0;
@@ -748,10 +748,10 @@ S32 HandleMenu(CP_iteminfo * item_i, CP_itemtype * items, void (*pt2function) (S
         ci.strafeleft = 0;
         ci.pause = 0;
         ci.esc = 0;
-        
+
         /* GET USER INPUT */
         ReadAnyControl(&ci);
-        
+
         switch (ci.dir)
         {
             /* MOVE UP */
@@ -781,16 +781,16 @@ S32 HandleMenu(CP_iteminfo * item_i, CP_itemtype * items, void (*pt2function) (S
                 while((items + which)->active == 0);
 
                 DrawGun(item_i, items, x, &y, which, basey, pt2function);
-                
+
                 /* WAIT FOR BUTTON-UP OR DELAY NEXT MOVE */
                 TicDelay(20);
             break;
-            
+
             /* MOVE DOWN */
             case dir_South:
 
                 EraseGun(item_i, items, x, y, which);
-                
+
                 /* ANIMATE HALF-STEP */
                 if ((which != item_i->amount - 1) && ((items + which + 1)->active != 0))
                 {
@@ -816,13 +816,13 @@ S32 HandleMenu(CP_iteminfo * item_i, CP_itemtype * items, void (*pt2function) (S
                 /* WAIT FOR BUTTON-UP OR DELAY NEXT MOVE */
                 TicDelay (20);
             break;
-            
+
             default:
                 /* Do nothing */
             break;
         }
-        
-        
+
+
         if(ci.button0 == 1)
         {
             exit = 1;
@@ -832,10 +832,10 @@ S32 HandleMenu(CP_iteminfo * item_i, CP_itemtype * items, void (*pt2function) (S
         {
             exit = 2;
         }
-        
-        
+
+
     }while(exit == 0);
-    
+
     /* if user changed menu selection position erase gun */
     /* and set font colour back to background colour */
     if (lastitem != which)
@@ -850,18 +850,18 @@ S32 HandleMenu(CP_iteminfo * item_i, CP_itemtype * items, void (*pt2function) (S
     {
         redrawitem = 0;
     }
-    
+
     if(pt2function != NULL)
     {
         pt2function(which);
     }
-    
+
     UpdateScreen(0);
 
     item_i->curpos = which;
 
     lastitem = which;
-    
+
     switch (exit)
     {
         case 1:
@@ -879,15 +879,15 @@ S32 HandleMenu(CP_iteminfo * item_i, CP_itemtype * items, void (*pt2function) (S
             SD_PlaySound(ESCPRESSEDSND);
             return -1;
         break;
-        
+
         default:
             return 0;
         break;
     }
-    
+
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: ReadAnyControl
@@ -896,7 +896,7 @@ S32 HandleMenu(CP_iteminfo * item_i, CP_itemtype * items, void (*pt2function) (S
 =
 = READ NDS DPAD AND BUTTON INPUTS
 =
-================================================================ 
+================================================================
 */
 static void ReadAnyControl(ControlInfo * ci)
 {
@@ -904,7 +904,7 @@ static void ReadAnyControl(ControlInfo * ci)
     IN_ReadControl(ci);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SetFontNUm
@@ -913,7 +913,7 @@ static void ReadAnyControl(ControlInfo * ci)
 =
 = set Font number to use during printing of string
 =
-================================================================ 
+================================================================
 */
 void SetFontNum(U8 FontNum)
 {
@@ -923,7 +923,7 @@ void SetFontNum(U8 FontNum)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: GetFontNum
@@ -932,14 +932,14 @@ void SetFontNum(U8 FontNum)
 =
 = return current font number used for printing strings
 =
-================================================================ 
+================================================================
 */
 U8 GetFontNum(void)
 {
     return fontnumber;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SetFontColor
@@ -948,7 +948,7 @@ U8 GetFontNum(void)
 =
 = set Font colour to use during printing of string
 =
-================================================================ 
+================================================================
 */
 void SetFontColor(U8 f, U8 b)
 {
@@ -956,7 +956,7 @@ void SetFontColor(U8 f, U8 b)
    backcolor = b;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: GetFontColor
@@ -965,14 +965,14 @@ void SetFontColor(U8 f, U8 b)
 =
 = return current font colour used for printing strings
 =
-================================================================ 
+================================================================
 */
 U8 GetFontColor(void)
 {
    return fontcolor;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: GetBackColour
@@ -981,14 +981,14 @@ U8 GetFontColor(void)
 =
 = return current background colour
 =
-================================================================ 
+================================================================
 */
 U8 GetBackColour(void)
 {
     return backcolor;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: EraseGun
@@ -997,7 +997,7 @@ U8 GetBackColour(void)
 =
 = ERASE GUN & DE-HIGHLIGHT STRING
 =
-================================================================ 
+================================================================
 */
 static void EraseGun(CP_iteminfo * item_i, CP_itemtype * items, S32 x, S32 y, S32 which)
 {
@@ -1010,7 +1010,7 @@ static void EraseGun(CP_iteminfo * item_i, CP_itemtype * items, S32 x, S32 y, S3
     UpdateScreen(0);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawHalfStep
@@ -1019,7 +1019,7 @@ static void EraseGun(CP_iteminfo * item_i, CP_itemtype * items, S32 x, S32 y, S3
 =
 = DRAW HALF STEP OF GUN TO NEXT POSITION
 =
-================================================================ 
+================================================================
 */
 static void DrawHalfStep(S32 x, S32 y)
 {
@@ -1029,7 +1029,7 @@ static void DrawHalfStep(S32 x, S32 y)
     Delay_ms(8 * 100 / 7);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawGun
@@ -1038,7 +1038,7 @@ static void DrawHalfStep(S32 x, S32 y)
 =
 = DRAW GUN AT NEW POSITION
 =
-================================================================ 
+================================================================
 */
 static void DrawGun(CP_iteminfo * item_i, CP_itemtype * items, S32 x, S16 *y, S32 which, S32 basey,void (*pt2function) (S32 w))
 {
@@ -1056,12 +1056,12 @@ static void DrawGun(CP_iteminfo * item_i, CP_itemtype * items, S32 x, S16 *y, S3
     {
         pt2function(which);
     }
-    
+
     UpdateScreen(0);
     SD_PlaySound(MOVEGUN2SND);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: TicDelay
@@ -1070,14 +1070,14 @@ static void DrawGun(CP_iteminfo * item_i, CP_itemtype * items, S32 x, S16 *y, S3
 =
 = DELAY FOR AN AMOUNT OF TICS OR UNTIL CONTROLS ARE INACTIVE
 =
-================================================================ 
+================================================================
 */
 void TicDelay(S32 count)
 {
     ControlInfo ci;
 
     S32 startTime = GetTimeCount();
-    
+
     do
     {
         /* clear last button read */
@@ -1090,14 +1090,14 @@ void TicDelay(S32 count)
         ci.strafeleft = 0;
         ci.pause = 0;
         ci.esc = 0;
-        
+
         Delay_ms(10);
         ReadAnyControl(&ci);
     }
     while (((GetTimeCount() - startTime) < count) && (ci.dir != dir_None));
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CheckForEpisodes
@@ -1106,12 +1106,12 @@ void TicDelay(S32 count)
 =
 = checks for shareware or full version of game
 =
-================================================================ 
+================================================================
 */
 void CheckForEpisodes(void)
 {
     struct stat statbuf;
-    
+
     #if defined(SHAREWARE)
     if(stat("/GAMES/WOLF/VSWAP.WL1", &statbuf) >= 0)
     {
@@ -1128,29 +1128,29 @@ void CheckForEpisodes(void)
         NewEmenu[8].active = 1;
         NewEmenu[10].active = 1;
         EpisodeSelect[1] = 1;
-        EpisodeSelect[2] = 1; 
-        EpisodeSelect[3] = 1; 
-        EpisodeSelect[4] = 1; 
+        EpisodeSelect[2] = 1;
+        EpisodeSelect[3] = 1;
+        EpisodeSelect[4] = 1;
         EpisodeSelect[5] = 1;
         numEpisodesMissing = 0;
     }
     #endif
-    
+
     if(numEpisodesMissing == -1)
     {
         printf("cant open valid /GAMES/WOLF/VSWAP file \n");
         while(1){}; /* hang system */
     }
-    
+
     strcpy(graphext, extension);
     strcpy(audioext, extension);
-    
+
     strcat(configname, extension);
     strcat(SaveName, extension);
     strcat(demoname, extension);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: US_ControlPanel
@@ -1159,12 +1159,12 @@ void CheckForEpisodes(void)
 =
 = Wolfenstein Control Panel!  Ta Da!
 =
-================================================================ 
+================================================================
 */
 void US_ControlPanel(ScanCode scancode)
 {
     S32 which;
-    
+
     /* store in game music position */
     if(ingame == 1)
     {
@@ -1174,23 +1174,23 @@ void US_ControlPanel(ScanCode scancode)
     {
         StartCPMusic(MENUSONG);
     }
-    
+
     SetupControlPanel();
-    
+
     DrawMainMenu();
     MenuFadeIn();
-    
+
     ExitMenu = 0;
-    
+
     /* MAIN MENU LOOP */
     do
     {
-    
+
         which = HandleMenu(&MainItems, &MainMenu[0], NULL);
-        
+
         switch (which)
         {
-        
+
             case viewscores:
                 if (MainMenu[viewscores].pt2function == NULL)
                 {
@@ -1205,7 +1205,7 @@ void US_ControlPanel(ScanCode scancode)
                     MenuFadeIn();
                 }
             break;
-        
+
             case backtodemo:
                 ExitMenu = 1;
                 if(ingame == 0)
@@ -1214,12 +1214,12 @@ void US_ControlPanel(ScanCode scancode)
                 }
                 VL_FadeOut(0, 255, 0, 0, 0, 10);
             break;
-            
+
             case -1:
             case quit:
                 CP_Quit(0);
             break;
-            
+
             default:
                 if(ExitMenu == 0)
                 {
@@ -1228,23 +1228,23 @@ void US_ControlPanel(ScanCode scancode)
                 }
             break;
         }
-    
+
     /* "EXIT OPTIONS" OR "NEW GAME" EXITS */
     }while(ExitMenu == 0);
-    
+
     /* DEALLOCATE EVERYTHING */
     CleanupControlPanel();
-    
+
     /* CHANGE MAINMENU ITEM */
     if((startgame == 1) || (loadedgame == 1))
     {
         EnableEndGameMenuItem();
     }
-        
+
     /* RETURN/START GAME EXECUTION */
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: EnableEndGameMenuItem
@@ -1253,7 +1253,7 @@ void US_ControlPanel(ScanCode scancode)
 =
 = Change viewscore to read end game within main menu
 =
-================================================================ 
+================================================================
 */
 static void EnableEndGameMenuItem(void)
 {
@@ -1262,7 +1262,7 @@ static void EnableEndGameMenuItem(void)
     strcpy (MainMenu[viewscores].string, STR_EG);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CP_EndGame
@@ -1271,16 +1271,16 @@ static void EnableEndGameMenuItem(void)
 =
 = END THE CURRENT GAME
 =
-================================================================ 
+================================================================
 */
 static S32 CP_EndGame(void)
 {
     S32 res;
-    
+
     res = Confirm(ENDGAMESTR);
-    
+
     DrawMainMenu();
-    
+
     if(res == 0)
     {
         return 0;
@@ -1297,7 +1297,7 @@ static S32 CP_EndGame(void)
     return 1;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CleanupControlPanel
@@ -1306,7 +1306,7 @@ static S32 CP_EndGame(void)
 =
 = Clean up all the Control Panel stuff
 =
-================================================================ 
+================================================================
 */
 static void CleanupControlPanel(void)
 {
@@ -1314,7 +1314,7 @@ static void CleanupControlPanel(void)
     SetFontNum(0);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SetupControlPanel
@@ -1323,18 +1323,18 @@ static void CleanupControlPanel(void)
 =
 = Setup Control Panel stuff - graphics, etc.
 =
-================================================================ 
+================================================================
 */
 static void SetupControlPanel(void)
 {
     /* CACHE GRAPHICS & SOUNDS */
     CA_CacheGrChunk(STARTFONT + 1);
-    
+
     CacheLump(CONTROLS_LUMP_START, CONTROLS_LUMP_END);
-    
+
     SetFontColor(TEXTCOLOR, BKGDCOLOR);
     SetFontNum(1);
-    
+
     WindowH = 200;
 
     if(ingame == 0)
@@ -1347,7 +1347,7 @@ static void SetupControlPanel(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawMainMenu
@@ -1356,7 +1356,7 @@ static void SetupControlPanel(void)
 =
 = DRAW MAIN MENU SCREEN
 =
-================================================================ 
+================================================================
 */
 static void DrawMainMenu(void)
 {
@@ -1365,9 +1365,9 @@ static void DrawMainMenu(void)
     VWB_DrawPic(112, 184, C_MOUSELBACKPIC);
     DrawStripes(10);
     VWB_DrawPic(84, 0, C_OPTIONSPIC);
-    
+
     DrawWindow(MENU_X - 8, MENU_Y - 3, MENU_W, MENU_H, BKGDCOLOR);
-    
+
     /* CHANGE "GAME" AND "DEMO" */
     if(ingame == 1)
     {
@@ -1379,13 +1379,13 @@ static void DrawMainMenu(void)
         strcpy(&MainMenu[backtodemo].string[8], STR_DEMO);
         MainMenu[backtodemo].active = 1;
     }
-    
+
     DrawMenu(&MainItems, &MainMenu[0]);
-    
+
     UpdateScreen(0);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CP_ViewScores
@@ -1394,29 +1394,29 @@ static void DrawMainMenu(void)
 =
 = VIEW THE HIGH SCORES
 =
-================================================================ 
+================================================================
 */
 S32 CP_ViewScores(S32 temp)
 {
     SetFontNum(0);
 
     StartCPMusic(ROSTER_MUS);
-    
+
     DrawHighScores();
     UpdateScreen(0);
     MenuFadeIn();
-    
+
     SetFontNum(1);
-    
+
     IN_Ack();
-    
+
     StartCPMusic(MENUSONG);
     MenuFadeOut();
-    
+
     return 0;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CP_Sound
@@ -1425,19 +1425,19 @@ S32 CP_ViewScores(S32 temp)
 =
 = HANDLE SOUND MENU
 =
-================================================================ 
+================================================================
 */
 S32 CP_Sound(S32 temp)
 {
     S32 which;
-    
+
     DrawSoundMenu();
     MenuFadeIn();
-    
+
     do
     {
         which = HandleMenu (&SndItems, &SndMenu[0], NULL);
-        
+
         /* HANDLE MENU CHOICES */
         switch (which)
         {
@@ -1451,7 +1451,7 @@ S32 CP_Sound(S32 temp)
                     DrawSoundMenu();
                 }
             break;
-            
+
             case 2:
                 if(SD_GetSoundMode() != sdm_AdLib)
                 {
@@ -1462,7 +1462,7 @@ S32 CP_Sound(S32 temp)
                     SD_PlaySound(SHOOTSND);
                 }
             break;
-            
+
             /* DIGITIZED SOUND */
             case 5:
                 if(SD_GetDigiDevice() != sds_Off)
@@ -1471,7 +1471,7 @@ S32 CP_Sound(S32 temp)
                     DrawSoundMenu();
                 }
             break;
-            
+
             case 7:
                 if(SD_GetDigiDevice() != sds_SoundBlaster)
                 {
@@ -1480,7 +1480,7 @@ S32 CP_Sound(S32 temp)
                     SD_PlaySound(SHOOTSND);
                 }
             break;
-            
+
             /* MUSIC */
             case 10:
                 if (SD_GetMusicMode() != smm_Off)
@@ -1490,7 +1490,7 @@ S32 CP_Sound(S32 temp)
                     SD_PlaySound(SHOOTSND);
                 }
             break;
-            
+
             case 11:
                 if (SD_GetMusicMode() != smm_AdLib)
                 {
@@ -1501,21 +1501,21 @@ S32 CP_Sound(S32 temp)
                     StartCPMusic(MENUSONG);
                 }
             break;
-            
+
             default:
                 /* do nothing */
             break;
-            
+
         }
-        
+
     }while(which >= 0);
-    
+
     MenuFadeOut();
-    
+
     return 0;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawSoundMenu
@@ -1524,13 +1524,13 @@ S32 CP_Sound(S32 temp)
 =
 = DRAW THE SOUND MENU
 =
-================================================================ 
+================================================================
 */
 static void DrawSoundMenu(void)
 {
-    S32 i; 
+    S32 i;
     S32 on;
-    
+
     /* DRAW SOUND MENU */
     ClearMScreen();
     VWB_DrawPic(112, 184, C_MOUSELBACKPIC);
@@ -1538,13 +1538,13 @@ static void DrawSoundMenu(void)
     DrawWindow(SM_X - 8, SM_Y1 - 3, SM_W, SM_H1, BKGDCOLOR);
     DrawWindow(SM_X - 8, SM_Y2 - 3, SM_W, SM_H2, BKGDCOLOR);
     DrawWindow(SM_X - 8, SM_Y3 - 3, SM_W, SM_H3, BKGDCOLOR);
-    
+
     DrawMenu(&SndItems, &SndMenu[0]);
-    
+
     VWB_DrawPic (100, SM_Y1 - 20, C_FXTITLEPIC);
     VWB_DrawPic (100, SM_Y2 - 20, C_DIGITITLEPIC);
     VWB_DrawPic (100, SM_Y3 - 20, C_MUSICTITLEPIC);
-    
+
     for (i = 0; i < SndItems.amount; i++)
     {
         if(SndMenu[i].string[0] != '\0')
@@ -1560,14 +1560,14 @@ static void DrawSoundMenu(void)
                         on = 1;
                     }
                 break;
-                
+
                 case 2:
                     if(SD_GetSoundMode() == sdm_AdLib)
                     {
                         on = 1;
                     }
                 break;
-                
+
                 /* DIGITIZED SOUND */
                 case 5:
                     if(SD_GetDigiDevice() == sds_Off)
@@ -1575,14 +1575,14 @@ static void DrawSoundMenu(void)
                         on = 1;
                     }
                 break;
-                
+
                 case 7:
                     if(SD_GetDigiDevice() == sds_SoundBlaster)
                     {
                         on = 1;
                     }
                 break;
-                
+
                 /* MUSIC */
                 case 10:
                     if(SD_GetMusicMode() == smm_Off)
@@ -1590,19 +1590,19 @@ static void DrawSoundMenu(void)
                         on = 1;
                     }
                 break;
-                
+
                 case 11:
                     if(SD_GetMusicMode() == smm_AdLib)
                     {
                         on = 1;
                     }
                 break;
-                
+
                 default:
                     /* do nothing */
                 break;
             }
-            
+
             if(on == 1)
             {
                 VWB_DrawPic(SM_X + 24, SM_Y1 + i * 13 + 2, C_SELECTEDPIC);
@@ -1613,12 +1613,12 @@ static void DrawSoundMenu(void)
             }
         }
     }
-    
+
     DrawMenuGun(&SndItems);
     UpdateScreen(0);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawMenuGun
@@ -1627,7 +1627,7 @@ static void DrawSoundMenu(void)
 =
 = DRAW GUN CURSOR AT CORRECT POSITION IN MENU
 =
-================================================================ 
+================================================================
 */
 static void DrawMenuGun (CP_iteminfo * iteminfo)
 {
@@ -1639,7 +1639,7 @@ static void DrawMenuGun (CP_iteminfo * iteminfo)
     VWB_DrawPic(x, y, C_CURSOR1PIC);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CP_Quit
@@ -1648,7 +1648,7 @@ static void DrawMenuGun (CP_iteminfo * iteminfo)
 =
 = QUIT THIS INFERNAL GAME!
 =
-================================================================ 
+================================================================
 */
 static S32 CP_Quit(S32 temp)
 {
@@ -1660,12 +1660,12 @@ static S32 CP_Quit(S32 temp)
         MenuFadeOut();
         while(1){}; /* hang system */
     }
-    
+
     DrawMainMenu();
     return 0;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: Confirm
@@ -1674,25 +1674,25 @@ static S32 CP_Quit(S32 temp)
 =
 = DRAW DIALOG AND CONFIRM YES OR NO TO QUESTION
 =
-================================================================ 
+================================================================
 */
 static S32 Confirm(const char *string)
 {
-    S32 xit = 0; 
-    S32 x; 
-    S32 y; 
-    U8 tick = 0; 
+    S32 xit = 0;
+    S32 x;
+    S32 y;
+    U8 tick = 0;
     U32 lastBlinkTime;
     S32 whichsnd[2] = { ESCPRESSEDSND, SHOOTSND };
     ControlInfo ci;
-    
+
     Message(string);
-    
+
     /* BLINK CURSOR */
     x = PrintX;
     y = PrintY;
     lastBlinkTime = GetTimeCount();
-    
+
     do
     {
          /* clear last button read */
@@ -1705,7 +1705,7 @@ static S32 Confirm(const char *string)
         ci.strafeleft = 0;
         ci.pause = 0;
         ci.esc = 0;
-    
+
         ReadAnyControl(&ci);
 
         if((GetTimeCount() - lastBlinkTime) >= 10)
@@ -1715,13 +1715,13 @@ static S32 Confirm(const char *string)
                 case 0:
                     VL_Bar(x, y, 8, 13, TEXTCOLOR);
                 break;
-                
+
                 case 1:
                     PrintX = x;
                     PrintY = y;
                     US_Print("_");
                 break;
-                
+
                 default:
                     /* do nothing */
                 break;
@@ -1734,9 +1734,9 @@ static S32 Confirm(const char *string)
         {
             Delay_ms(5);
         }
-        
+
     }while((ci.button0 == 0) && (ci.button1 == 0));
-    
+
     if(ci.button0 == 1)
     {
         xit = 1;
@@ -1747,7 +1747,7 @@ static S32 Confirm(const char *string)
     return xit;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: Message
@@ -1756,7 +1756,7 @@ static S32 Confirm(const char *string)
 =
 = PRINT A MESSAGE IN A WINDOW
 =
-================================================================ 
+================================================================
 */
 void Message(const char *string)
 {
@@ -1771,7 +1771,7 @@ void Message(const char *string)
     fontnumber = 1;
     font = (fontstruct *) grsegs[STARTFONT + fontnumber];
     h = font->height;
-    
+
     for(i = 0; i < len; i++)
     {
         if (string[i] == '\n')
@@ -1793,7 +1793,7 @@ void Message(const char *string)
     {
         mw = w + 10;
     }
-    
+
     PrintY = (WindowH / 2) - h / 2;
     PrintX = WindowX = 160 - mw / 2;
 
@@ -1804,7 +1804,7 @@ void Message(const char *string)
     UpdateScreen(0);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CP_ChangeView
@@ -1813,7 +1813,7 @@ void Message(const char *string)
 =
 = CHANGE SCREEN VIEWING SIZE
 =
-================================================================ 
+================================================================
 */
 S32 CP_ChangeView(S32 temp)
 {
@@ -1828,7 +1828,7 @@ S32 CP_ChangeView(S32 temp)
     newview = oldview = viewsize;
     DrawChangeView(oldview);
     MenuFadeIn();
-    
+
     do
     {
         Delay_ms(10);
@@ -1842,9 +1842,9 @@ S32 CP_ChangeView(S32 temp)
         ci.strafeleft = 0;
         ci.pause = 0;
         ci.esc = 0;
-        
+
         ReadAnyControl (&ci);
-        
+
         switch (ci.dir)
         {
             case dir_South:
@@ -1854,7 +1854,7 @@ S32 CP_ChangeView(S32 temp)
                 {
                     newview = 4;
                 }
-                
+
                 if(newview >= 19)
                 {
                     DrawChangeView(newview);
@@ -1863,7 +1863,7 @@ S32 CP_ChangeView(S32 temp)
                 {
                     ShowViewSize(newview);
                 }
-                
+
                 UpdateScreen(0);
                 SD_PlaySound (HITWALLSND);
                 TicDelay(10);
@@ -1885,7 +1885,7 @@ S32 CP_ChangeView(S32 temp)
                 SD_PlaySound (HITWALLSND);
                 TicDelay(10);
             break;
-                
+
             default:
                 /* do nothing */
             break;
@@ -1903,7 +1903,7 @@ S32 CP_ChangeView(S32 temp)
         }
     }
     while(!exit);
-    
+
     if(oldview != newview)
     {
         SD_PlaySound(SHOOTSND);
@@ -1916,7 +1916,7 @@ S32 CP_ChangeView(S32 temp)
     return 0;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawChangeView
@@ -1925,7 +1925,7 @@ S32 CP_ChangeView(S32 temp)
 =
 = DRAW THE CHANGEVIEW SCREEN
 =
-================================================================ 
+================================================================
 */
 static void DrawChangeView(S32 view)
 {
@@ -1933,7 +1933,7 @@ static void DrawChangeView(S32 view)
     {
         VL_Bar(0, SCREENHEIGHT - 40, 320, 40, VIEWCOLOR);
     }
-        
+
     ShowViewSize(view);
 
     PrintY = SCREENHEIGHT - 39;
@@ -1947,7 +1947,7 @@ static void DrawChangeView(S32 view)
     UpdateScreen(0);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CP_ReadThis
@@ -1956,7 +1956,7 @@ static void DrawChangeView(S32 view)
 =
 = READ THIS!
 =
-================================================================ 
+================================================================
 */
 S32 CP_ReadThis (S32 temp)
 {
@@ -1966,7 +1966,7 @@ S32 CP_ReadThis (S32 temp)
     return 1;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CP_Control
@@ -1975,15 +1975,15 @@ S32 CP_ReadThis (S32 temp)
 =
 = DEFINE CONTROLS
 =
-================================================================ 
+================================================================
 */
 S32 CP_Control(S32 temp)
 {
     S32 which;
-    
+
     DrawCtlScreen();
     MenuFadeIn();
-    
+
     do
     {
         which = HandleMenu (&CtlItems, CtlMenu, NULL);
@@ -1993,7 +1993,7 @@ S32 CP_Control(S32 temp)
                 DrawCtlScreen();
                 MenuFadeIn();
             break;
-            
+
             default:
                 /* do nothing */
             break;
@@ -2002,11 +2002,11 @@ S32 CP_Control(S32 temp)
     while (which >= 0);
 
     MenuFadeOut ();
-    
+
     return 0;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawCtlScreen
@@ -2015,35 +2015,35 @@ S32 CP_Control(S32 temp)
 =
 = DRAW CONTROL MENU SCREEN
 =
-================================================================ 
+================================================================
 */
 static void DrawCtlScreen(void)
 {
     S32 i;
     S32 x;
     S32 y;
-    
+
     ClearMScreen();
     DrawStripes(10);
     VWB_DrawPic(80, 0, C_CONTROLPIC);
     VWB_DrawPic(112, 184, C_MOUSELBACKPIC);
     DrawWindow(CTL_X - 8, CTL_Y - 5, CTL_W, CTL_H, BKGDCOLOR);
-    
+
     WindowX = 0;
     WindowW = 320;
     SetFontColor(TEXTCOLOR, BKGDCOLOR);
-    
+
     DrawMenu (&CtlItems, CtlMenu);
-    
+
     x = CTL_X + CtlItems.indent - 24;
     y = CTL_Y + 3;
     /* No mouse*/
     VWB_DrawPic (x, y, C_NOTSELECTEDPIC);
-    
+
     /* joystick enabled */
     y = CTL_Y + 29;
     VWB_DrawPic(x, y, C_SELECTEDPIC);
-    
+
     /* PICK FIRST AVAILABLE SPOT */
     if((CtlItems.curpos < 0) || (!CtlMenu[CtlItems.curpos].active))
     {
@@ -2061,7 +2061,7 @@ static void DrawCtlScreen(void)
     UpdateScreen(0);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CustomControls
@@ -2070,30 +2070,30 @@ static void DrawCtlScreen(void)
 =
 = HANDLE CUSTOMIZE CONTROLS MENu OPTIONS
 =
-================================================================ 
+================================================================
 */
 S32 CustomControls (S32 temp)
 {
     S32 which;
-    
+
     DrawCustomScreen();
-    
+
     do
     {
         which = HandleMenu(&CusItems, &CusMenu[0], FixupCustom);
-        
+
         switch (which)
         {
             case 3:
                 DefineJoyBtns();
                 DrawCustJoy(0);
             break;
-        
+
             default:
                 /* do nothing */
             break;
         }
-        
+
     }
     while(which >= 0);
 
@@ -2102,7 +2102,7 @@ S32 CustomControls (S32 temp)
     return 0;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawCustomScreen
@@ -2111,7 +2111,7 @@ S32 CustomControls (S32 temp)
 =
 = DRAW CUSTOMIZE SCREEN
 =
-================================================================ 
+================================================================
 */
 static void DrawCustomScreen(void)
 {
@@ -2123,17 +2123,17 @@ static void DrawCustomScreen(void)
     VWB_DrawPic(112, 184, C_MOUSELBACKPIC);
     DrawStripes(10);
     VWB_DrawPic(80, 0, C_CUSTOMIZEPIC);
-    
+
     /* MOUSE */
     SetFontColor(READCOLOR, BKGDCOLOR);
     WindowX = 0;
     WindowW = 320;
-    
+
     PrintY = CST_Y;
     US_CPrint ("Mouse\n");
-    
+
     SetFontColor(TEXTCOLOR, BKGDCOLOR);
-    
+
     PrintX = CST_START;
     US_Print (STR_CRUN);
     PrintX = CST_START + CST_SPC * 1;
@@ -2142,17 +2142,17 @@ static void DrawCustomScreen(void)
     US_Print (STR_CFIRE);
     PrintX = CST_START + CST_SPC * 3;
     US_Print(STR_CSTRAFE "\n");
-    
+
     DrawWindow(5, PrintY - 1, 310, 13, BKGDCOLOR);
     DrawCustMouse(0);
     US_Print ("\n");
-    
+
     /* JOYSTICK/PAD */
     SetFontColor(READCOLOR, BKGDCOLOR);
     US_CPrint ("Joystick/Gravis GamePad\n");
-    
+
     SetFontColor(TEXTCOLOR, BKGDCOLOR);
-    
+
     PrintX = CST_START;
     US_Print (STR_CRUN);
     PrintX = CST_START + CST_SPC * 1;
@@ -2161,11 +2161,11 @@ static void DrawCustomScreen(void)
     US_Print (STR_CFIRE);
     PrintX = CST_START + CST_SPC * 3;
     US_Print (STR_CSTRAFE "\n");
-    
+
     DrawWindow(5, PrintY - 1, 310, 13, BKGDCOLOR);
     DrawCustJoy(0);
     US_Print ("\n");
-    
+
     /* PICK STARTING POINT IN MENU */
     if (CusItems.curpos < 0)
     {
@@ -2178,12 +2178,12 @@ static void DrawCustomScreen(void)
             }
         }
     }
-    
+
     UpdateScreen(0);
     MenuFadeIn();
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawCustJoy
@@ -2192,7 +2192,7 @@ static void DrawCustomScreen(void)
 =
 = HANDLE DRAWING OF CUSTOMIZED JOYPAD BUTTONS
 =
-================================================================ 
+================================================================
 */
 static void DrawCustJoy(S32 hilight)
 {
@@ -2200,12 +2200,12 @@ static void DrawCustJoy(S32 hilight)
     S32 color;
 
     color = TEXTCOLOR;
-    
+
     if(hilight == 1)
     {
         color = HIGHLIGHT;
     }
-    
+
     SetFontColor(color, BKGDCOLOR);
 
     PrintY = CST_Y + 13 * 5;
@@ -2215,7 +2215,7 @@ static void DrawCustJoy(S32 hilight)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: PrintCustJoy
@@ -2224,7 +2224,7 @@ static void DrawCustJoy(S32 hilight)
 =
 = DRAW CUSTOMIZE JOYPAD BUTTONS ON SCREEN
 =
-================================================================ 
+================================================================
 */
 static void PrintCustJoy(S32 i)
 {
@@ -2241,7 +2241,7 @@ static void PrintCustJoy(S32 i)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawCustMouse
@@ -2250,7 +2250,7 @@ static void PrintCustJoy(S32 i)
 =
 = HANDLE DRAWING OF CUSTOMIZED MOUSE BUTTON
 =
-================================================================ 
+================================================================
 */
 static void DrawCustMouse (S32 hilight)
 {
@@ -2258,16 +2258,16 @@ static void DrawCustMouse (S32 hilight)
 
     SetFontColor(DEACTIVE, BKGDCOLOR);
     CusMenu[0].active = 0;
-    
+
     PrintY = CST_Y + 13 * 2;
-    
+
     for (i = 0; i < 4; i++)
     {
         PrintCustMouse(i);
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: PrintCustMouse
@@ -2276,7 +2276,7 @@ static void DrawCustMouse (S32 hilight)
 =
 = DRAW CUSTOMIZE MOUSE BUTTONS ON SCREEN
 =
-================================================================ 
+================================================================
 */
 static void PrintCustMouse(S32 i)
 {
@@ -2293,7 +2293,7 @@ static void PrintCustMouse(S32 i)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: FixupCustom
@@ -2304,34 +2304,34 @@ static void PrintCustMouse(S32 i)
 = which dont look right in custom menu so this routine corrects
 = this)
 =
-================================================================ 
+================================================================
 */
 void FixupCustom(S32 w)
 {
     static S32 lastwhich = -1;
     S32 y = CST_Y + 26 + w * 13;
-    
+
     VWB_Hlin (7, 32, y - 1, DEACTIVE);
     VWB_Hlin (7, 32, y + 12, BORD2COLOR);
-    
+
     VWB_Hlin (7, 32, y - 2, BORDCOLOR);
     VWB_Hlin (7, 32, y + 13, BORDCOLOR);
-    
+
     switch(w)
     {
         case 0:
             DrawCustMouse (1);
         break;
-        
+
         case 3:
             DrawCustJoy (1);
         break;
-        
+
         default:
             /* no nothing */
         break;
     }
-    
+
     if(lastwhich >= 0)
     {
         y = CST_Y + 26 + lastwhich * 13;
@@ -2340,7 +2340,7 @@ void FixupCustom(S32 w)
 
         VWB_Hlin (7, 32, y - 2, BORDCOLOR);
         VWB_Hlin (7, 32, y + 13, BORDCOLOR);
-        
+
         if(lastwhich != w)
         {
             switch (lastwhich)
@@ -2348,23 +2348,23 @@ void FixupCustom(S32 w)
                 case 0:
                     DrawCustMouse (0);
                 break;
-                
+
                 case 3:
                     DrawCustJoy (0);
                 break;
-                
+
                 default:
                     /* do nothing */
                 break;
-               
+
             }
         }
     }
-    
+
     lastwhich = w;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DefineJoyBtns
@@ -2373,7 +2373,7 @@ void FixupCustom(S32 w)
 =
 = DEFINE THE JOYSTICK BUTTONS
 =
-================================================================ 
+================================================================
 */
 static void DefineJoyBtns(void)
 {
@@ -2381,7 +2381,7 @@ static void DefineJoyBtns(void)
     EnterCtrlData (5, &joyallowed, DrawCustJoy, PrintCustJoy, JOYSTICK);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: EnterCtrlData
@@ -2390,7 +2390,7 @@ static void DefineJoyBtns(void)
 =
 = ENTER CONTROL DATA FOR ANY TYPE OF CONTROL
 =
-================================================================ 
+================================================================
 */
 static void EnterCtrlData (S32 index, CustomCtrls * cust, void (*DrawRtn) (S32), void (*PrintRtn) (S32), S32 type)
 {
@@ -2405,12 +2405,12 @@ static void EnterCtrlData (S32 index, CustomCtrls * cust, void (*DrawRtn) (S32),
     ControlInfo ci;
     S32 result;
     S32 z;
-    
+
     SD_PlaySound(SHOOTSND);
     PrintY = CST_Y + 13 * index;
     exit = 0;
     redraw = 1;
-    
+
     /* FIND FIRST SPOT IN ALLOWED ARRAY */
     for (j = 0; j < 4; j++)
     {
@@ -2420,7 +2420,7 @@ static void EnterCtrlData (S32 index, CustomCtrls * cust, void (*DrawRtn) (S32),
             break;
         }
     }
-    
+
     do
     {
         if(redraw == 1)
@@ -2438,7 +2438,7 @@ static void EnterCtrlData (S32 index, CustomCtrls * cust, void (*DrawRtn) (S32),
             UpdateScreen(0);
             redraw = 0;
         }
-        
+
         Delay_ms(10);
         /* clear last button read */
         ci.button0 = 0;
@@ -2451,7 +2451,7 @@ static void EnterCtrlData (S32 index, CustomCtrls * cust, void (*DrawRtn) (S32),
         ci.pause = 0;
         ci.esc = 0;
         ReadAnyControl(&ci);
-        
+
         /* CHANGE BUTTON VALUE? */
         if((ci.button0 == 1) || (ci.button1 == 1) || (ci.button2 == 1) || (ci.button3 == 1))
         {
@@ -2459,11 +2459,11 @@ static void EnterCtrlData (S32 index, CustomCtrls * cust, void (*DrawRtn) (S32),
             tick = 0;
             picked = 0;
             SetFontColor(0, TEXTCOLOR);
-            
+
             while(1)
             {
                 result = 0;
-                
+
                 /* clear last button read */
                 ci.button0 = 0;
                 ci.button1 = 0;
@@ -2471,7 +2471,7 @@ static void EnterCtrlData (S32 index, CustomCtrls * cust, void (*DrawRtn) (S32),
                 ci.button3 = 0;
                 ci.dir = dir_None;
                 ReadAnyControl(&ci);
-                
+
                 /* FLASH CURSOR */
                 if((GetTimeCount() - lastFlashTime) > 10)
                 {
@@ -2480,18 +2480,18 @@ static void EnterCtrlData (S32 index, CustomCtrls * cust, void (*DrawRtn) (S32),
                         case 0:
                             VL_Bar(x, PrintY + 1, CST_SPC - 2, 10, TEXTCOLOR);
                         break;
-                        
+
                         case 1:
                             PrintX = x;
                             US_Print ("?");
                             SD_PlaySound(HITWALLSND);
                         break;
-                        
+
                         default:
                             /* do nothing */
                         break;
                     }
-                    
+
                     tick ^= 1;
                     lastFlashTime = GetTimeCount();
                     UpdateScreen(0);
@@ -2500,7 +2500,7 @@ static void EnterCtrlData (S32 index, CustomCtrls * cust, void (*DrawRtn) (S32),
                 {
                     Delay_ms(5);
                 }
-                
+
                 /* WHICH TYPE OF INPUT DO WE PROCESS? */
                 switch(type)
                 {
@@ -2538,30 +2538,30 @@ static void EnterCtrlData (S32 index, CustomCtrls * cust, void (*DrawRtn) (S32),
                             SD_PlaySound(SHOOTDOORSND);
                         }
                     break;
-                    
+
                     default:
                         /* do nothing */
                     break;
                 }
-                
+
                 /* EXIT INPUT? */
                 if(picked == 1)
                 {
                     break;
                 }
-                
+
             }
-            
+
             SetFontColor(TEXTCOLOR, BKGDCOLOR);
             redraw = 1;
             continue;
         }
-        
+
         if(ci.button1 == 1)
         {
             exit = 1;
         }
-        
+
         /* MOVE TO ANOTHER SPOT? */
         switch(ci.dir)
         {
@@ -2575,10 +2575,10 @@ static void EnterCtrlData (S32 index, CustomCtrls * cust, void (*DrawRtn) (S32),
                     }
                 }
                 while(cust->allowed[which] == 0);
-                
+
                 redraw = 1;
                 SD_PlaySound(MOVEGUN1SND);
-                
+
                 while(ci.dir != dir_None)
                 {
                      /* clear last button read */
@@ -2602,10 +2602,10 @@ static void EnterCtrlData (S32 index, CustomCtrls * cust, void (*DrawRtn) (S32),
                     }
                 }
                 while (cust->allowed[which] == 0);
-                
+
                 redraw = 1;
                 SD_PlaySound(MOVEGUN1SND);
-                
+
                 while(ci.dir != dir_None)
                 {
                      /* clear last button read */
@@ -2617,27 +2617,27 @@ static void EnterCtrlData (S32 index, CustomCtrls * cust, void (*DrawRtn) (S32),
                     ReadAnyControl(&ci);
                     Delay_ms(5);
                 }
-                
+
             break;
-            
+
             case dir_North:
             case dir_South:
                 exit = 1;
             break;
-            
+
             default:
                 /* do nothing */
             break;
         }
-        
+
     }
     while(exit == 0);
-    
+
     SD_PlaySound(ESCPRESSEDSND);
     DrawWindow (5, PrintY - 1, 310, 13, BKGDCOLOR);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CP_NewGame
@@ -2646,16 +2646,16 @@ static void EnterCtrlData (S32 index, CustomCtrls * cust, void (*DrawRtn) (S32),
 =
 = START A NEW GAME
 =
-================================================================ 
+================================================================
 */
 S32 CP_NewGame(S32 temp)
 {
-    S32 which; 
+    S32 which;
     S32 episode;
-    
+
     firstpart:
     DrawNewEpisode();
-    
+
     do
     {
         which = HandleMenu(&NewEitems, &NewEmenu[0], NULL);
@@ -2665,7 +2665,7 @@ S32 CP_NewGame(S32 temp)
                 MenuFadeOut();
                 return 0;
             break;
-            
+
             default:
                 if(EpisodeSelect[which / 2] == 0)
                 {
@@ -2686,9 +2686,9 @@ S32 CP_NewGame(S32 temp)
         }
     }
     while(which == 0);
-    
+
     SD_PlaySound(SHOOTSND);
-    
+
     /* ALREADY IN A GAME? */
     if(ingame == 1)
     {
@@ -2698,30 +2698,30 @@ S32 CP_NewGame(S32 temp)
             return 0;
         }
     }
-    
+
     MenuFadeOut();
-    
+
     DrawNewGame();
     which = HandleMenu(&NewItems, &NewMenu[0], DrawNewGameDiff);
-    
+
     if (which < 0)
     {
         MenuFadeOut();
         goto firstpart;
     }
-    
+
     SD_PlaySound(SHOOTSND);
     NewGame(which, episode);
     ExitMenu = 1;
     MenuFadeOut();
-    
+
     /* CHANGE "READ THIS!" TO NORMAL COLOR */
     MainMenu[readthis].active = 1;
-    
+
     return 0;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawNewGame
@@ -2730,7 +2730,7 @@ S32 CP_NewGame(S32 temp)
 =
 = DRAW NEW GAME MENU
 =
-================================================================ 
+================================================================
 */
 static void DrawNewGame(void)
 {
@@ -2740,18 +2740,18 @@ static void DrawNewGame(void)
     SetFontColor(READHCOLOR, BKGDCOLOR);
     PrintX = NM_X + 20;
     PrintY = NM_Y - 32;
-    
+
     US_Print ("How tough are you?");
-    
+
     DrawWindow (NM_X - 5, NM_Y - 10, NM_W, NM_H, BKGDCOLOR);
-    
+
     DrawMenu (&NewItems, &NewMenu[0]);
     DrawNewGameDiff(NewItems.curpos);
     UpdateScreen(0);
     MenuFadeIn();
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawNewGameDiff
@@ -2760,14 +2760,14 @@ static void DrawNewGame(void)
 =
 = DRAW NEW GAME GRAPHIC
 =
-================================================================ 
+================================================================
 */
 static void DrawNewGameDiff(S32 w)
 {
     VWB_DrawPic(NM_X + 185, NM_Y + 7, w + C_BABYMODEPIC);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawNewEpisode
@@ -2776,12 +2776,12 @@ static void DrawNewGameDiff(S32 w)
 =
 = DRAW NEW EPISODE MENU
 =
-================================================================ 
+================================================================
 */
 static void DrawNewEpisode(void)
 {
     U8 i;
-    
+
     ClearMScreen ();
     VWB_DrawPic(112, 184, C_MOUSELBACKPIC);
 
@@ -2789,9 +2789,9 @@ static void DrawNewEpisode(void)
     SetFontColor(READHCOLOR, BKGDCOLOR);
     PrintY = 2;
     WindowX = 0;
-    
+
     US_CPrint("Which episode to play?");
-    
+
     SetFontColor(TEXTCOLOR, BKGDCOLOR);
     DrawMenu(&NewEitems, &NewEmenu[0]);
 
@@ -2804,7 +2804,7 @@ static void DrawNewEpisode(void)
     MenuFadeIn();
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CP_LoadGame
@@ -2813,7 +2813,7 @@ static void DrawNewEpisode(void)
 =
 = Load saved game
 =
-================================================================ 
+================================================================
 */
 S32 CP_LoadGame(S32 quick)
 {
@@ -2822,34 +2822,34 @@ S32 CP_LoadGame(S32 quick)
     S32 exit = 0;
     char name[13];
     char loadpath[30] = "/GAMES/WOLF/";
-    
+
     strcpy(name, SaveName);
 
     DrawLoadSaveScreen(0);
-    
+
     do
     {
         which = HandleMenu(&LSItems, &LSMenu[0], TrackWhichGame);
-        
+
         if((which >= 0) && (SaveGamesAvail[which] == 1))
         {
             SD_PlaySound(SHOOTSND);
             name[7] = which + '0';
-                
+
             strcat(loadpath,name);
-  
+
             file = fopen(loadpath, "rb");
             fseek(file, 32, SEEK_SET);
 
             DrawLSAction(0);
             loadedgame = 1;
-            
+
             LoadTheGame(file, LSA_X + 8, LSA_Y + 5);
             fclose(file);
 
             ExitMenu = 1;
             SD_PlaySound(SHOOTSND);
-            
+
             /* CHANGE "READ THIS!" TO NORMAL COLOR */
             MainMenu[readthis].active = 1;
 
@@ -2864,7 +2864,7 @@ S32 CP_LoadGame(S32 quick)
     return exit;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CP_SaveGame
@@ -2873,7 +2873,7 @@ S32 CP_LoadGame(S32 quick)
 =
 = SAVE CURRENT GAME
 =
-================================================================ 
+================================================================
 */
 S32 CP_SaveGame (S32 quick)
 {
@@ -2883,11 +2883,11 @@ S32 CP_SaveGame (S32 quick)
     char name[13];
     char input[32] = "";
     char savepath[30] = "/GAMES/WOLF/";
-    
+
     strcpy (name, SaveName);
-    
+
     DrawLoadSaveScreen(1);
-    
+
     do
     {
         which = HandleMenu(&LSItems, &LSMenu[0], TrackWhichGame);
@@ -2917,13 +2917,13 @@ S32 CP_SaveGame (S32 quick)
             name[7] = which + '0';
 
             SetFontNum(0);
-            
+
             if(SaveGamesAvail[which] == 0)
             {
                 VL_Bar(LSM_X + LSItems.indent + 1, LSM_Y + which * 13 + 1,
                          LSM_W - LSItems.indent - 16, 9, BKGDCOLOR);
             }
-            
+
             UpdateScreen(0);
 
             if (US_LineInput(LSM_X + LSItems.indent + 2, LSM_Y + which * 13 + 1, input, 31,
@@ -2967,7 +2967,7 @@ S32 CP_SaveGame (S32 quick)
     return exit;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: TrackWhichGame
@@ -2976,7 +2976,7 @@ S32 CP_SaveGame (S32 quick)
 =
 = HIGHLIGHT CURRENT SELECTED ENTRY
 =
-================================================================ 
+================================================================
 */
 static void TrackWhichGame (S32 w)
 {
@@ -2988,7 +2988,7 @@ static void TrackWhichGame (S32 w)
     lastgameon = w;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawLSAction
@@ -2997,7 +2997,7 @@ static void TrackWhichGame (S32 w)
 =
 = DRAW LOAD/SAVE IN PROGRESS
 =
-================================================================ 
+================================================================
 */
 static void DrawLSAction(S32 which)
 {
@@ -3023,7 +3023,7 @@ static void DrawLSAction(S32 which)
     UpdateScreen(0);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawLoadSaveScreen
@@ -3032,7 +3032,7 @@ static void DrawLSAction(S32 which)
 =
 = DRAW THE LOAD/SAVE SCREEN
 =
-================================================================ 
+================================================================
 */
 static void DrawLoadSaveScreen(S32 loadsave)
 {
@@ -3064,7 +3064,7 @@ static void DrawLoadSaveScreen(S32 loadsave)
     MenuFadeIn();
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: PrintLSEntry
@@ -3073,10 +3073,10 @@ static void DrawLoadSaveScreen(S32 loadsave)
 =
 = PRINT LOAD/SAVE GAME ENTRY With BOX OUTLINE
 =
-================================================================ 
+================================================================
 */
 static void PrintLSEntry (S32 w, S32 color)
-{   
+{
     SetFontColor(color, BKGDCOLOR);
     DrawOutline (LSM_X + LSItems.indent, LSM_Y + w * 13, LSM_W - LSItems.indent - 15, 10, color, color);
     PrintX = LSM_X + LSItems.indent + 2;
@@ -3095,7 +3095,7 @@ static void PrintLSEntry (S32 w, S32 color)
     SetFontNum(1);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SetupSaveGames
@@ -3104,7 +3104,7 @@ static void PrintLSEntry (S32 w, S32 color)
 =
 = SEE WHICH SAVE GAME FILES ARE AVAILABLE & READ STRING IN
 =
-================================================================ 
+================================================================
 */
 void SetupSaveGames(void)
 {
@@ -3112,18 +3112,18 @@ void SetupSaveGames(void)
     char savepath[100];
     FILE *file = NULL;
     S32 i;
-    
+
     strcpy(name, SaveName);
-    
+
     for(i = 0; i < 10; i++)
     {
         name[7] = '0' + i;
-        
+
         strcpy(savepath,"/GAMES/WOLF/");
         strcat(savepath, name);
-        
+
         file = fopen(savepath,"rb");
-        
+
         if(file != NULL)
         {
             char temp[32];
@@ -3133,6 +3133,6 @@ void SetupSaveGames(void)
             fclose(file);
             strcpy(&SaveGameNames[i][0], temp);
         }
-        
+
     }
 }

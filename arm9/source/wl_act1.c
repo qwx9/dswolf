@@ -30,7 +30,7 @@ static statinfo_type statinfo[] =
 {
     {SPR_STAT_0},                           /* puddle          spr1v */
     {SPR_STAT_1,block},                     /* Green Barrel    "     */
-    {SPR_STAT_2,block},                     /* Table/chairs    "     */ 
+    {SPR_STAT_2,block},                     /* Table/chairs    "     */
     {SPR_STAT_3,block,FL_FULLBRIGHT},       /* Floor lamp      "     */
     {SPR_STAT_4,none,FL_FULLBRIGHT},        /* Chandelier      "     */
     {SPR_STAT_5,block},                     /* Hanged man      "     */
@@ -131,7 +131,7 @@ Every time a door opens or closes the areabyplayer matrix gets recalculated.
 =============================================================================
 */
 
-/* 
+/*
 ================================================================
 =
 = Function: ConnectAreas
@@ -156,7 +156,7 @@ static void RecursiveConnect(U8 areanumber)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: ConnectAreas
@@ -175,7 +175,7 @@ static void ConnectAreas(void)
     RecursiveConnect(player->areanumber);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: InitAreas
@@ -189,14 +189,14 @@ static void ConnectAreas(void)
 void InitAreas(void)
 {
     memset(areabyplayer,0,sizeof(areabyplayer));
-    
+
     if(player->areanumber < NUMAREAS)
     {
         areabyplayer[player->areanumber] = 1;
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: InitDoorList
@@ -216,7 +216,7 @@ void InitDoorList(void)
     doornum = 0;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: InitStaticList
@@ -232,7 +232,7 @@ void InitStaticList(void)
     laststatobj = &statobjlist[0];
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnDoor
@@ -261,7 +261,7 @@ void SpawnDoor(S32 tilex, S32 tiley, U8 vertical, S32 lock)
     lastdoorobj->action = dr_closed;
 
     actorat[tilex][tiley] = (objtype *)(uintptr_t)(doornum | 0x80);   /* consider it a solid wall */
-    
+
     /* make the door tile a special tile, and mark the adjacent tiles */
     /* for door sides                                                 */
     tilemap[tilex][tiley] = doornum | 0x80;
@@ -283,7 +283,7 @@ void SpawnDoor(S32 tilex, S32 tiley, U8 vertical, S32 lock)
     lastdoorobj++;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnStatic
@@ -318,7 +318,7 @@ void SpawnStatic(S32 tilex, S32 tiley, S32 type)
             {
                 gamestate.treasuretotal++;
             }
-            
+
         case    bo_firstaid:
         case    bo_key1:
         case    bo_key2:
@@ -335,7 +335,7 @@ void SpawnStatic(S32 tilex, S32 tiley, S32 type)
             laststatobj->flags = FL_BONUS;
             laststatobj->itemnumber = statinfo[type].type;
         break;
-        
+
         default:
             /* Do nothing */
         break;
@@ -352,7 +352,7 @@ void SpawnStatic(S32 tilex, S32 tiley, S32 type)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: OperateDoor
@@ -368,7 +368,7 @@ void OperateDoor(U8 door)
     S32 lock;
 
     lock = doorobjlist[door].lock;
-    
+
     /* do we have the right key to unlock door ? */
     if((lock >= dr_lock1) && (lock <= dr_lock4))
     {
@@ -385,19 +385,19 @@ void OperateDoor(U8 door)
         case dr_closing:
             OpenDoor(door);
         break;
-        
+
         case dr_open:
         case dr_opening:
             CloseDoor(door);
         break;
-        
+
         default:
             /* do nothing */
         break;
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: OpenDoor
@@ -420,7 +420,7 @@ void OpenDoor (U8 door)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CloseDoor
@@ -460,22 +460,22 @@ static void CloseDoor(U8 door)
             {
                 return;
             }
-            
+
             if ( ((player->x-MINDIST) >>TILESHIFT) == tilex )
             {
                 return;
             }
         }
-        
+
         check = actorat[tilex-1][tiley];
-        
+
         if (ISPOINTER(check) && ((check->x+MINDIST) >> TILESHIFT) == tilex )
         {
             return;
         }
-        
+
         check = actorat[tilex+1][tiley];
-        
+
         if (ISPOINTER(check) && ((check->x-MINDIST) >> TILESHIFT) == tilex )
         {
             return;
@@ -489,22 +489,22 @@ static void CloseDoor(U8 door)
             {
                 return;
             }
-            
+
             if ( ((player->y-MINDIST) >>TILESHIFT) == tiley )
             {
                 return;
             }
         }
-        
+
         check = actorat[tilex][tiley-1];
-        
+
         if (ISPOINTER(check) && ((check->y+MINDIST) >> TILESHIFT) == tiley )
         {
             return;
         }
-        
+
         check = actorat[tilex][tiley+1];
-        
+
         if (ISPOINTER(check) && ((check->y-MINDIST) >> TILESHIFT) == tiley )
         {
             return;
@@ -514,7 +514,7 @@ static void CloseDoor(U8 door)
     /* play door sound if in a connected area */
     area = *(mapsegs[0] + (doorobjlist[door].tiley<<mapshift)
         + doorobjlist[door].tilex) - AREATILE;
-        
+
     if(areabyplayer[area])
     {
         PlaySoundLocTile(CLOSEDOORSND,doorobjlist[door].tilex,doorobjlist[door].tiley);
@@ -526,7 +526,7 @@ static void CloseDoor(U8 door)
     actorat[tilex][tiley] = (objtype *)(uintptr_t)(door | 0x80);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DoorOpen
@@ -545,7 +545,7 @@ static void DoorOpen (U8 door)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DoorOpening
@@ -564,7 +564,7 @@ static void DoorOpening(U8 door)
     U32 position;
 
     position = doorposition[door];
-    
+
     if(position == 0)
     {
         /* door is just starting to open, so connect the areas */
@@ -616,7 +616,7 @@ static void DoorOpening(U8 door)
     doorposition[door] = (U16) position;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DoorClosing
@@ -641,7 +641,7 @@ static void DoorClosing(U8 door)
 
     if ( ((S32)(uintptr_t)actorat[tilex][tiley] != (door | 0x80))
         || ((player->tilex == tilex) && (player->tiley == tiley)) )
-    {                       
+    {
         /* something got inside the door */
         OpenDoor(door);
         return;
@@ -650,9 +650,9 @@ static void DoorClosing(U8 door)
     position = doorposition[door];
 
     /* slide the door by an adaptive amount */
-    
+
     position -= tics << 10;
-    
+
     if(position <= 0)
     {
         /* door is closed all the way, so disconnect the areas */
@@ -672,7 +672,7 @@ static void DoorClosing(U8 door)
             area1 = *(map-MAPWIDTH);
             area2 = *(map+MAPWIDTH);
         }
-        
+
         area1 -= AREATILE;
         area2 -= AREATILE;
 
@@ -692,7 +692,7 @@ static void DoorClosing(U8 door)
     doorposition[door] = (U16) position;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: MoveDoors
@@ -727,7 +727,7 @@ void MoveDoors(void)
             case dr_closing:
                 DoorClosing(door);
             break;
-            
+
             default:
                 /* do nothing */
             break;
@@ -735,7 +735,7 @@ void MoveDoors(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: PlaceItemType
@@ -761,7 +761,7 @@ void PlaceItemType (S32 itemtype, S32 tilex, S32 tiley)
             iprintf("PlaceItemType: couldn't find type!");
             while(1){ /* hang system */ };
         }
-        
+
         if (statinfo[type].type == itemtype)
         {
             break;

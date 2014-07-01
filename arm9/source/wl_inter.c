@@ -67,7 +67,7 @@ static HighScore Scores[MaxScores] =
     {"Jay Wilbur",10000,1},
 };
 
-static const times_type parTimes[] = 
+static const times_type parTimes[] =
 {
         /* Episode One Par Times */
         {1.5 * 4200, "01:30"},
@@ -142,8 +142,8 @@ static const times_type parTimes[] =
         {0 * 4200, "??:??"}
 };
 
-static const S32 alpha[] = 
- {      
+static const S32 alpha[] =
+ {
         L_NUM0PIC, L_NUM1PIC, L_NUM2PIC, L_NUM3PIC, L_NUM4PIC, L_NUM5PIC,
         L_NUM6PIC, L_NUM7PIC, L_NUM8PIC, L_NUM9PIC, L_COLONPIC, 0, 0, 0, 0, 0, 0, L_APIC, L_BPIC,
         L_CPIC, L_DPIC, L_EPIC, L_FPIC, L_GPIC, L_HPIC, L_IPIC, L_JPIC, L_KPIC,
@@ -164,7 +164,7 @@ static void BJ_Breathe (void);
 static void ClearSplitVWB(void);
 static U8 PreloadUpdate(U32 current, U32 total);
 
-/* 
+/*
 ================================================================
 =
 = Function: PG13
@@ -173,7 +173,7 @@ static U8 PreloadUpdate(U32 current, U32 total);
 =
 = Prints PG13 banner to screen at startup
 =
-================================================================ 
+================================================================
 */
 void PG13(void)
 {
@@ -187,13 +187,13 @@ void PG13(void)
     CA_UnCacheGrChunk(PG13PIC);
 
     VW_FadeIn();
-    
+
     IN_UserInput(TickBase * 7);
 
     VW_FadeOut();
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawHighScores
@@ -202,18 +202,18 @@ void PG13(void)
 =
 = Draws high scores to screen
 =
-================================================================ 
+================================================================
 */
 void DrawHighScores(void)
 {
     char buffer[16];
     char *str;
-    
+
     U16 i;
     U16 w;
     U16 h;
     HighScore *s;
-    
+
     CA_CacheGrChunk(HIGHSCORESPIC);
     CA_CacheGrChunk(STARTFONT);
     CA_CacheGrChunk(C_LEVELPIC);
@@ -225,25 +225,25 @@ void DrawHighScores(void)
 
     VWB_DrawPic(48, 0, HIGHSCORESPIC);
     CA_UnCacheGrChunk(HIGHSCORESPIC);
-    
+
     VWB_DrawPic(4 * 8, 68, C_NAMEPIC);
     VWB_DrawPic(20 * 8, 68, C_LEVELPIC);
     VWB_DrawPic(28 * 8, 68, C_SCOREPIC);
-    
+
     SetFontNum(0);
-    
+
     SetFontColor(15, 0x29);
-    
+
     s = Scores;
-    
+
     for (i = 0; i < MaxScores; i++, s++)
     {
         PrintY = 76 + (16 * i);
-        
+
         /* display name */
         PrintX = 4 * 8;
         US_Print(s->name);
-        
+
         /* display level */
         sprintf(buffer,"%d",s->completed);
 
@@ -251,28 +251,28 @@ void DrawHighScores(void)
         {
             *str = *str + (129 - '0');  /* Used fixed-width numbers (129...) */
         }
-        
+
         VW_MeasurePropString(buffer, &w, &h);
         PrintX = (22 * 8) - w;
-        
+
         US_Print(buffer);
-        
+
         /* score */
         sprintf(buffer,"%d",s->score);
         for (str = buffer; *str != '\0'; str++)
         {
             *str = *str + (129 - '0');  /* Used fixed-width numbers (129...) */
         }
-        
+
         VW_MeasurePropString(buffer, &w, &h);
         PrintX = (34 * 8) - 8 - w;
-        
+
         US_Print(buffer);
-    }    
+    }
 }
 
 
-/* 
+/*
 ================================================================
 =
 = Function: CheckHighScore
@@ -281,7 +281,7 @@ void DrawHighScores(void)
 =
 = update high score's if needed
 =
-================================================================ 
+================================================================
 */
 void CheckHighScore(S32 score, U16 other)
 {
@@ -315,27 +315,27 @@ void CheckHighScore(S32 score, U16 other)
 
     /* got a high score */
     if(n != -1)
-    {        
+    {
         /* copy user name into high score board */
         for(i = 0; i < MaxHighName; i++)
         {
             Scores[n].name[i] = DS_USERNAME[i];
         }
     }
-    
+
     StartCPMusic(ROSTER_MUS);
-    
+
     DrawHighScores();
-    
+
     UpdateScreen(0);
 
     VW_FadeIn();
-    
+
     IN_UserInput(500);
 
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: LevelCompleted
@@ -347,7 +347,7 @@ void CheckHighScore(S32 score, U16 other)
 =
 = Exit with the screen faded out
 =
-================================================================ 
+================================================================
 */
 
 void LevelCompleted(void)
@@ -356,34 +356,34 @@ void LevelCompleted(void)
     char tempstr[20];
     S32 bonus;
     S32 timeleft = 0;
-        
+
     CacheLump (LEVELEND_LUMP_START, LEVELEND_LUMP_END);
     ClearSplitVWB();           /* set up for double buffering in split screen */
     VL_Bar(0, 0, 320, SCREENHEIGHT - STATUSLINES + 1, VIEWCOLOR);
 
     StartCPMusic (ENDLEVEL_MUS);
 
-    /* do the intermission */    
+    /* do the intermission */
     VWB_DrawPic (0, 16, L_GUYPIC);
-     
+
     if(mapon < 8)
     {
         Write (14, 2, "floor\ncompleted");
-      
+
         Write (14, 7, STR_BONUS "     0");
         Write (16, 10, STR_TIME);
         Write (16, 12, STR_PAR);
-        
+
         Write (9, 14, STR_RAT2KILL);
         Write (5, 16, STR_RAT2SECRET);
         Write (1, 18, STR_RAT2TREASURE);
-        
+
         /* convert number to string */
         sprintf(tempstr,"%d",gamestate.mapon + 1);
         Write (26, 2, tempstr);
-        
+
         Write (26, 12, parTimes[gamestate.episode * 10 + mapon].timestr);
-        
+
         /* PRINT TIME */
         sec = gamestate.TimeCount / 70;
 
@@ -399,9 +399,9 @@ void LevelCompleted(void)
 
         min = sec / 60;
         sec %= 60;
-        
+
         i = 26 * 8;
-         
+
         VWB_DrawPic (i, 10 * 8, L_NUM0PIC + (min / 10));
         i += 2 * 8;
         VWB_DrawPic (i, 10 * 8, L_NUM0PIC + (min % 10));
@@ -414,20 +414,20 @@ void LevelCompleted(void)
 
         UpdateScreen(0);
         VW_FadeIn ();
-        
+
         /* FIGURE RATIOS OUT BEFOREHAND */
         kr = sr = tr = 0;
-        
+
         if (gamestate.killtotal)
         {
             kr = (gamestate.killcount * 100) / gamestate.killtotal;
         }
-        
+
         if (gamestate.secrettotal)
         {
             sr = (gamestate.secretcount * 100) / gamestate.secrettotal;
         }
-        
+
         if (gamestate.treasuretotal)
         {
             tr = (gamestate.treasurecount * 100) / gamestate.treasuretotal;
@@ -435,32 +435,32 @@ void LevelCompleted(void)
 
         /* PRINT TIME BONUS */
         bonus = timeleft * PAR_AMOUNT;
-        
+
         if(bonus)
         {
             for (i = 0; i <= timeleft; i++)
             {
                 /* convert number to string */
                 sprintf(tempstr,"%d",i * PAR_AMOUNT);
-                
+
                 x = 36 - (S32) strlen(tempstr) * 2;
                 Write (x, 7, tempstr);
-                
+
                 if (!(i % (PAR_AMOUNT / 10)))
                 {
                     SD_PlaySound (ENDBONUS1SND);
                 }
-                
+
                 if(!(i % (PAR_AMOUNT / 50)))
                 {
                     UpdateScreen(0);
                 }
-                
+
                 while(SD_SoundPlaying())
                 {
                     BJ_Breathe();
                 }
-                
+
                 if(IN_CheckAck())
                 {
                     goto done;
@@ -470,34 +470,34 @@ void LevelCompleted(void)
             UpdateScreen(0);
 
             SD_PlaySound(ENDBONUS2SND);
-            
+
             while(SD_SoundPlaying ())
             {
                 BJ_Breathe ();
             }
         }
-        
+
         /* KILL RATIO */
-        
+
         ratio = kr;
-        
+
         for (i = 0; i <= ratio; i++)
         {
             /* convert number to string */
             sprintf(tempstr,"%d",i);
             x = RATIOXX - (S32) strlen(tempstr) * 2;
             Write (x, 14, tempstr);
-            
+
             if(!(i % 10))
             {
                 SD_PlaySound (ENDBONUS1SND);
             }
-            
-            if(!(i & 1)) 
+
+            if(!(i & 1))
             {
                 UpdateScreen(0);
             }
-            
+
             while(SD_SoundPlaying ())
             {
                 BJ_Breathe ();
@@ -508,7 +508,7 @@ void LevelCompleted(void)
                 goto done;
             }
         }
-        
+
         if (ratio >= 100)
         {
             VW_WaitVBL(VBLWAIT);
@@ -533,7 +533,7 @@ void LevelCompleted(void)
         }
 
         UpdateScreen(0);
-        
+
         while (SD_SoundPlaying())
         {
             BJ_Breathe ();
@@ -547,17 +547,17 @@ void LevelCompleted(void)
             sprintf(tempstr,"%d",i);
             x = RATIOXX - (S32) strlen(tempstr) * 2;
             Write (x, 16, tempstr);
-            
+
             if (!(i % 10))
             {
                 SD_PlaySound (ENDBONUS1SND);
             }
-            
+
             if(!(i & 1))
             {
                 UpdateScreen(0);
             }
-            
+
             while (SD_SoundPlaying ())
             {
                 BJ_Breathe ();
@@ -568,7 +568,7 @@ void LevelCompleted(void)
                 goto done;
             }
         }
-        
+
         if(ratio >= 100)
         {
             VW_WaitVBL (VBLWAIT);
@@ -591,9 +591,9 @@ void LevelCompleted(void)
         {
             SD_PlaySound (ENDBONUS2SND);
         }
-        
+
         UpdateScreen(0);
-        
+
         while (SD_SoundPlaying ())
         {
             BJ_Breathe();
@@ -601,35 +601,35 @@ void LevelCompleted(void)
 
         /* TREASURE RATIO */
         ratio = tr;
-        
+
         for (i = 0; i <= ratio; i++)
         {
             /* convert number to string */
             sprintf(tempstr,"%d",i);
             x = RATIOXX - (S32) strlen(tempstr) * 2;
             Write (x, 18, tempstr);
-            
+
             if (!(i % 10))
             {
                 SD_PlaySound (ENDBONUS1SND);
             }
-            
+
             if(!(i & 1))
             {
                 UpdateScreen(0);
             }
-            
+
             while (SD_SoundPlaying ())
             {
                 BJ_Breathe ();
             }
-            
+
             if (IN_CheckAck ())
             {
                 goto done;
             }
         }
-        
+
         if (ratio >= 100)
         {
             VW_WaitVBL (VBLWAIT);
@@ -652,9 +652,9 @@ void LevelCompleted(void)
         {
             SD_PlaySound (ENDBONUS2SND);
         }
-        
+
         UpdateScreen(0);
-        
+
         while (SD_SoundPlaying ())
         {
             BJ_Breathe ();
@@ -662,7 +662,7 @@ void LevelCompleted(void)
 
 
         /* JUMP STRAIGHT HERE IF KEY PRESSED */
-done:   
+done:
         /* convert number to string */
         sprintf(tempstr,"%d",kr);
         x = RATIOXX - (S32) strlen(tempstr) * 2;
@@ -695,7 +695,7 @@ done:
     else
     {
         Write (14, 4, "secret floor\n completed!");
-        
+
         Write (10, 16, "15000 bonus!");
 
         UpdateScreen(0);
@@ -703,12 +703,12 @@ done:
 
         GivePoints (15000);
     }
-    
+
     DrawScore();
     UpdateScreen(0);
 
     lastBreathTime = GetTimeCount();
-    
+
     while (!IN_CheckAck())
     {
         BJ_Breathe();
@@ -721,7 +721,7 @@ done:
     UnCacheLump (LEVELEND_LUMP_START, LEVELEND_LUMP_END);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: ClearSplitVWB
@@ -730,7 +730,7 @@ done:
 =
 = reset print screen coords
 =
-================================================================ 
+================================================================
 */
 static void ClearSplitVWB(void)
 {
@@ -740,7 +740,7 @@ static void ClearSplitVWB(void)
     WindowH = 160;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: BJ_Breathe
@@ -749,7 +749,7 @@ static void ClearSplitVWB(void)
 =
 = Code that handles BJ breathe animation
 =
-================================================================ 
+================================================================
 */
 static void BJ_Breathe (void)
 {
@@ -769,7 +769,7 @@ static void BJ_Breathe (void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: Write
@@ -778,7 +778,7 @@ static void BJ_Breathe (void)
 =
 = write string to screen using defined pics in alpha array
 =
-================================================================ 
+================================================================
 */
 static void Write(S32 x, S32 y, const char *string)
 {
@@ -787,7 +787,7 @@ static void Write(S32 x, S32 y, const char *string)
 
     ox = nx = x * 8;
     ny = y * 8;
-    
+
     for (i = 0; i < len; i++)
     {
         if (string[i] == '\n')
@@ -802,7 +802,7 @@ static void Write(S32 x, S32 y, const char *string)
             {
                 ch -= ('a' - 'A');
             }
-            
+
             ch -= '0';
 
             switch (string[i])
@@ -833,13 +833,13 @@ static void Write(S32 x, S32 y, const char *string)
                     VWB_DrawPic(nx, ny, alpha[(U8)ch]);
                     break;
             }
-            
+
             nx += 16;
         }
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: PreloadGraphics
@@ -848,17 +848,17 @@ static void Write(S32 x, S32 y, const char *string)
 =
 = Load get psyched message
 =
-================================================================ 
+================================================================
 */
 void PreloadGraphics(void)
 {
     DrawLevel();
-    
+
     ClearSplitVWB();
 
     /* paint background in colour VIEWCOLOR */
     VL_Bar(0, 0, SCREENWIDTH, SCREENHEIGHT - (STATUSLINES - 1), VIEWCOLOR);
-    
+
     /* display GETPSYCHEDPIC picture in the centre of screen */
     VWB_DrawPic((SCREENWIDTH - 224)/2,(SCREENHEIGHT - (STATUSLINES+48))/2, GETPSYCHEDPIC);
 
@@ -870,10 +870,10 @@ void PreloadGraphics(void)
 
     UpdateScreen(0);
     VW_FadeIn();
-    
+
     /* display progress bar */
     PreloadUpdate(10, 10);
-    
+
     IN_UserInput (70);
     VW_FadeOut();
 
@@ -881,7 +881,7 @@ void PreloadGraphics(void)
     UpdateScreen(0);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: PreloadUpdate
@@ -890,37 +890,37 @@ void PreloadGraphics(void)
 =
 = display get psyched progress bar
 =
-================================================================ 
+================================================================
 */
 static U8 PreloadUpdate(U32 current, U32 total)
 {
     U32 w = WindowW - 10;
 
     VL_Bar(WindowX + 5, WindowY + WindowH - 3, w, 2, 0);
-        
+
     w = ((S32) w * current) / total;
-    
+
     if(w != 0)
     {
         VL_Bar(WindowX + 5, WindowY + WindowH - 3, w, 2, 0x37);
         VL_Bar(WindowX + 5, WindowY + WindowH - 3, w - 1,  1, 0x32);
     }
-    
+
     UpdateScreen(0);
-    
+
     return(0);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: Victory
 =
 = Description:
 =
-= 
 =
-================================================================ 
+=
+================================================================
 */
 void Victory (void)
 {
@@ -936,7 +936,7 @@ void Victory (void)
     CA_CacheGrChunk (C_TIMECODEPIC);
 
     VL_Bar(0, 0, 320, (SCREENHEIGHT - STATUSLINES + 1), VIEWCOLOR);
-    
+
     Write (18, 2, STR_YOUWIN);
 
     Write (TIMEX, TIMEY - 2, STR_TOTALTIME);

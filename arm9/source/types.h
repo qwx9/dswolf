@@ -1,6 +1,6 @@
 #ifndef TYPES_H
 #define TYPES_H
- 
+
 #define SHAREWARE
 #define MaxHighName 57
 
@@ -127,7 +127,7 @@ enum
     SPR_SS_SHOOT1,SPR_SS_SHOOT2,SPR_SS_SHOOT3,
 
     /* mutant */
-    
+
     SPR_MUT_S_1,SPR_MUT_S_2,SPR_MUT_S_3,SPR_MUT_S_4,
     SPR_MUT_S_5,SPR_MUT_S_6,SPR_MUT_S_7,SPR_MUT_S_8,
 
@@ -191,7 +191,7 @@ enum
     SPR_HYPO1,SPR_HYPO2,SPR_HYPO3,SPR_HYPO4,
 
     /* fake */
-    
+
     SPR_FAKE_W1,SPR_FAKE_W2,SPR_FAKE_W3,SPR_FAKE_W4,
     SPR_FAKE_SHOOT,SPR_FIRE1,SPR_FIRE2,
 
@@ -243,7 +243,7 @@ enum
 
     SPR_BJ_W2,SPR_BJ_W3,SPR_BJ_W4,
     SPR_BJ_JUMP1,SPR_BJ_JUMP2,SPR_BJ_JUMP3,SPR_BJ_JUMP4,
-    
+
 
     /* player attack frames */
     SPR_KNIFEREADY,SPR_KNIFEATK1,SPR_KNIFEATK2,SPR_KNIFEATK3,
@@ -355,7 +355,7 @@ typedef struct
 
 typedef struct
 {
-    U16 bit0; 
+    U16 bit0;
     U16 bit1;       /* 0-255 is a character, > is a pointer to a node */
 } huffnode;
 
@@ -422,7 +422,7 @@ typedef struct
     U8 mWave;
     U8 cWave;
     U8 nConn;
-    
+
     /* These are only for Muse - these bytes are really unused */
     U8 voice;
     U8 mode;
@@ -731,7 +731,7 @@ typedef struct statstruct
 typedef struct statinfostruct
 {
     S16        picnum;
-    wl_stat_t  type; 
+    wl_stat_t  type;
     U32        specialFlags;     /* they are ORed to the statobj_t flags */
 } statinfo_type;
 
@@ -745,7 +745,7 @@ typedef struct
 } visobj_t;
 
 /* WL_INTER */
-typedef struct 
+typedef struct
 {
     S32 kill;
     S32 secret;

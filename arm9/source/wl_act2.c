@@ -519,7 +519,7 @@ static S16 starthitpoints[4][NUMENEMIES] =
         1450  /* en_death    */
     },
     /* DEATH INCARNATE MODE */
-    { 
+    {
         25,   /* guards  */
         50,   /* officer */
         100,  /* SS      */
@@ -555,14 +555,14 @@ static void SelectPathDir(objtype *ob);
 static void SelectRunDir(objtype *ob);
 static U8 ProjectileTryMove(objtype *ob);
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnStand
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -609,7 +609,7 @@ void SpawnStand(enemy_t which, S32 tilex, S32 tiley, S32 dir)
                 gamestate.killtotal++;
             }
         break;
-        
+
         default:
             /* do nothing */
         break;
@@ -617,7 +617,7 @@ void SpawnStand(enemy_t which, S32 tilex, S32 tiley, S32 dir)
 
     map = mapsegs[0]+(tiley<<mapshift)+tilex;
     tile = *map;
-    
+
     if(tile == AMBUSHTILE)
     {
         tilemap[tilex][tiley] = 0;
@@ -626,17 +626,17 @@ void SpawnStand(enemy_t which, S32 tilex, S32 tiley, S32 dir)
         {
             tile = *(map+1);
         }
-        
+
         if (*(map-MAPWIDTH) >= AREATILE)
         {
             tile = *(map-MAPWIDTH);
         }
-        
+
         if (*(map+MAPWIDTH) >= AREATILE)
         {
             tile = *(map+MAPWIDTH);
         }
-        
+
         if ( *(map-1) >= AREATILE)
         {
             tile = *(map-1);
@@ -653,14 +653,14 @@ void SpawnStand(enemy_t which, S32 tilex, S32 tiley, S32 dir)
     newobj->flags |= FL_SHOOTABLE;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnPatrol
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -713,7 +713,7 @@ void SpawnPatrol(enemy_t which, S32 tilex, S32 tiley, S32 dir)
                 gamestate.killtotal++;
             }
         break;
-        
+
         default:
             /* do nothing */
         break;
@@ -733,15 +733,15 @@ void SpawnPatrol(enemy_t which, S32 tilex, S32 tiley, S32 dir)
         case 0:
             newobj->tilex++;
         break;
-        
+
         case 1:
             newobj->tiley--;
         break;
-        
+
         case 2:
             newobj->tilex--;
         break;
-        
+
         case 3:
             newobj->tiley++;
         break;
@@ -750,14 +750,14 @@ void SpawnPatrol(enemy_t which, S32 tilex, S32 tiley, S32 dir)
     actorat[newobj->tilex][newobj->tiley] = newobj;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_Stand
 =
 = Description:
 =
-= standard AI routine for all standing enemies 
+= standard AI routine for all standing enemies
 =
 ================================================================
 */
@@ -766,14 +766,14 @@ void T_Stand(objtype *ob)
     SightPlayer(ob);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_Path
 =
 = Description:
 =
-= standard AI routine for all walking enemies 
+= standard AI routine for all walking enemies
 =
 ================================================================
 */
@@ -786,7 +786,7 @@ void T_Path(objtype *ob)
     {
         return; /* yes and therefore has been put into combat frame */
     }
-    
+
     if (ob->dir == nodir)
     {
         SelectPathDir(ob);
@@ -795,10 +795,10 @@ void T_Path(objtype *ob)
             return;    /* all movement is blocked */
         }
     }
-    
+
     /* set maximum movement for this actor */
     move = ob->speed*tics;
-    
+
     /* loop until actor has moved the desired amount */
     while (move)
     {
@@ -807,13 +807,13 @@ void T_Path(objtype *ob)
         {
             /* yes then open the door */
             OpenDoor (-ob->distance-1);
-            
+
             /* waiting for a door to open */
             if (doorobjlist[-ob->distance-1].action != dr_open)
             {
                 return;
             }
-            
+
             ob->distance = TILEGLOBAL;    /* go ahead, the door is now open */
             TryWalk(ob);
         }
@@ -847,7 +847,7 @@ void T_Path(objtype *ob)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SelectPathDir
@@ -878,21 +878,21 @@ static void SelectPathDir(objtype *ob)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: A_DeathScream
 =
 = Description:
 =
-= Play death scream sound effect 
+= Play death scream sound effect
 =
 ================================================================
 */
 void A_DeathScream(objtype *ob)
 {
 
-    S32 sounds[9] = 
+    S32 sounds[9] =
     {
         DEATHSCREAM1SND,
         DEATHSCREAM2SND,
@@ -903,7 +903,7 @@ void A_DeathScream(objtype *ob)
         DEATHSCREAM8SND,
         DEATHSCREAM9SND
     };
-    
+
 #ifndef SHAREWARE
     if(mapon==9 && !US_RndT())
     {
@@ -917,7 +917,7 @@ void A_DeathScream(objtype *ob)
                 PlaySoundLocActor(DEATHSCREAM6SND,ob);
                 return;
             break;
-            
+
             default:
                 /* do nothing */
             break;
@@ -938,50 +938,50 @@ void A_DeathScream(objtype *ob)
             PlaySoundLocActor(sounds[US_RndT()%2],ob);
 #endif
         break;
-        
+
         case officerobj:
             PlaySoundLocActor(NEINSOVASSND,ob);
         break;
-        
+
         case ssobj:
-            PlaySoundLocActor(LEBENSND,ob); 
+            PlaySoundLocActor(LEBENSND,ob);
         break;
-        
+
         case dogobj:
             PlaySoundLocActor(DOGDEATHSND,ob);
         break;
-        
+
         case bossobj:
             SD_PlaySound(MUTTISND);
         break;
-        
+
         case schabbobj:
             SD_PlaySound(MEINGOTTSND);
         break;
         case fakeobj:
             SD_PlaySound(HITLERHASND);
         break;
-        
+
         case mechahitlerobj:
             SD_PlaySound(SCHEISTSND);
         break;
-        
+
         case realhitlerobj:
             SD_PlaySound(EVASND);
         break;
-        
+
         case gretelobj:
             SD_PlaySound(MEINSND);
         break;
-        
+
         case giftobj:
             SD_PlaySound(DONNERSND);
         break;
-        
+
         case fatobj:
             SD_PlaySound(ROSESND);
         break;
-        
+
         default:
             /* do nothing */
         break;
@@ -989,14 +989,14 @@ void A_DeathScream(objtype *ob)
 
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: A_StartDeathCam
 =
 = Description:
 =
-= Play actor death cam 
+= Play actor death cam
 =
 ================================================================
 */
@@ -1009,7 +1009,7 @@ void A_StartDeathCam(objtype *ob)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: A_Slurpie
@@ -1025,14 +1025,14 @@ void A_Slurpie(objtype *ob)
     SD_PlaySound(SLURPIESND);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnGift
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -1048,27 +1048,27 @@ void SpawnGift(S32 tilex, S32 tiley)
     }
 
     SpawnNewObj (tilex,tiley,&s_giftstand);
-    
+
     newobj->speed = SPDPATROL;
     newobj->obclass = giftobj;
     newobj->hitpoints = starthitpoints[gamestate.difficulty][en_gift];
     newobj->dir = nodir;
     newobj->flags |= FL_SHOOTABLE|FL_AMBUSH;
-    
+
     if(loadedgame == 0)
     {
         gamestate.killtotal++;
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnFat
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -1084,27 +1084,27 @@ void SpawnFat(S32 tilex, S32 tiley)
     }
 
     SpawnNewObj (tilex,tiley,&s_fatstand);
-    
+
     newobj->speed = SPDPATROL;
     newobj->obclass = fatobj;
     newobj->hitpoints = starthitpoints[gamestate.difficulty][en_fat];
     newobj->dir = nodir;
     newobj->flags |= FL_SHOOTABLE|FL_AMBUSH;
-    
+
     if(loadedgame == 0)
     {
         gamestate.killtotal++;
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnSchabbs
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -1120,27 +1120,27 @@ void SpawnSchabbs(S32 tilex, S32 tiley)
     }
 
     SpawnNewObj (tilex,tiley,&s_schabbstand);
-    
+
     newobj->speed = SPDPATROL;
     newobj->obclass = schabbobj;
     newobj->hitpoints = starthitpoints[gamestate.difficulty][en_schabbs];
     newobj->dir = nodir;
     newobj->flags |= FL_SHOOTABLE|FL_AMBUSH;
-    
+
     if(loadedgame == 0)
     {
         gamestate.killtotal++;
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnFakeHitler
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -1156,27 +1156,27 @@ void SpawnFakeHitler(S32 tilex, S32 tiley)
     }
 
     SpawnNewObj (tilex,tiley,&s_fakestand);
-    
+
     newobj->speed = SPDPATROL;
     newobj->obclass = fakeobj;
     newobj->hitpoints = starthitpoints[gamestate.difficulty][en_fake];
     newobj->dir = nodir;
     newobj->flags |= FL_SHOOTABLE|FL_AMBUSH;
-    
+
     if(loadedgame == 0)
     {
         gamestate.killtotal++;
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnHitler
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -1192,81 +1192,81 @@ void SpawnHitler(S32 tilex, S32 tiley)
     }
 
     SpawnNewObj(tilex,tiley,&s_mechastand);
-    
+
     newobj->speed = SPDPATROL;
     newobj->obclass = mechahitlerobj;
     newobj->hitpoints = starthitpoints[gamestate.difficulty][en_hitler];
     newobj->dir = nodir;
     newobj->flags |= FL_SHOOTABLE|FL_AMBUSH;
-    
+
     if(loadedgame == 0)
     {
         gamestate.killtotal++;
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnGretel
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
 void SpawnGretel(S32 tilex, S32 tiley)
 {
     SpawnNewObj (tilex,tiley,&s_gretelstand);
-    
+
     newobj->speed = SPDPATROL;
     newobj->obclass = gretelobj;
     newobj->hitpoints = starthitpoints[gamestate.difficulty][en_gretel];
     newobj->dir = nodir;
     newobj->flags |= FL_SHOOTABLE|FL_AMBUSH;
-    
+
     if(loadedgame == 0)
     {
         gamestate.killtotal++;
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnBoss
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
 void SpawnBoss(S32 tilex, S32 tiley)
 {
     SpawnNewObj(tilex,tiley,&s_bossstand);
-    
+
     newobj->speed = SPDPATROL;
     newobj->obclass = bossobj;
     newobj->hitpoints = starthitpoints[gamestate.difficulty][en_boss];
     newobj->dir = nodir;
     newobj->flags |= FL_SHOOTABLE|FL_AMBUSH;
-    
+
     if(loadedgame == 0)
     {
         gamestate.killtotal++;
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnGhosts
 =
 = Description:
 =
-=  
+=
 =
 ================================================================
 */
@@ -1277,19 +1277,19 @@ void SpawnGhosts (S32 which, S32 tilex, S32 tiley)
         case en_blinky:
             SpawnNewObj(tilex,tiley,&s_blinkychase1);
         break;
-            
+
         case en_clyde:
             SpawnNewObj(tilex,tiley,&s_clydechase1);
         break;
-            
+
         case en_pinky:
             SpawnNewObj(tilex,tiley,&s_pinkychase1);
         break;
-            
+
         case en_inky:
             SpawnNewObj(tilex,tiley,&s_inkychase1);
         break;
-        
+
         default:
             /* do nothing */
         break;
@@ -1299,7 +1299,7 @@ void SpawnGhosts (S32 which, S32 tilex, S32 tiley)
     newobj->speed = SPDDOG;
     newobj->dir = east;
     newobj->flags |= FL_AMBUSH;
-    
+
     if(loadedgame == 0)
     {
         gamestate.killtotal++;
@@ -1307,14 +1307,14 @@ void SpawnGhosts (S32 which, S32 tilex, S32 tiley)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnDeadGuard
 =
 = Description:
 =
-=  
+=
 =
 ================================================================
 */
@@ -1325,14 +1325,14 @@ void SpawnDeadGuard(S32 tilex, S32 tiley)
     newobj->obclass = inertobj;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_Ghosts
 =
 = Description:
 =
-=  
+=
 =
 ================================================================
 */
@@ -1343,7 +1343,7 @@ void T_Ghosts(objtype *ob)
     if (ob->dir == nodir)
     {
         SelectChaseDir (ob);
-        
+
         if (ob->dir == nodir)
         {
             return;    /* object is blocked in */
@@ -1376,14 +1376,14 @@ void T_Ghosts(objtype *ob)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_Chase
 =
 = Description:
 =
-= Actor chase player AI routine  
+= Actor chase player AI routine
 =
 ================================================================
 */
@@ -1399,7 +1399,7 @@ void T_Chase(objtype *ob)
     }
 
     dodge = 0;
-    
+
     if(CheckLine(ob))      /* got a shot at player? */
     {
         ob->hidden = 0;
@@ -1408,7 +1408,7 @@ void T_Chase(objtype *ob)
         dy = abs(ob->tiley - player->tiley);
         /* work out the longest distance between player and actor */
         dist = (dx > dy) ? dx : dy;
-        
+
         /* calaculate the chance of actor attacking based on distance */
         if(dist != 0)
         {
@@ -1431,7 +1431,7 @@ void T_Chase(objtype *ob)
                 }
             }
         }
-        
+
         if(US_RndT() < chance)
         {
             /* go into attack frame */
@@ -1440,51 +1440,51 @@ void T_Chase(objtype *ob)
                 case guardobj:
                     NewState(ob,&s_grdshoot1);
                 break;
-                
+
                 case officerobj:
                     NewState(ob,&s_ofcshoot1);
                 break;
-                
+
                 case mutantobj:
                     NewState(ob,&s_mutshoot1);
                 break;
-                
+
                 case ssobj:
                     NewState(ob,&s_ssshoot1);
                 break;
-                
+
                 case bossobj:
                     NewState(ob,&s_bossshoot1);
                 break;
-                
+
                 case gretelobj:
                     NewState(ob,&s_gretelshoot1);
                 break;
-                
+
                 case mechahitlerobj:
                     NewState(ob,&s_mechashoot1);
                 break;
-                
+
                 case realhitlerobj:
                     NewState(ob,&s_hitlershoot1);
                 break;
-                
+
                 default:
                     /* do nothing */
                 break;
             }
-            
+
             return;
         }
-        
+
         /* dont attack, dodge instead this time round */
         dodge = 1;
     }
     else
     {
-        ob->hidden = 1;  
+        ob->hidden = 1;
     }
-    
+
     if(ob->dir == nodir)
     {
         if(dodge == 1)
@@ -1495,16 +1495,16 @@ void T_Chase(objtype *ob)
         {
             SelectChaseDir(ob);
         }
-        
+
         if (ob->dir == nodir)
         {
             return;    /* object is blocked in */
         }
     }
-    
+
     /* set maximum movement for this actor */
     move = ob->speed*tics;
-    
+
     /* loop until actor has moved the desired amount */
     while(move)
     {
@@ -1513,25 +1513,25 @@ void T_Chase(objtype *ob)
         {
             /* yes then open the door */
             OpenDoor(-ob->distance-1);
-            
+
             /* waiting for a door to open */
             if (doorobjlist[-ob->distance-1].action != dr_open)
             {
                 return;
             }
-            
+
             ob->distance = TILEGLOBAL;    /* go ahead, the door is now open */
-            
+
             TryWalk(ob);
         }
-        
+
         /* if actor only needs to move a small amount, move him and exit */
         if(move < ob->distance)
         {
             MoveObj(ob,move);
             break;
         }
-        
+
         /* reached goal tile, so select another one            */
         /* fix position to account for round off during moving */
         ob->x = ((S32)ob->tilex<<TILESHIFT)+TILEGLOBAL/2;
@@ -1555,15 +1555,15 @@ void T_Chase(objtype *ob)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_Shoot
 =
 = Description:
 =
-= Try to damage the player, based on skill level and player's 
-= speed 
+= Try to damage the player, based on skill level and player's
+= speed
 =
 ================================================================
 */
@@ -1636,7 +1636,7 @@ void T_Shoot(objtype *ob)
             TakeDamage (damage,ob);
         }
     }
-    
+
     switch(ob->obclass)
     {
         case ssobj:
@@ -1647,35 +1647,35 @@ void T_Shoot(objtype *ob)
         case fatobj:
             PlaySoundLocActor(MISSILEFIRESND,ob);
         break;
-        
+
         case mechahitlerobj:
         case realhitlerobj:
         case bossobj:
             PlaySoundLocActor(BOSSFIRESND,ob);
         break;
-        
+
         case schabbobj:
             PlaySoundLocActor(SCHABBSTHROWSND,ob);
         break;
-        
+
         case fakeobj:
             PlaySoundLocActor(FLAMETHROWERSND,ob);
         break;
-        
+
         default:
             PlaySoundLocActor(NAZIFIRESND,ob);
         break;
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_DogChase
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -1688,13 +1688,13 @@ void T_DogChase(objtype *ob)
     if(ob->dir == nodir)
     {
         SelectDodgeDir(ob);
-        
+
         if (ob->dir == nodir)
         {
             return;    /* object is blocked in */
         }
     }
-    
+
     /* set maximum movement for this actor */
     move = ob->speed*tics;
 
@@ -1703,39 +1703,39 @@ void T_DogChase(objtype *ob)
     {
         /* check for byte range */
         dx = player->x - ob->x;
-        
+
         if (dx<0)
         {
             dx = -dx;
         }
-        
+
         dx -= move;
-        
+
         if (dx <= MINACTORDIST)
         {
             dy = player->y - ob->y;
-            
+
             if (dy<0)
             {
                 dy = -dy;
             }
-            
+
             dy -= move;
-            
+
             if (dy <= MINACTORDIST)
             {
                 NewState(ob,&s_dogjump1);
                 return;
             }
         }
-        
+
         /* if actor only needs to move a small amount, move him and exit */
         if (move < ob->distance)
         {
             MoveObj (ob,move);
             break;
         }
-        
+
         /* reached goal tile, so select another one            */
         /* fix position to account for round off during moving */
         ob->x = ((S32)ob->tilex<<TILESHIFT)+TILEGLOBAL/2;
@@ -1752,14 +1752,14 @@ void T_DogChase(objtype *ob)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_Bite
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -1771,25 +1771,25 @@ void T_Bite(objtype *ob)
     PlaySoundLocActor(DOGATTACKSND,ob);
 
     dx = player->x - ob->x;
-    
+
     if (dx<0)
     {
         dx = -dx;
     }
-    
+
     dx -= TILEGLOBAL;
-    
+
     if (dx <= MINACTORDIST)
     {
         dy = player->y - ob->y;
-        
+
         if (dy<0)
         {
             dy = -dy;
         }
-        
+
         dy -= TILEGLOBAL;
-        
+
         if (dy <= MINACTORDIST)
         {
             if(US_RndT()<180)
@@ -1801,14 +1801,14 @@ void T_Bite(objtype *ob)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_Gift
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -1826,26 +1826,26 @@ void T_Gift(objtype *ob)
     dy = abs(ob->tiley - player->tiley);
     /* work out the longest distance between player and actor */
     dist = dx>dy ? dx : dy;
-    
+
     /* got a shot at player? */
     if(CheckLine(ob) == 1)
     {
         ob->hidden = 0;
-        
+
         if((unsigned) US_RndT() < (tics<<3) && objfreelist)
         {
             /* go into attack frame */
             NewState (ob,&s_giftshoot1);
             return;
         }
-        
+
         dodge = 1;
     }
     else
     {
         ob->hidden = 1;
     }
-    
+
     if(ob->dir == nodir)
     {
         if(dodge)
@@ -1856,7 +1856,7 @@ void T_Gift(objtype *ob)
         {
             SelectChaseDir (ob);
         }
-        
+
         if (ob->dir == nodir)
         {
             return;    /* object is blocked in */
@@ -1871,12 +1871,12 @@ void T_Gift(objtype *ob)
         {
             /* waiting for a door to open */
             OpenDoor (-ob->distance-1);
-            
+
             if (doorobjlist[-ob->distance-1].action != dr_open)
             {
                 return;
             }
-            
+
             ob->distance = TILEGLOBAL;    /* go ahead, the door is now open */
             TryWalk(ob);
         }
@@ -1914,14 +1914,14 @@ void T_Gift(objtype *ob)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_GiftThrow
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -1934,14 +1934,14 @@ void T_GiftThrow(objtype *ob)
 
     deltax = player->x - ob->x;
     deltay = ob->y - player->y;
-    
+
     angle = (float) atan2((float) deltay, (float) deltax);
-    
+
     if (angle<0)
     {
         angle = (float) (M_PI*2+angle);
     }
-        
+
     iangle = (S32)(angle/(M_PI*2)*ANGLES);
 
     GetNewActor();
@@ -1962,7 +1962,7 @@ void T_GiftThrow(objtype *ob)
     PlaySoundLocActor (MISSILEFIRESND,newobj);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SelectRunDir
@@ -1991,7 +1991,7 @@ static void SelectRunDir(objtype *ob)
     {
         d[1]= west;
     }
-    
+
     if(deltay < 0)
     {
         d[2]=south;
@@ -2009,14 +2009,14 @@ static void SelectRunDir(objtype *ob)
     }
 
     ob->dir=d[1];
-    
+
     if(TryWalk(ob) == 1)
     {
         return;     /*either moved forward or attacked*/
     }
 
     ob->dir=d[2];
-    
+
     if(TryWalk(ob) == 1)
     {
         return;
@@ -2029,7 +2029,7 @@ static void SelectRunDir(objtype *ob)
         for (tdir=north; tdir<=west; tdir=(dirtype)(tdir+1))
         {
             ob->dir=tdir;
-            
+
             if(TryWalk(ob) == 1)
             {
                 return;
@@ -2041,7 +2041,7 @@ static void SelectRunDir(objtype *ob)
         for(tdir=west; tdir>=north; tdir=(dirtype)(tdir-1))
         {
             ob->dir=tdir;
-            
+
             if(TryWalk(ob) == 1)
             {
                 return;
@@ -2049,10 +2049,10 @@ static void SelectRunDir(objtype *ob)
         }
     }
 
-    ob->dir = nodir;    /* can't move */    
+    ob->dir = nodir;    /* can't move */
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: A_Smoke
@@ -2066,7 +2066,7 @@ static void SelectRunDir(objtype *ob)
 void A_Smoke(objtype *ob)
 {
     GetNewActor();
-    
+
     newobj->state = &s_smoke1;
     newobj->ticcount = 6;
 
@@ -2080,14 +2080,14 @@ void A_Smoke(objtype *ob)
     newobj->flags = FL_NEVERMARK;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_Projectile
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -2097,28 +2097,28 @@ void T_Projectile(objtype *ob)
     S32 deltay;
     S32 damage;
     S32 speed;
-    
+
     speed = (S32)ob->speed*tics;
-    
+
     deltax = FixedMul(speed,costable[ob->angle]);
     deltay = -FixedMul(speed,sintable[ob->angle]);
-    
+
     if(deltax > 0x10000l)
     {
         deltax = 0x10000l;
     }
-    
+
     if(deltay > 0x10000l)
     {
         deltay = 0x10000l;
     }
-    
+
     ob->x += deltax;
     ob->y += deltay;
-    
+
     deltax = LABS(ob->x - player->x);
     deltay = LABS(ob->y - player->y);
-    
+
     if(!ProjectileTryMove(ob))
     {
         if (ob->obclass == rocketobj)
@@ -2133,26 +2133,26 @@ void T_Projectile(objtype *ob)
 
         return;
     }
-    
+
     if(deltax < PROJECTILESIZE && deltay < PROJECTILESIZE)
-    {       
+    {
         /* hit the player */
         switch (ob->obclass)
         {
             case needleobj:
                 damage = (US_RndT() >>3) + 20;
             break;
-            
+
             case rocketobj:
             case hrocketobj:
             case sparkobj:
                 damage = (US_RndT() >>3) + 30;
             break;
-            
+
             case fireobj:
                 damage = (US_RndT() >>3);
             break;
-            
+
             default:
                 damage = (US_RndT() >>3);
             break;
@@ -2167,7 +2167,7 @@ void T_Projectile(objtype *ob)
     ob->tiley = (short)(ob->y >> TILESHIFT);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: ProjectileTryMove
@@ -2195,25 +2195,25 @@ static U8 ProjectileTryMove(objtype *ob)
         for (x=xl;x<=xh;x++)
         {
             check = actorat[x][y];
-            
+
             if (check && !ISPOINTER(check))
             {
                 return 0;
             }
         }
     }
-    
+
     return 1;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_Fat
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -2231,10 +2231,10 @@ void T_Fat (objtype *ob)
     dist = dx>dy ? dx : dy;
 
     /* got a shot at player? */
-    if(CheckLine(ob) == 1)                                              
+    if(CheckLine(ob) == 1)
     {
         ob->hidden = 0;
-        
+
         if((unsigned)US_RndT() < (tics<<3) && objfreelist)
         {
             /* go into attack frame */
@@ -2258,7 +2258,7 @@ void T_Fat (objtype *ob)
         {
             SelectChaseDir(ob);
         }
-        
+
         if(ob->dir == nodir)
         {
             return;    /* object is blocked in */
@@ -2271,15 +2271,15 @@ void T_Fat (objtype *ob)
     {
         if (ob->distance < 0)
         {
-            
+
             OpenDoor (-ob->distance-1);
-            
+
             /* waiting for a door to open */
             if (doorobjlist[-ob->distance-1].action != dr_open)
             {
                 return;
             }
-            
+
             ob->distance = TILEGLOBAL;    /* go ahead, the door is now open */
             TryWalk(ob);
         }
@@ -2317,14 +2317,14 @@ void T_Fat (objtype *ob)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_Schabb
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -2342,7 +2342,7 @@ void T_Schabb(objtype *ob)
     dist = dx>dy ? dx : dy;
 
     /* got a shot at player? */
-    if(CheckLine(ob) == 1) 
+    if(CheckLine(ob) == 1)
     {
         ob->hidden = 0;
         if((unsigned) US_RndT() < (tics<<3) && objfreelist)
@@ -2368,7 +2368,7 @@ void T_Schabb(objtype *ob)
         {
             SelectChaseDir (ob);
         }
-        
+
         if(ob->dir == nodir)
         {
             return;    /* object is blocked in */
@@ -2382,7 +2382,7 @@ void T_Schabb(objtype *ob)
         if (ob->distance < 0)
         {
             OpenDoor (-ob->distance-1);
-            
+
             /* waiting for a door to open */
             if (doorobjlist[-ob->distance-1].action != dr_open)
             {
@@ -2425,14 +2425,14 @@ void T_Schabb(objtype *ob)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_SchabbThrow
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -2445,14 +2445,14 @@ void T_SchabbThrow(objtype *ob)
 
     deltax = player->x - ob->x;
     deltay = ob->y - player->y;
-    
+
     angle = (float) atan2((float) deltay, (float) deltax);
-    
+
     if(angle<0)
     {
         angle = (float) (M_PI*2+angle);
     }
-    
+
     iangle = (S32)(angle/(M_PI*2)*ANGLES);
 
     GetNewActor ();
@@ -2474,14 +2474,14 @@ void T_SchabbThrow(objtype *ob)
     PlaySoundLocActor(SCHABBSTHROWSND,newobj);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_Fake
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -2490,10 +2490,10 @@ void T_Fake (objtype *ob)
     S32 move;
 
     /* got a shot at player? */
-    if(CheckLine(ob) == 1) 
+    if(CheckLine(ob) == 1)
     {
         ob->hidden = 0;
-        
+
         if((unsigned) US_RndT() < (tics<<1) && objfreelist)
         {
             /* go into attack frame */
@@ -2541,7 +2541,7 @@ void T_Fake (objtype *ob)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_Fake
@@ -2560,7 +2560,7 @@ void T_FakeFire (objtype *ob)
     S32   iangle;
 
     /* stop shooting if over MAXACTORS */
-    if (!objfreelist)       
+    if (!objfreelist)
     {
         NewState(ob,&s_fakechase1);
         return;
@@ -2569,12 +2569,12 @@ void T_FakeFire (objtype *ob)
     deltax = player->x - ob->x;
     deltay = ob->y - player->y;
     angle = (float) atan2((float) deltay, (float) deltax);
-    
+
     if(angle<0)
     {
         angle = (float)(M_PI*2+angle);
     }
-    
+
     iangle = (int) (angle/(M_PI*2)*ANGLES);
 
     GetNewActor ();
@@ -2595,14 +2595,14 @@ void T_FakeFire (objtype *ob)
     PlaySoundLocActor (FLAMETHROWERSND,newobj);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: A_MechaSound
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -2614,14 +2614,14 @@ void A_MechaSound (objtype *ob)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: A_HitlerMorph
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -2644,14 +2644,14 @@ void A_HitlerMorph (objtype *ob)
     newobj->hitpoints = hitpoints[gamestate.difficulty];
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnBJVictory
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -2665,14 +2665,14 @@ void SpawnBJVictory (void)
     newobj->temp1 = 6;    /* tiles to run forward */
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_BJRun
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -2705,14 +2705,14 @@ void T_BJRun (objtype *ob)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_BJJump
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -2724,14 +2724,14 @@ void T_BJJump (objtype *ob)
     MoveObj (ob,move);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_BJYell
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -2740,7 +2740,7 @@ void T_BJYell (objtype *ob)
     PlaySoundLocActor(YEAHSND,ob);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: T_BJDone

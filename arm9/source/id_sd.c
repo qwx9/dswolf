@@ -76,18 +76,18 @@ static void SDL_ShutAL(void);
 static S32 SD_PlayDigitized(U16 which);
 void SDL_t2Service(void);
 
-/* 
+/*
 ================================================================
 =
 = Function: SDL_t2Service
 =
 = Description:
 =
-= every 700hz this function is called from a timer interrupt 
-= it calls two function one to update music if needed and 
+= every 700hz this function is called from a timer interrupt
+= it calls two function one to update music if needed and
 = the other to update sound effects if needed.
 =
-================================================================ 
+================================================================
 */
 void SDL_t2Service(void)
 {
@@ -95,28 +95,28 @@ void SDL_t2Service(void)
 
     /* update music if required */
     SDL_ALService();
-    
+
     if((count % 5) == 0)
     {
         /* update sound effect if required */
         SDL_ALSoundService();
     }
-    
+
     count++;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SDL_ALService
 =
 = Description:
 =
-= every 700hz this function is called from a timer interrupt 
-= when called it will check to see if the adlib music emulation 
+= every 700hz this function is called from a timer interrupt
+= when called it will check to see if the adlib music emulation
 = needs updating.
 =
-================================================================ 
+================================================================
 */
 
 static void SDL_ALService(void)
@@ -138,9 +138,9 @@ static void SDL_ALService(void)
         alOut(a,v);
         sqHackLen -= 4;
     }
-    
+
     alTimeCount++;
-    
+
     if (!sqHackLen)
     {
         sqHackPtr = (U16 *)sqHack;
@@ -149,18 +149,18 @@ static void SDL_ALService(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SDL_ALSoundService
 =
 = Description:
 =
-= every 700hz this function is called from a timer interrupt 
-= when called it will check to see if the adlib sound effect 
+= every 700hz this function is called from a timer interrupt
+= when called it will check to see if the adlib sound effect
 = emulation needs updating.
 =
-================================================================ 
+================================================================
 */
 static void SDL_ALSoundService(void)
 {
@@ -169,7 +169,7 @@ static void SDL_ALSoundService(void)
     if(alSound != NULL)
     {
         s = *alSound++;
-        
+
         if(s == 0)
         {
             alOut(OPL_REGS_FREQ_2,0);
@@ -190,7 +190,7 @@ static void SDL_ALSoundService(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_Startup
@@ -199,33 +199,33 @@ static void SDL_ALSoundService(void)
 =
 = Detects all additional sound hardware and installs my ISR
 =
-================================================================ 
+================================================================
 */
 void SD_Startup(void)
 {
 
     /* reset adlib emulated chip */
     SDL_DetectAdLib();
-    
+
     /* calls the SDL_ALService function 700 times per second. */
     timerStart(2, ClockDivider_1024, TIMER_FREQ_1024(700), SDL_t2Service);
-    
+
     alTimeCount = 0;
-    
+
     /* init sound effects variables */
     SD_SetSoundMode(sdm_AdLib);
-    
+
     /* set music device */
     SD_SetMusicMode(smm_AdLib);
-    
+
     /* set digital sound device */
     SD_SetDigiDevice(sds_SoundBlaster);
-    
+
     /* init digital sound variables */
     SDL_SetupDigi();
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SDL_DetectAdLib
@@ -235,7 +235,7 @@ void SD_Startup(void)
 = Determines if there's an AdLib (or SoundBlaster
 = emulating an AdLib) present
 =
-================================================================ 
+================================================================
 */
 static U8 SDL_DetectAdLib(void)
 {
@@ -273,33 +273,33 @@ static U8 SDL_DetectAdLib(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_StartMusic
 =
 = Description:
 =
-= Start playing requested audio chunk 
+= Start playing requested audio chunk
 =
-================================================================ 
+================================================================
 */
 
 void SD_StartMusic(S32 chunk)
 {
     SD_MusicOff();
-    
+
     if (MusicMode == smm_AdLib)
     {
         S32 chunkLen = CA_CacheAudioChunk(chunk);
-    
+
         sqHack = (U16 *)(void *) audiosegs[chunk];     /* alignment is correct */
-    
+
         if(*sqHack == 0)
         {
             sqHackLen = sqHackSeqLen = chunkLen;
         }
-        else 
+        else
         {
             sqHackLen = sqHackSeqLen = *sqHack++;
             sqHackPtr = sqHack;
@@ -310,7 +310,7 @@ void SD_StartMusic(S32 chunk)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_MusicOn
@@ -318,9 +318,9 @@ void SD_StartMusic(S32 chunk)
 = Description:
 =
 = Sets a sqActive to true which allows the adlib interrupt handler
-= to start processing adlib sound. 
+= to start processing adlib sound.
 =
-================================================================ 
+================================================================
 */
 
 static void SD_MusicOn(void)
@@ -328,7 +328,7 @@ static void SD_MusicOn(void)
     sqActive = 1;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_MusicOff
@@ -337,7 +337,7 @@ static void SD_MusicOn(void)
 =
 = Clear active adlib sound channels (ie switch them off)
 =
-================================================================ 
+================================================================
 */
 
 S16 SD_MusicOff(void)
@@ -349,18 +349,18 @@ S16 SD_MusicOff(void)
     if(MusicMode == smm_AdLib)
     {
         alOut(OPL_REG_EFFECTS,0);
-    
+
         for (i = 0;i <= SQ_MAX_TRACKS;i++)
         {
             alOut((OPL_REGS_FREQ_2 + i),0);
         }
     }
-    
+
     /* return current position in song */
     return (S16) (sqHackPtr-sqHack);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_Shutdown
@@ -369,14 +369,14 @@ S16 SD_MusicOff(void)
 =
 = Shut down all sound generation on the adlib
 =
-================================================================ 
+================================================================
 */
 void SD_Shutdown(void)
 {
     SD_MusicOff();
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_PlaySound
@@ -385,59 +385,59 @@ void SD_Shutdown(void)
 =
 = plays the specified sound effect
 =
-================================================================ 
+================================================================
 */
 U8 SD_PlaySound(soundnames sound)
 {
     SoundCommon *s;
-    
+
     /* if sound effects are off do nothing */
     if((DigiMode == sds_Off) && (SoundMode == sdm_Off))
     {
         return 0;
     }
-    
+
     s = (SoundCommon *) SoundTable[sound];
-    
+
     if(s == NULL)
     {
         printf("SD_PlaySound() - Uncached sound \n");
         while(1){}; /* hang system */
     }
-    
+
     if((DigiMode != sds_Off) && (DigiMap[sound] != -1))
     {
         /* play digital sound */
         SD_PlayDigitized(DigiMap[sound]);
         return(0);
     }
-    
+
     /* only play fx if sound is on ! */
     if (SoundMode == sdm_Off)
     {
         return 0;
     }
-    
+
     if(s->length == 0)
     {
         printf("SD_PlaySound() - Zero length sound \n");
         while(1){}; /* hang system */
     }
-    
+
     if(s->priority < SoundPriority)
     {
         return 0;
     }
-    
+
     SDL_ALPlaySound((AdLibSound *)s);
-    
+
     SoundNumber = sound;
     SoundPriority = s->priority;
-    
+
     return 0;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_PlayDigitized
@@ -446,7 +446,7 @@ U8 SD_PlaySound(soundnames sound)
 =
 = Play digital sound
 =
-================================================================ 
+================================================================
 */
 static S32 SD_PlayDigitized(U16 which)
 {
@@ -460,13 +460,13 @@ static S32 SD_PlayDigitized(U16 which)
         printf("SD_PlayDigitized: bad sound number %i", which);
         while(1){}; /* hang system */
     }
-    
+
     NDS_ChannelHandle = soundPlaySample(SoundBuffers[which], SoundFormat_8Bit, DigiList[which].length , ORIGSAMPLERATE, 127, 64, false, 0);
-    
+
     return 0;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: PlaySoundLocGlobal
@@ -476,7 +476,7 @@ static S32 SD_PlayDigitized(U16 which)
 = Currently only plays sound should really set pan before,
 = playing sound to give stero effect.
 =
-================================================================ 
+================================================================
 */
 void PlaySoundLocGlobal(U16 s,fixed gx,fixed gy)
 {
@@ -486,7 +486,7 @@ void PlaySoundLocGlobal(U16 s,fixed gx,fixed gy)
     SD_PlaySound((soundnames) s);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_StopDigitized
@@ -495,7 +495,7 @@ void PlaySoundLocGlobal(U16 s,fixed gx,fixed gy)
 =
 = stops the current digital sound playing if it hasnt finished
 =
-================================================================ 
+================================================================
 */
 void SD_StopDigitized (void)
 {
@@ -503,13 +503,13 @@ void SD_StopDigitized (void)
     {
         return;
     }
-    
+
     soundKill(NDS_ChannelHandle);
-    
+
     NDS_ChannelHandle = -1;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SDL_SetupDigi
@@ -518,7 +518,7 @@ void SD_StopDigitized (void)
 =
 = Called at start up to initalize digital sound variables
 =
-================================================================ 
+================================================================
 */
 static void SDL_SetupDigi(void)
 {
@@ -526,19 +526,19 @@ static void SDL_SetupDigi(void)
     S32 lastPage;
     U32 size = 0;
     S32 page;
-    
+
     /* Correct padding enforced by PM_Startup() */
     U16 *soundInfoPage = (U16 *) (void *) PM_GetPage(ChunksInFile-1);
     NumDigi = (U16) PM_GetPageSize(ChunksInFile - 1) / 4;
-    
+
     DigiList = (digiinfo *) malloc(NumDigi * sizeof(digiinfo));
-    
+
     for(i = 0; i < NumDigi; i++)
     {
         /* Calculate the size of the digi from the sizes of the pages */
         /* between the start page and the start page of the next sound */
         DigiList[i].startpage = soundInfoPage[i * 2];
-        
+
         /* test to see if startpage is within a valid range */
         if((S32) DigiList[i].startpage >= ChunksInFile - 1)
         {
@@ -547,7 +547,7 @@ static void SDL_SetupDigi(void)
             NumDigi = i;
             break;
         }
-        
+
         /* workout last page of this sound */
         if(i < NumDigi - 1)
         {
@@ -556,7 +556,7 @@ static void SDL_SetupDigi(void)
             {
                 lastPage = ChunksInFile - 1;
             }
-            else 
+            else
             {
                 lastPage += PMSoundStart;
             }
@@ -565,38 +565,38 @@ static void SDL_SetupDigi(void)
         {
             lastPage = ChunksInFile - 1;
         }
-        
+
         /* work out the size of sound (size from startpage to lastpage) */
         for(page = PMSoundStart + DigiList[i].startpage; page < lastPage; page++)
         {
             size += PM_GetPageSize(page);
         }
-        
+
         /* Don't include padding of sound info page, if padding was added */
         if((lastPage == (ChunksInFile - 1)) && (PMSoundInfoPagePadded == 1))
         {
             size--;
         }
-        
+
         if(((size & 0xffff0000) != 0) && ((size & 0xffff) < soundInfoPage[i * 2 + 1]))
         {
             size -= 0x10000;
         }
-        
+
         size = (size & 0xffff0000) | soundInfoPage[i * 2 + 1];
 
         /* finally store sound length */
         DigiList[i].length = size;
-        
+
     }
-    
+
     for(i = 0; i < LASTSOUND; i++)
     {
         DigiMap[i] = -1;
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_PrepareSound
@@ -606,7 +606,7 @@ static void SDL_SetupDigi(void)
 = Called at start up to store sound data into a buffer so it
 = can be accessed quickly
 =
-================================================================ 
+================================================================
 */
 void SD_PrepareSound(S32 which)
 {
@@ -618,38 +618,38 @@ void SD_PrepareSound(S32 which)
         printf("SD_PrepareSound(%i): DigiList not initialized!\n", which);
         while(1){ /* hang system */ };
     }
-    
+
     S32 page = DigiList[which].startpage;
     S32 size = DigiList[which].length;
-    
+
     U8 *origsamples = PM_GetSound(page);
     if(origsamples + size >= PM_GetEnd())
     {
         printf("SD_PrepareSound(%i): Sound reaches out of page file!\n", which);
         while(1){ /* hang system */ };
     }
-    
+
     /* create buffer to store sound data */
     U8 *wavebuffer = (U8 *) malloc(size);
-    
+
     if(wavebuffer == NULL)
     {
         printf("Unable to allocate wave buffer for sound %i!\n", which);
         while(1){ /* hang system */ };
     }
-    
+
     /* convert from unsigned PCM to signed PCM */
     for(i = 0; i < size ; i++)
     {
         temp = (S8)origsamples[i];   /* convert to signed value ie 0x80 = -128 */
         wavebuffer[i] = temp + 128;  /* center around zero ie -128 + 128 = 0 */
     }
-    
+
     /* store pointer to this sound data*/
     SoundBuffers[which] = wavebuffer;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_SetSoundMode
@@ -658,26 +658,26 @@ void SD_PrepareSound(S32 which)
 =
 = Sets sound effects variables
 =
-================================================================ 
+================================================================
 */
 U8 SD_SetSoundMode(SDMode mode)
 {
-    
+
     SD_StopSound();
-    
+
     SoundTable = &audiosegs[STARTADLIBSOUNDS];
-    
+
     if(mode != SoundMode)
     {
         SDL_ShutDevice();
         SoundMode = mode;
         SDL_StartDevice();
     }
-    
+
     return(1);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_StopSound
@@ -686,7 +686,7 @@ U8 SD_SetSoundMode(SDMode mode)
 =
 = if a sound is playing, stops it
 =
-================================================================ 
+================================================================
 */
 void SD_StopSound(void)
 {
@@ -694,11 +694,11 @@ void SD_StopSound(void)
     {
         SDL_ALStopSound();
     }
-    
+
     SDL_SoundFinished();
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SDL_SoundFinished
@@ -707,7 +707,7 @@ void SD_StopSound(void)
 =
 = reset sound effect variables
 =
-================================================================ 
+================================================================
 */
 static void SDL_SoundFinished(void)
 {
@@ -715,7 +715,7 @@ static void SDL_SoundFinished(void)
     SoundPriority = 0;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SDL_ShutDevice
@@ -724,7 +724,7 @@ static void SDL_SoundFinished(void)
 =
 = turns off whatever device was being used for sound fx
 =
-================================================================ 
+================================================================
 */
 static void SDL_ShutDevice(void)
 {
@@ -736,7 +736,7 @@ static void SDL_ShutDevice(void)
     SoundMode = sdm_Off;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SDL_ShutAL
@@ -745,7 +745,7 @@ static void SDL_ShutDevice(void)
 =
 = Shuts down the AdLib card for sound effects
 =
-================================================================ 
+================================================================
 */
 static void SDL_ShutAL(void)
 {
@@ -766,7 +766,7 @@ static void SDL_ShutAL(void)
     SDL_AlSetFXInst(&alZeroInst);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_GetSoundMode
@@ -775,14 +775,14 @@ static void SDL_ShutAL(void)
 =
 = returns sound effects mode
 =
-================================================================ 
+================================================================
 */
 SDMode SD_GetSoundMode(void)
 {
-    return(SoundMode); 
+    return(SoundMode);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_SetMusicMode
@@ -791,7 +791,7 @@ SDMode SD_GetSoundMode(void)
 =
 = sets the device to use for background music
 =
-================================================================ 
+================================================================
 */
 U8 SD_SetMusicMode(SMMode mode)
 {
@@ -799,18 +799,18 @@ U8 SD_SetMusicMode(SMMode mode)
     {
         SD_MusicOff();
     }
-    
+
     while(SD_MusicPlaying() != 0)
     {
         Delay_ms(5);
     }
 
     MusicMode = mode;
-    
+
     return(1);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_MusicPlaying
@@ -819,7 +819,7 @@ U8 SD_SetMusicMode(SMMode mode)
 =
 = returns true if music is currently playing, false if not
 =
-================================================================ 
+================================================================
 */
 U8 SD_MusicPlaying(void)
 {
@@ -838,23 +838,23 @@ U8 SD_MusicPlaying(void)
     return(result);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_GetMusicMode
 =
 = Description:
 =
-= returns device use for music 
+= returns device use for music
 =
-================================================================ 
+================================================================
 */
 SMMode SD_GetMusicMode(void)
 {
     return(MusicMode);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_SetDigiDevice
@@ -863,7 +863,7 @@ SMMode SD_GetMusicMode(void)
 =
 = sets the device to use digital effects
 =
-================================================================ 
+================================================================
 */
 void SD_SetDigiDevice(SDSMode mode)
 {
@@ -871,11 +871,11 @@ void SD_SetDigiDevice(SDSMode mode)
     {
         return;
     }
-    
+
     DigiMode = mode;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_GetDigiDevice
@@ -884,14 +884,14 @@ void SD_SetDigiDevice(SDSMode mode)
 =
 = returns the device used digital effects
 =
-================================================================ 
+================================================================
 */
 SDSMode SD_GetDigiDevice(void)
 {
     return(DigiMode);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_WaitSoundDone
@@ -900,7 +900,7 @@ SDSMode SD_GetDigiDevice(void)
 =
 = waits until the current sound is done playing
 =
-================================================================ 
+================================================================
 */
 void SD_WaitSoundDone(void)
 {
@@ -910,17 +910,17 @@ void SD_WaitSoundDone(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_SoundPlaying
 =
 = Description:
 =
-= returns the sound number that's playing, or 0 if no sound 
+= returns the sound number that's playing, or 0 if no sound
 = is playing
 =
-================================================================ 
+================================================================
 */
 U16 SD_SoundPlaying(void)
 {
@@ -941,7 +941,7 @@ U16 SD_SoundPlaying(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SDL_StartDevice
@@ -950,7 +950,7 @@ U16 SD_SoundPlaying(void)
 =
 = turns on sound fx
 =
-================================================================ 
+================================================================
 */
 static void SDL_StartDevice(void)
 {
@@ -958,12 +958,12 @@ static void SDL_StartDevice(void)
     {
         SDL_StartAL();
     }
-    
+
     SoundNumber = (soundnames) 0;
     SoundPriority = 0;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SDL_StartAL
@@ -972,16 +972,16 @@ static void SDL_StartDevice(void)
 =
 = Starts up the AdLib card for sound effects
 =
-================================================================ 
+================================================================
 */
 static void SDL_StartAL(void)
 {
     alOut(OPL_REG_EFFECTS,0);
-    
+
     SDL_AlSetFXInst(&alZeroInst);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SDL_AlSetFXInst
@@ -990,7 +990,7 @@ static void SDL_StartAL(void)
 =
 = Set sound effect
 =
-================================================================ 
+================================================================
 */
 static void SDL_AlSetFXInst(Instrument *inst)
 {
@@ -1012,7 +1012,7 @@ static void SDL_AlSetFXInst(Instrument *inst)
     alOut(OPL_REGS_FEEDBACK,0);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SDL_ALPlaySound
@@ -1021,7 +1021,7 @@ static void SDL_AlSetFXInst(Instrument *inst)
 =
 = Plays the specified sound on the AdLib card
 =
-================================================================ 
+================================================================
 */
 static void SDL_ALPlaySound(AdLibSound *sound)
 {
@@ -1045,16 +1045,16 @@ static void SDL_ALPlaySound(AdLibSound *sound)
     alSound = (U8 *)data;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SD_ContinueMusic
 =
 = Description:
 =
-= Restart music from startoffs within song 
+= Restart music from startoffs within song
 =
-================================================================ 
+================================================================
 */
 void SD_ContinueMusic(S32 chunk, S32 startoffs)
 {
@@ -1062,14 +1062,14 @@ void SD_ContinueMusic(S32 chunk, S32 startoffs)
     S32 chunkLen;
     U8 reg;
     U8 val;
-    
+
     SD_MusicOff();
 
     if(MusicMode == smm_AdLib)
     {
         chunkLen = CA_CacheAudioChunk(chunk);
         sqHack = (U16 *)(void *) audiosegs[chunk];     /* alignment is correct */
-        
+
         if(*sqHack == 0)
         {
             sqHackLen = sqHackSeqLen = chunkLen;
@@ -1078,7 +1078,7 @@ void SD_ContinueMusic(S32 chunk, S32 startoffs)
         {
             sqHackLen = sqHackSeqLen = *sqHack++;
         }
-        
+
         sqHackPtr = sqHack;
 
         if(startoffs >= sqHackLen)
@@ -1094,7 +1094,7 @@ void SD_ContinueMusic(S32 chunk, S32 startoffs)
         {
             reg = *(U8 *)sqHackPtr;
             val = *(((U8 *)sqHackPtr) + 1);
-            
+
             if((reg >= 0xb1) && (reg <= 0xb8))
             {
                 val &= 0xdf;           /* disable play note flag */
@@ -1108,7 +1108,7 @@ void SD_ContinueMusic(S32 chunk, S32 startoffs)
             sqHackPtr += 2;
             sqHackLen -= 4;
         }
-        
+
         sqHackTime = 0;
         alTimeCount = 0;
 
@@ -1116,7 +1116,7 @@ void SD_ContinueMusic(S32 chunk, S32 startoffs)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SDL_ALStopSound
@@ -1125,7 +1125,7 @@ void SD_ContinueMusic(S32 chunk, S32 startoffs)
 =
 = Turns off any sound effects playing through the AdLib card
 =
-================================================================ 
+================================================================
 */
 static void SDL_ALStopSound(void)
 {
@@ -1133,7 +1133,7 @@ static void SDL_ALStopSound(void)
     alOut(OPL_REGS_FREQ_2, 0);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: alOut
@@ -1142,7 +1142,7 @@ static void SDL_ALStopSound(void)
 =
 = Write a value to a adlib register
 =
-================================================================ 
+================================================================
 */
 
 static void alOut(U32 reg, U32 value)

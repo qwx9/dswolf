@@ -106,14 +106,14 @@ static U8 TransformTile (S32 tx, S32 ty, S16 *dispx, S16 *dispheight);
 static void TransformActor(objtype *ob);
 static S32 CalcRotate (objtype *ob);
 
-/* 
+/*
 ================================================================
 =
 = Function: ThreeDRefresh
 =
 = Description:
 =
-= Update view frame 
+= Update view frame
 =
 ================================================================
 */
@@ -122,24 +122,24 @@ void ThreeDRefresh(void)
 
     memset(spotvis,0,MAPAREA);
     spotvis[player->tilex][player->tiley] = 1;    /* Detect all sprites over player fix */
-    
+
     CalcViewVariables();
-    
+
     /* clear last frame and paint ceiling / floor colour */
-    VGAClearScreen(); 
-    
+    VGAClearScreen();
+
     /* re-draw walls  */
     WallRefresh();
-    
+
     /* draw all the scaled images */
     DrawScaleds();
-    
+
     DrawPlayerWeapon();
-    
+
     UpdateScreen(0);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CalcViewVariables
@@ -156,7 +156,7 @@ static void CalcViewVariables(void)
     midangle = viewangle*(FINEANGLES/ANGLES);
     viewsin = sintable[viewangle];
     viewcos = costable[viewangle];
-    
+
     /* convert players position into screen x ,y coords */
     viewx = player->x - FixedMul(focallength,viewcos);
     viewy = player->y + FixedMul(focallength,viewsin);
@@ -170,14 +170,14 @@ static void CalcViewVariables(void)
     viewty = (S16)(player->y >> TILESHIFT);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: WallRefresh
 =
 = Description:
 =
-= re-draw walls for this frame 
+= re-draw walls for this frame
 =
 ================================================================
 */
@@ -198,7 +198,7 @@ static void WallRefresh(void)
     ScalePost();                    /* no more optimization on last post */
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: AsmRefresh
@@ -217,21 +217,21 @@ static void AsmRefresh(void)
     U32 xpartial = 0;   /* holds distance between player and tile side */
     U32 ypartial = 0;
     S16 angl = 0;
-    
+
     for(pixx=0; pixx<viewwidth; pixx++)
     {
         angl = midangle + pixelangle[pixx];
-        
+
         if(angl<0)
-        {   
+        {
             angl+= FINEANGLES;
         }
-        
+
         if(angl>=3600)
         {
             angl-= FINEANGLES;
         }
-        
+
         if(angl<900)
         {
             xtilestep = 1;
@@ -268,16 +268,16 @@ static void AsmRefresh(void)
             xpartial = xpartialup;
             ypartial = ypartialup;
         }
-        
+
         yintercept = FixedMul(ystep,xpartial)+viewy;
         xtile = focaltx+xtilestep;
         xspot = (U16)((xtile<<mapshift)+((U32)yintercept>>16));
-        
+
         xintercept = FixedMul(xstep,ypartial)+viewx;
         ytile = focalty+ytilestep;
         yspot = (U16)((((U32)xintercept>>16)<<mapshift)+ytile);
         texdelta = 0;
-        
+
         do
         {
             if(ytilestep == -1 && (yintercept>>16)<=ytile) goto horizentry;
@@ -285,7 +285,7 @@ static void AsmRefresh(void)
 vertentry:
 
             tilehit = ((U8 *)tilemap)[xspot];
-            
+
             if(tilehit != 0)
             {
                 /* check to see if we need to draw a door */
@@ -296,13 +296,13 @@ vertentry:
                     {
                         goto passvert;
                     }
-                    
+
                     /* is door fully open ? */
                     if((U16)yintbuf < doorposition[(tilehit & 0x7f)])
                     {
                         goto passvert;
                     }
-                    
+
                     yintercept= yintbuf;
                     xintercept= (xtile<<TILESHIFT)|0x8000;
                     ytile = (S16) (yintercept >> TILESHIFT);
@@ -321,7 +321,7 @@ vertentry:
                         HitVertWall();
                     }
                 }
-                
+
                 break;
             }
 passvert:
@@ -330,11 +330,11 @@ passvert:
             xtile += xtilestep;
             yintercept += ystep;
             xspot = (U16)((xtile<<mapshift)+((U32)yintercept>>16));
-        
+
         }while(1);
-        
+
         continue;
-        
+
         do
         {
             if(xtilestep == -1 && (xintercept>>16)<=xtile) goto vertentry;
@@ -352,13 +352,13 @@ horizentry:
                     {
                         goto passhoriz;
                     }
-                    
+
                     /* is door fully open ? */
                     if((U16)xintbuf<doorposition[(tilehit & 0x7f)])
                     {
                         goto passhoriz;
                     }
-                    
+
                     xintercept = xintbuf;
                     yintercept = (ytile<<TILESHIFT) + 0x8000;
                     xtile = (S16) (xintercept >> TILESHIFT);
@@ -377,7 +377,7 @@ horizentry:
                         HitHorizWall();
                     }
                 }
-                
+
                 break;
             }
 passhoriz:
@@ -385,12 +385,12 @@ passhoriz:
             ytile+=ytilestep;
             xintercept+=xstep;
             yspot=(U16)((((U32)xintercept>>16)<<mapshift)+ytile);
-        
+
         }while(1);
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: HitHorizWall
@@ -409,7 +409,7 @@ static void HitHorizWall(void)
 
     /* work out texture offset (texture slice to use) */
     texture = ((xintercept+texdelta)>>TEXTUREFROMFIXEDSHIFT) & TEXTUREMASK;
-    
+
     if(ytilestep == -1)
     {
         yintercept += TILEGLOBAL;
@@ -418,7 +418,7 @@ static void HitHorizWall(void)
     {
         texture = TEXTUREMASK - texture;
     }
-    
+
     /* did we hit the same tile as the last time we entered into this function */
     if((lastside == 0) && (lastintercept == ytile) && (lasttilehit == tilehit) && !(lasttilehit & 0x40))
     {
@@ -429,7 +429,7 @@ static void HitHorizWall(void)
             wallheight[pixx] = wallheight[pixx-1];
             return;
         }
-        
+
         ScalePost();
         wallheight[pixx] = CalcHeight();
         postsource += texture-lasttexture;
@@ -437,12 +437,12 @@ static void HitHorizWall(void)
         lasttexture = texture;
         return;
     }
-    
+
     if(lastside != -1)
     {
         ScalePost();
     }
-    
+
     /* new wall */
     lastside = 0;
     lastintercept = ytile;
@@ -450,12 +450,12 @@ static void HitHorizWall(void)
     lasttexture = texture;
     wallheight[pixx] = CalcHeight();
     postx = pixx;
-    
+
     if((tilehit & 0x40) == 0x40)
-    {   
+    {
         /* check for adjacent doors */
         xtile = (S16)(xintercept>>TILESHIFT);
-        
+
         if(tilemap[xtile][ytile-ytilestep] & 0x80)
         {
             wallpic = DOORWALL + 2;
@@ -473,7 +473,7 @@ static void HitHorizWall(void)
     postsource = PM_GetTexture(wallpic) + texture;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: HitVertWall
@@ -489,16 +489,16 @@ static void HitVertWall(void)
 {
     S32 wallpic;
     S32 texture;
-    
+
     /* work out texture offset (texture slice to use) */
     texture = ((yintercept+texdelta)>>TEXTUREFROMFIXEDSHIFT)&TEXTUREMASK;
-    
+
     if(xtilestep == -1)
     {
         texture = TEXTUREMASK-texture;
         xintercept += TILEGLOBAL;
     }
-    
+
     /* did we hit the same tile as the last time we entered into this function */
     if((lastside == 1) && (lastintercept == xtile) && (lasttilehit == tilehit) && !(lasttilehit & 0x40))
     {
@@ -509,7 +509,7 @@ static void HitVertWall(void)
             wallheight[pixx] = wallheight[pixx-1];
             return;
         }
-        
+
         ScalePost();
         wallheight[pixx] = CalcHeight();
         postsource += texture-lasttexture;
@@ -517,7 +517,7 @@ static void HitVertWall(void)
         lasttexture = texture;
         return;
     }
-    
+
     if(lastside!=-1)
     {
         ScalePost();
@@ -529,11 +529,11 @@ static void HitVertWall(void)
     lasttexture=texture;
     wallheight[pixx] = CalcHeight();
     postx = pixx;
-    
+
     if (tilehit & 0x40)
     {   /* check for adjacent doors */
         ytile = (short)(yintercept>>TILESHIFT);
-        
+
         if((tilemap[xtile-xtilestep][ytile] & 0x80) == 0x80)
         {
             wallpic = DOORWALL+3;
@@ -551,7 +551,7 @@ static void HitVertWall(void)
     postsource = PM_GetTexture(wallpic) + texture;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: HitVertDoor
@@ -572,7 +572,7 @@ static void HitVertDoor(void)
 
     /* get door number hit */
     doornum = tilehit & 0x7f;
-    
+
     /* work out texture offset (texture slice to use) */
     texture = ((yintercept-doorposition[doornum])>>TEXTUREFROMFIXEDSHIFT)&TEXTUREMASK;
 
@@ -586,7 +586,7 @@ static void HitVertDoor(void)
             wallheight[pixx] = wallheight[pixx-1];
             return;
         }
-        
+
         ScalePost();
         wallheight[pixx] = CalcHeight();
         postsource+=texture-lasttexture;
@@ -611,18 +611,18 @@ static void HitVertDoor(void)
         case dr_normal:
             doorpage = DOORWALL+1;
         break;
-        
+
         case dr_lock1:
         case dr_lock2:
         case dr_lock3:
         case dr_lock4:
             doorpage = DOORWALL+7;
         break;
-        
+
         case dr_elevator:
             doorpage = DOORWALL+5;
         break;
-        
+
         default:
             doorpage = DOORWALL+1; /* stop compile warning */
         break;
@@ -631,7 +631,7 @@ static void HitVertDoor(void)
     postsource = PM_GetTexture(doorpage) + texture;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: HitHorizDoor
@@ -688,18 +688,18 @@ static void HitHorizDoor(void)
         case dr_normal:
             doorpage = DOORWALL;
         break;
-        
+
         case dr_lock1:
         case dr_lock2:
         case dr_lock3:
         case dr_lock4:
             doorpage = DOORWALL+6;
         break;
-        
+
         case dr_elevator:
             doorpage = DOORWALL+4;
         break;
-        
+
         default:
             doorpage = DOORWALL; /* stop compile warning */
         break;
@@ -708,7 +708,7 @@ static void HitHorizDoor(void)
     postsource = PM_GetTexture(doorpage) + texture;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: TransformActor
@@ -740,7 +740,7 @@ static void TransformActor (objtype *ob)
     /* calculate newx */
     gxt = FixedMul(gx,viewcos);
     gyt = FixedMul(gy,viewsin);
-    
+
     nx = gxt-gyt-ACTORSIZE;     /* fudge the shape forward a bit, because    */
                                  /* the midpoint could put parts of the shape */
                                  /* into an adjacent wall                     */
@@ -766,7 +766,7 @@ static void TransformActor (objtype *ob)
     ob->viewheight = (U16)(heightnumerator/(nx>>8));
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: TransformTile
@@ -829,14 +829,14 @@ static U8 TransformTile (S32 tx, S32 ty, S16 *dispx, S16 *dispheight)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CalcRotate
 =
 = Description:
 =
-= 
+=
 =
 ================================================================
 */
@@ -860,12 +860,12 @@ static S32 CalcRotate (objtype *ob)
     }
 
     angle+=ANGLES/16;
-    
+
     while (angle>=ANGLES)
     {
         angle-=ANGLES;
     }
-    
+
     while (angle<0)
     {
         angle+=ANGLES;
@@ -875,11 +875,11 @@ static S32 CalcRotate (objtype *ob)
     {
         return 0;                   /* pain with shooting frame bugfix  */
     }
-    
+
     return angle/(ANGLES/8);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CalcHeight
@@ -894,23 +894,23 @@ static S32 CalcHeight(void)
 {
     fixed z = FixedMul(xintercept - viewx, viewcos)
         - FixedMul(yintercept - viewy, viewsin);
-        
+
     if(z < MINDIST)
     {
         z = MINDIST;
     }
-    
+
     S32 height = heightnumerator / (z >> 8);
-    
+
     if(height < min_wallheight)
     {
         min_wallheight = height;
     }
-    
+
     return height;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DrawScaleds
@@ -931,19 +931,19 @@ static void DrawScaleds(void)
     visobj_t *visstep = NULL;
     visobj_t *farthest = NULL;
     statobj_t *statptr = NULL;
-    
+
     U8    *tilespot;
     U8    *visspot;
     U32   spotloc;
     objtype   *obj;
 
     visptr = &vislist[0];
-    
+
     /* place static objects */
     for (statptr = &statobjlist[0] ; statptr !=laststatobj ; statptr++)
     {
         visptr->shapenum = statptr->shapenum;
-    
+
         if ((visptr->shapenum) == -1)
         {
             continue;    /* object has been deleted */
@@ -958,7 +958,7 @@ static void DrawScaleds(void)
             &visptr->viewx,&visptr->viewheight) && (statptr->flags & FL_BONUS))
         {
             GetBonus(statptr);
-            
+
             if(statptr->shapenum == -1)
             {
                 continue;    /* object has been taken */
@@ -977,13 +977,13 @@ static void DrawScaleds(void)
             visptr++;
         }
     }
-    
+
     /* place active objects */
-    
+
     for (obj = player->next ; obj != NULL ; obj = obj->next)
-    {   
+    {
         visptr->shapenum = obj->state->shapenum;
-    
+
         if (visptr->shapenum == 0)
         {
             continue; /* no shape */
@@ -994,7 +994,7 @@ static void DrawScaleds(void)
         tilespot = &tilemap[0][0]+spotloc;
 
         /* could be in any of the nine surrounding tiles */
-        if (*visspot 
+        if (*visspot
             || ( *(visspot-1) && !*(tilespot-1) )
             || ( *(visspot+1) && !*(tilespot+1) )
             || ( *(visspot-65) && !*(tilespot-65) )
@@ -1006,7 +1006,7 @@ static void DrawScaleds(void)
         {
             obj->active = ac_yes;
             TransformActor(obj);
-            
+
             if(obj->viewheight == 0)
             {
                 continue;    /* too close or far away */
@@ -1014,7 +1014,7 @@ static void DrawScaleds(void)
 
             visptr->viewx = obj->viewx;
             visptr->viewheight = obj->viewheight;
-            
+
             if (visptr->shapenum == -1)
             {
                 visptr->shapenum = obj->temp1;  /* special shape */
@@ -1030,7 +1030,7 @@ static void DrawScaleds(void)
                 visptr->flags = (S16) obj->flags;
                 visptr++;
             }
-            
+
             obj->flags |= FL_VISABLE;
         }
         else
@@ -1038,7 +1038,7 @@ static void DrawScaleds(void)
             obj->flags &= ~FL_VISABLE;
         }
     }
-    
+
     /* draw from back to front */
     numvisable = (S32) (visptr-&vislist[0]);
 
@@ -1050,11 +1050,11 @@ static void DrawScaleds(void)
     for (i = 0; i<numvisable; i++)
     {
         least = 32000;
-        
+
         for (visstep = &vislist[0] ; visstep<visptr ; visstep++)
         {
             height = visstep->viewheight;
-            
+
             if (height < least)
             {
                 least = height;
@@ -1068,8 +1068,8 @@ static void DrawScaleds(void)
         farthest->viewheight = 32000;
     }
 }
-    
-/* 
+
+/*
 ================================================================
 =
 = Function: DrawPlayerWeapon
@@ -1083,21 +1083,21 @@ static void DrawScaleds(void)
 static void DrawPlayerWeapon(void)
 {
     S32 shapenum;
-    
+
     if(gamestate.victoryflag)
     {
         return;
     }
-    
+
     if(gamestate.weapon != wp_none)
     {
         shapenum = weaponscale[gamestate.weapon] + gamestate.weaponframe;
         SimpleScaleShape(viewwidth/2,shapenum,viewheight+1);
     }
-    
+
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CalcTics
@@ -1117,15 +1117,15 @@ void CalcTics(void)
     {
         lasttimecount = GetTimeCount();    /* if the game was paused a LONG time */
     }
-    
+
     do
     {
         newtime = GetTimeCount();
         tics = newtime-lasttimecount;
     } while (!tics);                       /* make sure at least one tic passes */
-    
+
     lasttimecount = newtime;
-    
+
     if(tics > MAXTICS)
     {
         tics = MAXTICS;

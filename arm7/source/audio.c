@@ -79,21 +79,21 @@ int main() {
     installSoundFIFO();
 
     installSystemFIFO();
-    
+
     fifoSetValue32Handler(FIFO_ADLIB, AdLibHandler, 0);
 
     TIMER0_CR = 0;
     irqSet(IRQ_VCOUNT, VcountHandler);
 
     irqEnable( IRQ_VBLANK | IRQ_VCOUNT | IRQ_NETWORK);
-    
+
     REG_SOUNDCNT = SOUND_ENABLE;
     REG_MASTER_VOLUME = 127;
-    
+
     setPowerButtonCB(powerButtonCB);
-    
-    AdlibEmulator();                /* We never return from here */  
-    
+
+    AdlibEmulator();                /* We never return from here */
+
     /* Keep the ARM7 mostly idle */
     while (!exitflag)
     {
@@ -103,6 +103,6 @@ int main() {
         }
         swiWaitForVBlank();
     }
-    
+
     return 0;
 }

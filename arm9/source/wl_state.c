@@ -67,7 +67,7 @@ extern U32 tics;
 extern U8 areabyplayer[NUMAREAS];
 extern U8 madenoise;
 extern objtype *player;
-extern U16 plux; 
+extern U16 plux;
 extern U16 pluy;    /* player coordinates scaled to unsigned */
 extern U8 tilemap[MAPSIZE][MAPSIZE];
 extern U16 doorposition[MAXDOORS];    /* leading edge of door 0=closed, 0xffff = fully open */
@@ -100,7 +100,7 @@ static const dirtype diagonal[9][9] =
                 {nodir,nodir,nodir,nodir,nodir,nodir,nodir,nodir,nodir}
 };
 
-/* 
+/*
 ================================================================
 =
 = Function: SpawnNewObj
@@ -118,7 +118,7 @@ void SpawnNewObj(U32 tilex, U32 tiley, statetype *state)
 {
     GetNewActor ();
     newobj->state = state;
-    
+
     newobj->ticcount = 0;
 
     newobj->tilex = (S16) tilex;
@@ -128,20 +128,20 @@ void SpawnNewObj(U32 tilex, U32 tiley, statetype *state)
     newobj->dir = nodir;
 
     actorat[tilex][tiley] = newobj;
-    
+
     newobj->areanumber =
         *(mapsegs[0] + (newobj->tiley<<mapshift)+newobj->tilex) - AREATILE;
 }
 
-/* 
+/*
 ================================================================
 =
-= Function: SightPlayer    
+= Function: SightPlayer
 =
-= Description: 
+= Description:
 =
 = Called by actors that ARE NOT chasing the player. If the player
-= is detected (by sight, noise, or proximity), the actor is put 
+= is detected (by sight, noise, or proximity), the actor is put
 = into it's combat frame and true is returned.
 =
 = Incorporates a random reaction delay
@@ -155,7 +155,7 @@ U8 SightPlayer(objtype *ob)
         iprintf("An actor in ATTACKMODE called SightPlayer!");
         while(1){ /* hang system */ };
     }
-    
+
     if(ob->temp2 != 0)
     {
         /* count down reaction time */
@@ -173,7 +173,7 @@ U8 SightPlayer(objtype *ob)
         {
             return 0;    /* no then return */
         }
-        
+
         /* if this flag is set actor will try and ambush player        */
         /* as soon as he is the same area and the actor can see player */
         if(ob->flags & FL_AMBUSH)
@@ -183,7 +183,7 @@ U8 SightPlayer(objtype *ob)
             {
                 return 0; /* no then return */
             }
-            
+
             ob->flags &= ~FL_AMBUSH;
         }
         else
@@ -194,7 +194,7 @@ U8 SightPlayer(objtype *ob)
                 return 0;
             }
         }
-        
+
         /* player is in current location but not    */
         /* visable set new reaction time and return */
         switch (ob->obclass)
@@ -202,19 +202,19 @@ U8 SightPlayer(objtype *ob)
             case guardobj:
                 ob->temp2 = 1+US_RndT()/4;
             break;
-                
+
             case officerobj:
                 ob->temp2 = 2;
             break;
-                
+
             case mutantobj:
                 ob->temp2 = 1+US_RndT()/6;
             break;
-                
+
             case ssobj:
                 ob->temp2 = 1+US_RndT()/6;
             break;
-                
+
             case dogobj:
                 ob->temp2 = 1+US_RndT()/8;
             break;
@@ -235,29 +235,29 @@ U8 SightPlayer(objtype *ob)
             case deathobj:
                 ob->temp2 = 1;
             break;
-            
+
             default:
                 /* do nothing */
             break;
         }
-        
+
         return 0;
     }
-    
+
     /* put actor into combat state */
     FirstSighting(ob);
-    
+
     return 1;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CheckSight
 =
-= Description: 
+= Description:
 =
-= Checks a straight line between player and current object If 
+= Checks a straight line between player and current object If
 = the sight is ok, check alertness and angle to see if they
 = notice
 =
@@ -274,12 +274,12 @@ static U8 CheckSight(objtype *ob)
     {
         return 0;
     }
-    
+
     /* if the player is real close, sight is automatic */
     deltax = player->x - ob->x;
     deltay = player->y - ob->y;
 
-    if (deltax > -MINSIGHT && deltax < MINSIGHT 
+    if (deltax > -MINSIGHT && deltax < MINSIGHT
                                  && deltay > -MINSIGHT && deltay < MINSIGHT)
     {
         return 1;
@@ -315,7 +315,7 @@ static U8 CheckSight(objtype *ob)
                 return 0;
             }
         break;
-        
+
         /* check diagonal moving guards */
         case northwest:
             if(deltay > -deltax)
@@ -344,24 +344,24 @@ static U8 CheckSight(objtype *ob)
                 return 0;
             }
         break;
-        
+
         default:
             /* do nothing */
         break;
     }
-    
+
     /* trace a line to check for blocking tiles (corners) */
     return CheckLine(ob);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: CheckLine
 =
-= Description: 
+= Description:
 =
-= Returns true if a straight line between the player and 
+= Returns true if a straight line between the player and
 = ob is unobstructed
 =
 ================================================================
@@ -380,21 +380,21 @@ U8 CheckLine(objtype *ob)
     S32 yfrac,xfrac;
     U32 value;
     U32 intercept;
-    
+
     /* convert actor coords to tile coords */
     x1 = ob->x >> UNSIGNEDSHIFT;    /* 1/256 tile precision */
     y1 = ob->y >> UNSIGNEDSHIFT;
     xt1 = x1 >> 8;
     yt1 = y1 >> 8;
-    
+
     x2 = plux;
     y2 = pluy;
     xt2 = player->tilex;
     yt2 = player->tiley;
-    
+
     /* x tile distance between actor and player */
     xdist = abs(xt2-xt1);
-    
+
     /* check to see if player and actor are not in a straight */
     /* vertical line with each other. if not we need to inc   */
     /* x by one tile and adjust y by slope of line of sight   */
@@ -415,7 +415,7 @@ U8 CheckLine(objtype *ob)
             partial = x1&0xff;
             xstep = -1;
         }
-        
+
         /* work out slope of line (ystep), first get delta x and y */
         deltafrac = abs(x2 - x1);
         delta = y2 - y1;
@@ -434,7 +434,7 @@ U8 CheckLine(objtype *ob)
         {
             ystep = ltemp;
         }
-        
+
         /* set starting y point of line of sight */
         yfrac = y1 + (((S32)ystep*partial) >> 8);
         /* set starting x point of line of sight */
@@ -471,13 +471,13 @@ U8 CheckLine(objtype *ob)
                 return 0; /* line of sight broken by closed door */
             }
 
-        }while(x != xt2);   
-    
+        }while(x != xt2);
+
     }
-    
+
     /* y tile distance between actor and player */
     ydist = abs(yt2-yt1);
-    
+
     /* check to see if player and actor are not in a straight */
     /* horizontal line with each other. if not we need to inc */
     /* y by one tile and adjust x by slope of line of sight   */
@@ -498,7 +498,7 @@ U8 CheckLine(objtype *ob)
             partial = y1&0xff;
             ystep = -1;
         }
-        
+
         /* work out slope of line (xstep), first get delta x and y */
         deltafrac = abs(y2-y1);
         delta = x2-x1;
@@ -517,14 +517,14 @@ U8 CheckLine(objtype *ob)
         {
             xstep = ltemp;
         }
-        
+
         /* set starting x point of line of sight */
         xfrac = x1 + (((S32)xstep*partial) >>8);
         /* set starting y point of line of sight */
         y = yt1 + ystep;
         /* set end y point of line of sight */
         yt2 += ystep;
-        
+
         do
         {
             x = xfrac>>8;
@@ -552,22 +552,22 @@ U8 CheckLine(objtype *ob)
             {
                 return 0; /* line of sight broken by closed door */
             }
-            
+
         }while(y != yt2);
     }
-    
+
     /* clear line of sight to player so return true */
     return 1;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: FirstSighting
 =
-= Description: 
+= Description:
 =
-= Puts an actor into attack mode and possibly reverses the 
+= Puts an actor into attack mode and possibly reverses the
 = direction if the player is behind it.
 =
 ================================================================
@@ -582,7 +582,7 @@ static void FirstSighting(objtype *ob)
             NewState(ob,&s_grdchase1);
             ob->speed *= 3;                 /* go faster when chasing player */
         break;
-        
+
         case officerobj:
             PlaySoundLocActor(SPIONSND,ob);
             NewState (ob,&s_ofcchase1);
@@ -658,7 +658,7 @@ static void FirstSighting(objtype *ob)
             NewState (ob,&s_blinkychase1);
             ob->speed *= 2;                 /* go faster when chasing player */
         break;
-        
+
         default:
             /* do nothing */
         break;
@@ -672,14 +672,14 @@ static void FirstSighting(objtype *ob)
     ob->flags |= FL_ATTACKMODE|FL_FIRSTATTACK;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: NewState
 =
-= Description: 
+= Description:
 =
-= Changes ob to a new state, setting ticcount to the max 
+= Changes ob to a new state, setting ticcount to the max
 = for that state
 =
 ================================================================
@@ -690,12 +690,12 @@ void NewState(objtype *ob, statetype *state)
     ob->ticcount = state->tictime;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SelectDodgeDir
 =
-= Description: 
+= Description:
 =
 =
 = SelectDodgeDir
@@ -723,7 +723,7 @@ void SelectDodgeDir(objtype *ob)
     U32        absdx,absdy;
     dirtype    dirtry[5];
     dirtype    turnaround,tdir;
-    
+
     if(ob->flags & FL_FIRSTATTACK)
     {
         /* turning around is only ok the very first time after */
@@ -735,10 +735,10 @@ void SelectDodgeDir(objtype *ob)
     {
         turnaround = opposite[ob->dir];
     }
-    
+
     deltax = player->tilex - ob->tilex;
     deltay = player->tiley - ob->tiley;
-    
+
     /* arange 5 direction choices in order of preference               */
     /* the four cardinal directions plus the diagonal straight towards */
     /* the player                                                      */
@@ -764,11 +764,11 @@ void SelectDodgeDir(objtype *ob)
         dirtry[2]= north;
         dirtry[4]= south;
     }
-    
+
     /* randomize a bit for dodging */
     absdx = abs(deltax);
     absdy = abs(deltay);
-    
+
     if (absdx > absdy)
     {
         tdir = dirtry[1];
@@ -790,7 +790,7 @@ void SelectDodgeDir(objtype *ob)
     }
 
     dirtry[0] = diagonal[dirtry[1]][dirtry[2]];
-    
+
     /* try the directions util one works */
     for(i=0;i<5;i++)
     {
@@ -800,7 +800,7 @@ void SelectDodgeDir(objtype *ob)
         }
 
         ob->dir = dirtry[i];
-        
+
         if(TryWalk(ob))
         {
             return;
@@ -821,12 +821,12 @@ void SelectDodgeDir(objtype *ob)
     ob->dir = nodir;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SelectChaseDir
 =
-= Description: 
+= Description:
 =
 = As SelectDodgeDir, but doesn't try to dodge
 =
@@ -849,10 +849,10 @@ void SelectChaseDir(objtype *ob)
     S32 deltax,deltay;
     dirtype d[3];
     dirtype tdir, olddir, turnaround;
-    
+
     olddir = ob->dir;
     turnaround = opposite[olddir];
-    
+
     deltax=player->tilex - ob->tilex;
     deltay=player->tiley - ob->tiley;
 
@@ -867,7 +867,7 @@ void SelectChaseDir(objtype *ob)
     {
         d[1] = west;
     }
-    
+
     if(deltay > 0)
     {
         d[2] = south;
@@ -888,7 +888,7 @@ void SelectChaseDir(objtype *ob)
     {
         d[1] = nodir;
     }
-    
+
     if(d[2] == turnaround)
     {
         d[2] = nodir;
@@ -897,7 +897,7 @@ void SelectChaseDir(objtype *ob)
     if(d[1] != nodir)
     {
         ob->dir=d[1];
-        
+
         if (TryWalk(ob))
         {
             return;     /*either moved forward or attacked*/
@@ -907,7 +907,7 @@ void SelectChaseDir(objtype *ob)
     if (d[2] != nodir)
     {
         ob->dir=d[2];
-        
+
         if (TryWalk(ob))
         {
             return;
@@ -918,13 +918,13 @@ void SelectChaseDir(objtype *ob)
     if(olddir != nodir)
     {
         ob->dir=olddir;
-        
+
         if(TryWalk(ob))
         {
             return;
         }
     }
-    
+
     if (US_RndT()>128)      /*randomly determine direction of search*/
     {
         for (tdir=north; tdir<=west; tdir=(dirtype)(tdir+1))
@@ -957,7 +957,7 @@ void SelectChaseDir(objtype *ob)
     if (turnaround !=  nodir)
     {
         ob->dir=turnaround;
-        
+
         if (ob->dir != nodir)
         {
             if ( TryWalk(ob) )
@@ -968,15 +968,15 @@ void SelectChaseDir(objtype *ob)
     }
 
     ob->dir = nodir;    /* can't move */
-    
+
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: MoveObj
 =
-= Description: 
+= Description:
 =
 = Moves ob be move global units in ob->dir direction
 = Actors are not allowed to move inside the player
@@ -996,34 +996,34 @@ void MoveObj(objtype *ob, S32 move)
         case north:
             ob->y -= move;
         break;
-        
+
         case northeast:
             ob->x += move;
             ob->y -= move;
         break;
-        
+
         case east:
             ob->x += move;
         break;
-        
+
         case southeast:
             ob->x += move;
             ob->y += move;
         break;
-        
+
         case south:
             ob->y += move;
         break;
-            
+
         case southwest:
             ob->x -= move;
             ob->y += move;
         break;
-            
+
         case west:
             ob->x -= move;
         break;
-            
+
         case northwest:
             ob->x -= move;
             ob->y -= move;
@@ -1038,21 +1038,21 @@ void MoveObj(objtype *ob, S32 move)
             while(1){ /* hang system */}
         break;
     }
-    
+
     /* check to make sure it's not on top of player */
     if (areabyplayer[ob->areanumber])
     {
         deltax = ob->x - player->x;
-        
+
         if (deltax < -MINACTORDIST || deltax > MINACTORDIST)
         {
             /* move ok */
             ob->distance -=move;
             return;
         }
-            
+
         deltay = ob->y - player->y;
-        
+
         if (deltay < -MINACTORDIST || deltay > MINACTORDIST)
         {
             /* move ok */
@@ -1066,47 +1066,47 @@ void MoveObj(objtype *ob, S32 move)
             ob->distance -=move;
             return;
         }
-        
+
 
         if (ob->obclass == ghostobj || ob->obclass == spectreobj)
         {
             TakeDamage (tics*2,ob);
         }
-        
+
         /* back up */
         switch (ob->dir)
         {
             case north:
                 ob->y += move;
             break;
-            
+
             case northeast:
                 ob->x -= move;
                 ob->y += move;
             break;
-            
+
             case east:
                 ob->x -= move;
             break;
-            
+
             case southeast:
                 ob->x -= move;
                 ob->y -= move;
             break;
-            
+
             case south:
                 ob->y -= move;
             break;
-            
+
             case southwest:
                 ob->x += move;
                 ob->y -= move;
             break;
-            
+
             case west:
                 ob->x += move;
             break;
-            
+
             case northwest:
                 ob->x += move;
                 ob->y += move;
@@ -1119,12 +1119,12 @@ void MoveObj(objtype *ob, S32 move)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: TryWalk
 =
-= Description: 
+= Description:
 =
 = Attempts to move ob in its current (ob->dir) direction.
 =
@@ -1189,11 +1189,11 @@ U8 TryWalk (objtype *ob)
                 ob->tilex--;
                 ob->tiley--;
             break;
-            
+
             default:
                 /* do nothing */
             break;
-            
+
         }
     }
     else
@@ -1294,7 +1294,7 @@ U8 TryWalk (objtype *ob)
             break;
         }
     }
-    
+
     ob->areanumber =
         *(mapsegs[0] + (ob->tiley<<mapshift)+ob->tilex) - AREATILE;
 
@@ -1302,12 +1302,12 @@ U8 TryWalk (objtype *ob)
     return 1;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: DamageActor
 =
-= Description: 
+= Description:
 =
 = Called when the player succesfully hits an enemy.
 =
@@ -1384,7 +1384,7 @@ void DamageActor (objtype *ob, U32 damage)
                     NewState (ob,&s_sspain1);
                 }
             break;
-            
+
             default:
                 /* do nothing */
             break;
@@ -1392,12 +1392,12 @@ void DamageActor (objtype *ob, U32 damage)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: KillActor
 =
-= Description: 
+= Description:
 =
 = start the actors death sequence.
 =
@@ -1418,7 +1418,7 @@ static void KillActor(objtype *ob)
             NewState(ob,&s_grddie1);
             PlaceItemType(bo_clip2,tilex,tiley);
         break;
-        
+
         case officerobj:
             GivePoints(400);
             NewState(ob,&s_ofcdie1);
@@ -1481,7 +1481,7 @@ static void KillActor(objtype *ob)
             gamestate.killy = player->y;
             NewState (ob,&s_schabbdie1);
         break;
-        
+
         case fakeobj:
             GivePoints (2000);
             NewState (ob,&s_fakedie1);
@@ -1491,14 +1491,14 @@ static void KillActor(objtype *ob)
             GivePoints (5000);
             NewState (ob,&s_mechadie1);
         break;
-        
+
         case realhitlerobj:
             GivePoints (5000);
             gamestate.killx = player->x;
             gamestate.killy = player->y;
             NewState (ob,&s_hitlerdie1);
         break;
-        
+
         default:
             /* do nothing */
         break;

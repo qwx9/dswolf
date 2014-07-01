@@ -56,7 +56,7 @@
 #define BASEMOVE            35
 #define RUNMOVE             70
 
-/* 
+/*
 ================================================================
 =
 = Function: FixedMul
@@ -70,8 +70,8 @@
 */
 static inline fixed FixedMul(fixed a, fixed b)
 {
-	
+
     return (fixed)(((long long)a * b + 0x8000) >> 16);
-} 
+}
 
 #endif

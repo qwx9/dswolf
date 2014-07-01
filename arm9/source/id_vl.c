@@ -39,7 +39,7 @@ static U8 *screen = NULL;
 static vga_colour palette1[256];
 static vga_colour palette2[256];
 static vga_colour curpal[256];
-static vga_colour vga_24bit_pal[] = 
+static vga_colour vga_24bit_pal[] =
 {
     #include "wolfpal.inc"
 };
@@ -96,16 +96,16 @@ static void VL_FillPalette(S32 red, S32 green, S32 blue);
 static void VL_SetPalette(vga_colour *palette, U8 forceupdate);
 static S32 log2_ceil(U32 x);
 
-/* 
+/*
 ================================================================
 =
 = Function: VL_SetVGAPlaneMode
 =
 = Description:
 =
-= Setup NDS screen options and locate screen buffer memory 
+= Setup NDS screen options and locate screen buffer memory
 =
-================================================================ 
+================================================================
 */
 void VL_SetVGAPlaneMode(void)
 {
@@ -114,10 +114,10 @@ void VL_SetVGAPlaneMode(void)
     vramSetBankA(VRAM_A_MAIN_BG_0x06000000);        /* same as VRAM_A_MAIN_BG */
     vramSetBankB(VRAM_B_MAIN_BG_0x06020000);        /* use second bank for main screen - 256 KiB */
 
-    /* set top screen scaling */ 
+    /* set top screen scaling */
     REG_BG3CNT = BG_BMP8_512x512;                   /* BG3 Control register, 8 bits */
     REG_BG3PA = (SCREENWIDTH * 256)/256;            /* Scale X (320 / 256 = 1.25) */
-    REG_BG3PB = 0;                                  /* BG X rotation (0 = none) */ 
+    REG_BG3PB = 0;                                  /* BG X rotation (0 = none) */
     REG_BG3PC = 0;                                  /* BG Y rotation (0 = none) */
     REG_BG3PD = (SCREENHEIGHT * 256)/192;          /* Scale Y (200 / 192 = 1.0416) */
     REG_BG3X = 0;
@@ -125,7 +125,7 @@ void VL_SetVGAPlaneMode(void)
 
     /* Disable LED blinking if the passcard does not do it for us (DSX) */
     ledBlink(0);
-    
+
     /* set bottom screen to mode 2 single bufffer*/
     videoSetModeSub(MODE_0_2D|DISPLAY_BG0_ACTIVE);
     vramSetBankC(VRAM_C_SUB_BG);
@@ -137,23 +137,23 @@ void VL_SetVGAPlaneMode(void)
 
     /* clear top screen */
     memset(BG_GFX, 0, 512 * 512 * 2);
- 
+
     swiWaitForVBlank();
     consoleClear();
-    
+
     /* get memory for screen buffer */
     screen = (U8 *) malloc((SCREENWIDTH * SCREENHEIGHT));
     CheckMallocResult(screen);
-    
+
     /* get memory to hold ray slice heights*/
     wallheight = (S32 *) malloc(SCREENWIDTH * sizeof(S32));
     CheckMallocResult(wallheight);
-    
+
     /* populate current screen palette */
     memcpy(curpal, vga_24bit_pal, sizeof(vga_colour) * 256);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: InitRedShifts
@@ -162,7 +162,7 @@ void VL_SetVGAPlaneMode(void)
 =
 = Setup red and white palette shift arrays
 =
-================================================================ 
+================================================================
 */
 void InitRedShifts(void)
 {
@@ -207,7 +207,7 @@ void InitRedShifts(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SignonScreen
@@ -216,12 +216,12 @@ void InitRedShifts(void)
 =
 = copy signon screen pic into screen buffer memory
 =
-================================================================ 
+================================================================
 */
 void SignonScreen(void)
 {
     U32 i;
-    
+
     /* copy signon pic into screen buffer */
     for(i = 0; i < (SCREENWIDTH * SCREENHEIGHT) ;i++)
     {
@@ -229,7 +229,7 @@ void SignonScreen(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: UpdateScreen
@@ -239,7 +239,7 @@ void SignonScreen(void)
 = update NDS screen buffer with new image and also update
 = palette if required.
 =
-================================================================ 
+================================================================
 */
 void UpdateScreen(U8 SetPalette)
 {
@@ -248,7 +248,7 @@ void UpdateScreen(U8 SetPalette)
     S32 step = 512;
     U8 *destmain = (U8 *)BG_GFX;
     U8 *srcmain = screen;
-    
+
      /* dma screen buffer into nds video memory */
     for (h = SCREENHEIGHT; h > 0; h--)
     {
@@ -256,23 +256,23 @@ void UpdateScreen(U8 SetPalette)
         destmain += step;
         srcmain += SCREENWIDTH;
     }
-    
+
     if(SetPalette == 1)
     {
         u8 r, g, b;
-    
+
         for(i = 0; i < 256; i++)
-        {                  
+        {
             r = curpal[i].r;
             g = curpal[i].g;
             b = curpal[i].b;
-    
+
             BG_PALETTE[i]=RGB8(r,g,b);
         }
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VL_Bar
@@ -281,7 +281,7 @@ void UpdateScreen(U8 SetPalette)
 =
 = Draws a rectangle on screen
 =
-================================================================ 
+================================================================
 */
 void VL_Bar(S32 x, S32 y, S32 width, S32 height, S32 color)
 {
@@ -301,7 +301,7 @@ void VL_Bar(S32 x, S32 y, S32 width, S32 height, S32 color)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VL_Hlin
@@ -310,7 +310,7 @@ void VL_Bar(S32 x, S32 y, S32 width, S32 height, S32 color)
 =
 = draws a horizontal line
 =
-================================================================ 
+================================================================
 */
 
 void VL_Hlin (U32 x, U32 y, U32 width, S32 color)
@@ -326,7 +326,7 @@ void VL_Hlin (U32 x, U32 y, U32 width, S32 color)
     memset(dest, color, width);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VL_Vlin
@@ -335,7 +335,7 @@ void VL_Hlin (U32 x, U32 y, U32 width, S32 color)
 =
 = draws a vertical line
 =
-================================================================ 
+================================================================
 */
 
 void VL_Vlin (S32 x, S32 y, S32 height, S32 color)
@@ -356,7 +356,7 @@ void VL_Vlin (S32 x, S32 y, S32 height, S32 color)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VL_GetPixel
@@ -365,12 +365,12 @@ void VL_Vlin (S32 x, S32 y, S32 height, S32 color)
 =
 = get the colour of a pixel on screen
 =
-================================================================ 
+================================================================
 */
 U8 VL_GetPixel(S16 x, S16 y)
 {
     U8 col;
-    
+
     if((x > SCREENWIDTH) && (y > SCREENHEIGHT))
     {
         printf(" VL_GetPixel: Destination out of bounds! \n");
@@ -378,11 +378,11 @@ U8 VL_GetPixel(S16 x, S16 y)
     }
 
     col = screen[(y * SCREENWIDTH) + x];
-    
+
     return col;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VL_MemToScreen
@@ -391,7 +391,7 @@ U8 VL_GetPixel(S16 x, S16 y)
 =
 = Draws a graphics picture chunk from memory into screen buffer
 =
-================================================================ 
+================================================================
 */
 void VL_MemToScreen(U8 *source, U32 width, U32 height, S32 destx, S32 desty)
 {
@@ -401,7 +401,7 @@ void VL_MemToScreen(U8 *source, U32 width, U32 height, S32 destx, S32 desty)
         printf("VL_MemToScreen: Destination of picture out of bounds! \n");
         while(1){}; /* hang system */
     }
-    
+
     U32 j;
     U32 i;
     U32 scj;
@@ -418,7 +418,7 @@ void VL_MemToScreen(U8 *source, U32 width, U32 height, S32 destx, S32 desty)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VWB_DrawPropString
@@ -427,7 +427,7 @@ void VL_MemToScreen(U8 *source, U32 width, U32 height, S32 destx, S32 desty)
 =
 = draws string to screen
 =
-================================================================ 
+================================================================
 */
 void VWB_DrawPropString(const char* string)
 {
@@ -438,7 +438,7 @@ void VWB_DrawPropString(const char* string)
     S16         i;
     U8          fontnumber;
     U8          fontcolor;
-    
+
     fontnumber = GetFontNum();
     fontcolor  = GetFontColor();
     font = (fontstruct *) grsegs[STARTFONT+fontnumber];
@@ -449,7 +449,7 @@ void VWB_DrawPropString(const char* string)
     {
         width = step = font->width[ch];
         source = ((U8 *)font)+font->location[ch];
-        
+
         while((width--) != 0)
         {
             for(i=0;i<height;i++)
@@ -467,7 +467,7 @@ void VWB_DrawPropString(const char* string)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VL_Shutdown
@@ -476,7 +476,7 @@ void VWB_DrawPropString(const char* string)
 =
 = Return screen buffer to heap before shut down
 =
-================================================================ 
+================================================================
 */
 void VL_Shutdown(void)
 {
@@ -487,7 +487,7 @@ void VL_Shutdown(void)
 }
 
 
-/* 
+/*
 ================================================================
 =
 = Function: VL_FadeOut
@@ -496,7 +496,7 @@ void VL_Shutdown(void)
 =
 = Fades the current palette to the given color in the given number of steps
 =
-================================================================ 
+================================================================
 */
 void VL_FadeOut(S32 start, S32 end, S32 red, S32 green, S32 blue, S32 steps)
 {
@@ -531,18 +531,18 @@ void VL_FadeOut(S32 start, S32 end, S32 red, S32 green, S32 blue, S32 steps)
             origptr++;
             newptr++;
         }
-        
+
         VL_SetPalette(palette2, 1);
         Delay_ms(10);
     }
 
     /* final color */
     VL_FillPalette(red,green,blue);
-    
+
     screenfaded = 1;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VL_FadeIn
@@ -551,7 +551,7 @@ void VL_FadeOut(S32 start, S32 end, S32 red, S32 green, S32 blue, S32 steps)
 =
 = Fades the current palette to orginal color in the given number of steps
 =
-================================================================ 
+================================================================
 */
 void VL_FadeIn (S32 start, S32 end,S32 steps)
 {
@@ -560,7 +560,7 @@ void VL_FadeIn (S32 start, S32 end,S32 steps)
     Delay_ms(10);
     VL_GetPalette(palette1);
     memcpy(palette2, palette1, sizeof(vga_colour) * 256);
-    
+
     /* fade through intermediate frames */
     for (i=0;i<steps;i++)
     {
@@ -581,11 +581,11 @@ void VL_FadeIn (S32 start, S32 end,S32 steps)
 
     /* final color */
     VL_SetPalette (vga_24bit_pal, 1);
-    
+
     screenfaded = 0;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VL_GetPalette
@@ -594,14 +594,14 @@ void VL_FadeIn (S32 start, S32 end,S32 steps)
 =
 = copy orginal palette into supplied memory buffer
 =
-================================================================ 
+================================================================
 */
 static void VL_GetPalette(vga_colour *palette)
 {
     memcpy(palette, curpal, sizeof(vga_colour) * 256);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: SetPalette
@@ -610,7 +610,7 @@ static void VL_GetPalette(vga_colour *palette)
 =
 = flash screen white or red by changing screen palette
 =
-================================================================ 
+================================================================
 */
 void SetPalette(pal_type Pal, S32 ShiftAmount, U8 Update)
 {
@@ -624,7 +624,7 @@ void SetPalette(pal_type Pal, S32 ShiftAmount, U8 Update)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VL_SetPalette
@@ -633,29 +633,29 @@ void SetPalette(pal_type Pal, S32 ShiftAmount, U8 Update)
 =
 = changes screen palette to requested one
 =
-================================================================ 
+================================================================
 */
 static void VL_SetPalette(vga_colour *palette, U8 forceupdate)
 {
     S32 i;
 
     memcpy(curpal, palette, sizeof(vga_colour) * 256);
-    
+
     if(forceupdate == 1)
     {
         for(i = 0; i < 256; i++)
-        {                  
+        {
           u8 r, g, b;
           r = curpal[i].r;
           g = curpal[i].g;
           b = curpal[i].b;
-    
+
           BG_PALETTE[i]=RGB8(r,g,b);
         }
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VL_FillPalette
@@ -664,7 +664,7 @@ static void VL_SetPalette(vga_colour *palette, U8 forceupdate)
 =
 = Fill a palette with a given colour
 =
-================================================================ 
+================================================================
 */
 static void VL_FillPalette(S32 red, S32 green, S32 blue)
 {
@@ -681,7 +681,7 @@ static void VL_FillPalette(S32 red, S32 green, S32 blue)
     VL_SetPalette(pal, 1);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VGAClearScreen
@@ -691,23 +691,23 @@ static void VL_FillPalette(S32 red, S32 green, S32 blue)
 = clear player visable screen (not status bar) to selected
 = ceiling / floor colour
 =
-================================================================ 
+================================================================
 */
 void VGAClearScreen(void)
 {
     /* select ceiling colour based on episode / level */
     U8 ceiling = vgaCeiling[gamestate.episode*10+mapon];
-    
+
     S32 y;
     U8 *ptr = screen;
     ptr += screenofs;
-    
+
     /* colour ceiling */
     for(y = 0; y < viewheight / 2; y++, ptr += SCREENWIDTH)
     {
         memset(ptr, ceiling, viewwidth);
     }
-        
+
     /* colour floor */
     for(; y < viewheight; y++, ptr += SCREENWIDTH)
     {
@@ -715,7 +715,7 @@ void VGAClearScreen(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: log2_ceil
@@ -724,23 +724,23 @@ void VGAClearScreen(void)
 =
 = Returns the number of bits needed to represent the given value
 =
-================================================================ 
+================================================================
 */
 static S32 log2_ceil(U32 x)
 {
     S32 n = 0;
     U32 v = 1;
-    
+
     while(v < x)
     {
         n++;
         v <<= 1;
     }
-    
+
     return n;
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: VH_Startup
@@ -749,16 +749,16 @@ static S32 log2_ceil(U32 x)
 =
 = call from main init random number array for FizzleFade
 =
-================================================================ 
+================================================================
 */
 void VL_Startup(void)
 {
     S32 rndbits_x = log2_ceil(SCREENWIDTH);
-    
+
     rndbits_y = log2_ceil(SCREENHEIGHT);
 
     S32 rndbits = rndbits_x + rndbits_y;
-    
+
     if(rndbits < 17)
     {
         rndbits = 17;       /* no problem, just a bit slower */
@@ -771,7 +771,7 @@ void VL_Startup(void)
     rndmask = rndmasks[rndbits - 17];
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: FinishPaletteShifts
@@ -780,7 +780,7 @@ void VL_Startup(void)
 =
 = Resets palette to normal if needed
 =
-================================================================ 
+================================================================
 */
 
 void FinishPaletteShifts(void)
@@ -792,7 +792,7 @@ void FinishPaletteShifts(void)
     }
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: FizzleFade
@@ -801,7 +801,7 @@ void FinishPaletteShifts(void)
 =
 = randomly fade the screen to red
 =
-================================================================ 
+================================================================
 */
 void FizzleFade(S32 x1, S32 y1, U32 width, U32 height, U32 frames)
 {
@@ -812,25 +812,25 @@ void FizzleFade(S32 x1, S32 y1, U32 width, U32 height, U32 frames)
     U32 pixperframe;
     U32 x;
     U32 y;
-    
+
     /* work out how many pixel to turn red per frame */
     pixperframe = width * height / frames;
-    
+
     /* get current tic count */
     frame = GetTimeCount();
-    
+
     /* loop until screen is completely red */
     do
     {
         rndval = lastrndval;
-        
+
         /* turn some pixels red */
         for(p = 0; p < pixperframe; p++)
         {
             /* seperate random value into x/y pair */
             x = rndval >> rndbits_y;
             y = rndval & ((1 << rndbits_y) - 1);
-            
+
             /* advance to next random element */
             rndval = (rndval >> 1) ^ (rndval & 1 ? 0 : rndmask);
 
@@ -841,32 +841,32 @@ void FizzleFade(S32 x1, S32 y1, U32 width, U32 height, U32 frames)
                     UpdateScreen(0);
                     return;
                 }
-                
+
                 p--;
                 continue;
             }
-            
+
             /* turn one pixel red */
             screen[((y1 + y) * SCREENWIDTH) + x1 + x] = REDCOLOUR;
-            
+
             if(rndval == 0) /* entire sequence has been completed */
             {
                 UpdateScreen(0);
                 return;
             }
         }
-        
+
         lastrndval = rndval;
-        
+
         UpdateScreen(0);
-        
+
         frame++;
         Delay(frame - GetTimeCount());        /* don't go too fast */
-        
+
     }while (1);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: ScalePost
@@ -884,34 +884,34 @@ void ScalePost(void)
 
     /* get the wall height for the last pixx and scale by >> 3 */
     ywcount = yd = wallheight[postx] >> 3;
-    
+
     if(yd <= 0)
     {
         yd = 100;
     }
-    
+
     /* put y screen offset at the right location so that the */
     /* wall height will be draw correctly into the screen    */
     yoffs = (viewheight / 2 - ywcount) * SCREENWIDTH;
-    
+
     /* make sure we dont get a negative y screen offset */
     if(yoffs < 0)
     {
         yoffs = 0;
     }
-    
+
     /* add the x screen offset ie the start location of wall slice */
     yoffs += postx;
-    
+
     /* work out where the bottom of the wall slice should be */
     yendoffs = viewheight / 2 + ywcount - 1;
-    
+
     yw = TEXTURESIZE - 1;
-    
+
     while(yendoffs >= viewheight)
     {
         ywcount -= TEXTURESIZE / 2;
-        
+
         while(ywcount <= 0)
         {
             ywcount += yd;
@@ -919,27 +919,27 @@ void ScalePost(void)
         }
         yendoffs--;
     }
-    
+
     /* no texture to display so return*/
     if(yw < 0)
     {
         return;
     }
-    
+
     /* get the first byte of the texture to display */
     col = postsource[yw];
-    
+
     /* work out the coord's of the end of the wall slice */
     yendoffs = yendoffs * SCREENWIDTH + postx;
-    
+
     /* draw wall slice texture to screen */
     while(yoffs <= yendoffs)
     {
         /* draw from the bottom of the slice upwards */
         screen[(yendoffs + screenofs)] = col;
-        
+
         ywcount -= TEXTURESIZE/2;
-        
+
         /* scale the wall texture up / down depending on */
         /* size difference between splice height and texture height */
         if(ywcount <= 0)
@@ -949,7 +949,7 @@ void ScalePost(void)
                 ywcount += yd;
                 yw--;
             }while(ywcount <= 0);
-            
+
             if(yw < 0)
             {
                 break;
@@ -957,7 +957,7 @@ void ScalePost(void)
 
             col = postsource[yw];
         }
-        
+
         /* reduce the offset by one y width */
         yendoffs -= SCREENWIDTH;
     }
@@ -970,7 +970,7 @@ void ScalePost(void)
 =
 = Description:
 =
-= draw shapenum to screen but scaled according to view height 
+= draw shapenum to screen but scaled according to view height
 = and view width
 =
 ================================================================
@@ -994,7 +994,7 @@ void ScaleShape(S32 xcenter, S32 shapenum, U32 height, U32 flags)
     shape = (t_compshape *) PM_GetSprite(shapenum);
 
     scale = height>>3;     /* low three bits are fractional */
-    
+
     if(scale == 0)
     {
         return;   /* too close or far away */
@@ -1009,36 +1009,36 @@ void ScaleShape(S32 xcenter, S32 shapenum, U32 height, U32 flags)
     for(i = shape->leftpix, pixcnt = i*pixheight, rpix=(pixcnt>>6)+actx; i <= shape->rightpix ; i++, cmdptr++)
     {
         lpix = rpix;
-        
+
         if(lpix>=viewwidth)
         {
             break;
         }
-        
+
         pixcnt += pixheight;
         rpix = (pixcnt>>6)+actx;
-        
+
         if((lpix!=rpix) && (rpix>0))
         {
             if(lpix < 0)
             {
                 lpix=0;
             }
-            
+
             if(rpix > viewwidth)
             {
                 rpix = viewwidth;
                 i = shape->rightpix+1;
             }
-            
+
             cline = (U8 *)shape + *cmdptr;
-            
+
             while(lpix<rpix)
             {
                 if(wallheight[lpix] <= (S32)height)
                 {
                     line=cline;
-                    
+
                     while((endy = READWORD(line)) != 0)
                     {
                         line += 2;
@@ -1050,7 +1050,7 @@ void ScaleShape(S32 xcenter, S32 shapenum, U32 height, U32 flags)
                         j=starty;
                         ycnt=j*pixheight;
                         screndy=(ycnt>>6)+upperedge;
-                        
+
                         if(screndy<0)
                         {
                             vmem = screen + lpix + screenofs;
@@ -1059,22 +1059,22 @@ void ScaleShape(S32 xcenter, S32 shapenum, U32 height, U32 flags)
                         {
                             vmem = screen + screndy * SCREENWIDTH + lpix + screenofs;
                         }
-                        
+
                         for(;j<endy;j++)
                         {
                             scrstarty=screndy;
                             ycnt+=pixheight;
                             screndy=(ycnt>>6)+upperedge;
-                            
+
                             if((scrstarty!=screndy) && (screndy>0))
                             {
                                 col=((U8 *)shape)[newstart+j];
-                                
+
                                 if(scrstarty<0)
                                 {
                                     scrstarty=0;
                                 }
-                                
+
                                 if(screndy>viewheight)
                                 {
                                     screndy=viewheight;
@@ -1091,7 +1091,7 @@ void ScaleShape(S32 xcenter, S32 shapenum, U32 height, U32 flags)
                         }
                     }
                 }
-                
+
                 lpix++;
             }
         }
@@ -1105,7 +1105,7 @@ void ScaleShape(S32 xcenter, S32 shapenum, U32 height, U32 flags)
 =
 = Description:
 =
-= draw shapenum to screen but scaled according to view height 
+= draw shapenum to screen but scaled according to view height
 = and view width
 =
 ================================================================
@@ -1133,50 +1133,50 @@ void SimpleScaleShape(S32 xcenter, S32 shapenum, U32 height)
     S32 scrstarty;
     S16 newstart;
     U8 col;
-    
+
     shape = (t_compshape *) PM_GetSprite(shapenum);
-    
+
     scale = height >> 1;
-    
+
     pixheight = scale * SPRITESCALEFACTOR;
-    
+
     actx = xcenter - scale;
     upperedge = viewheight/2 - scale;
-    
+
     cmdptr = shape->dataofs;
-    
+
     for(i = shape->leftpix, pixcnt = i*pixheight, rpix = (pixcnt>>6)+actx ; i <= shape->rightpix ; i++,cmdptr++)
     {
         lpix = rpix;
-        
+
         if(lpix>=viewwidth)
         {
             break;
         }
-        
+
         pixcnt += pixheight;
-        
+
         rpix = (pixcnt>>6) + actx;
-        
+
         if((lpix != rpix) && (rpix > 0))
         {
             if(lpix<0)
             {
                 lpix=0;
             }
-            
+
             if(rpix > viewwidth)
             {
                 rpix = viewwidth;
                 i = shape->rightpix+1;
             }
-            
+
             cline = (U8 *)shape + *cmdptr;
-            
+
             while(lpix<rpix)
             {
                 line = cline;
-                
+
                 while((endy = READWORD(line)) != 0)
                 {
                     line += 2;
@@ -1188,31 +1188,31 @@ void SimpleScaleShape(S32 xcenter, S32 shapenum, U32 height)
                     j = starty;
                     ycnt = j*pixheight;
                     screndy = (ycnt>>6)+upperedge;
-                    
+
                     if(screndy < 0)
                     {
                         vmem = screen + lpix + screenofs;
                     }
-                    else 
+                    else
                     {
                         vmem = screen + screndy* SCREENWIDTH + lpix + screenofs;
                     }
-                    
+
                     for(;j<endy;j++)
                     {
                         scrstarty = screndy;
                         ycnt += pixheight;
                         screndy = (ycnt>>6)+upperedge;
-                        
+
                         if((scrstarty != screndy) && (screndy > 0))
                         {
                             col = ((U8 *)shape)[newstart+j];
-                            
-                            if(scrstarty < 0) 
+
+                            if(scrstarty < 0)
                             {
                                 scrstarty = 0;
                             }
-                            
+
                             if(screndy>viewheight)
                             {
                                 screndy = viewheight;
@@ -1228,7 +1228,7 @@ void SimpleScaleShape(S32 xcenter, S32 shapenum, U32 height)
                         }
                     }
                 }
-                
+
                 lpix++;
             }
         }

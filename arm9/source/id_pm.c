@@ -31,7 +31,7 @@ U8 **PMPages;
 
 static void PM_CannotOpen(const char *string);
 
-/* 
+/*
 ================================================================
 =
 = Function: PM_Startup
@@ -56,46 +56,46 @@ void PM_Startup(void)
     U32 *pageOffsets;
     U16 *pageLengths;
     U32 size;
-    
+
     strcat(fname,extension);
-    
+
     file = fopen(fname, "rb");
     if(file == NULL)
     {
         PM_CannotOpen(fname);
     }
-    
+
     ChunksInFile = 0;
     fread(&ChunksInFile,1,sizeof(U16), file);
     PMSpriteStart = 0;
     fread(&PMSpriteStart,1, sizeof(U16), file);
     PMSoundStart = 0;
     fread(&PMSoundStart,1, sizeof(U16), file);
-    
+
     /* read in page offsets */
     pageOffsets = (U32 *) malloc((ChunksInFile + 1) * sizeof(U32));
     CheckMallocResult(pageOffsets);
     fread(pageOffsets,ChunksInFile, sizeof(U32), file);
-    
+
     /* read in page lengths */
     pageLengths = (U16 *) malloc(ChunksInFile * sizeof(U16));
     CheckMallocResult(pageLengths);
     fread(pageLengths,ChunksInFile,sizeof(U16), file);
-    
+
     fseek(file, 0, SEEK_END);
     fileSize = ftell(file);
     pageDataSize = fileSize - pageOffsets[0];
-    
+
     if(pageDataSize > (size_t) -1)
     {
         printf("The page file \"%s\" is too large!", fname);
-        while(1){};     /* hang system */ 
+        while(1){};     /* hang system */
     }
-    
+
     pageOffsets[ChunksInFile] = fileSize;
 
     dataStart = pageOffsets[0];
-    
+
     /* Check that all pageOffsets are valid */
     for(i = 0; i < ChunksInFile; i++)
     {
@@ -103,14 +103,14 @@ void PM_Startup(void)
         {
             continue;   /* sparse page */
         }
-        
+
         if((pageOffsets[i] < dataStart) || (pageOffsets[i] >= (size_t) fileSize))
         {
             printf("Illegal page offset for page %i: %u", i, pageOffsets[i]);
-            while(1){};     /* hang system */ 
+            while(1){};     /* hang system */
         }
     }
-    
+
     /* Calculate total amount of padding needed for sprites and sound info page */
     for(i = PMSpriteStart; i < PMSoundStart; i++)
     {
@@ -118,30 +118,30 @@ void PM_Startup(void)
         {
             continue;   /* sparse page */
         }
-        
+
         offs = pageOffsets[i] - dataStart + alignPadding;
-        
+
         if((offs & 1) == 1)
         {
             alignPadding++;
         }
     }
-    
+
     if((pageOffsets[ChunksInFile - 1] - dataStart + alignPadding) & 1)
     {
         alignPadding++;
     }
-    
+
     PMPageDataSize = (size_t) pageDataSize + alignPadding;
     PMPageData = (U32 *) malloc(PMPageDataSize);
     CheckMallocResult(PMPageData);
-    
+
     PMPages = (U8 **) malloc((ChunksInFile + 1) * sizeof(U8 *));
     CheckMallocResult(PMPages);
-    
+
     /* Load pages and initialize PMPages pointers */
     ptr = (U8 *) PMPageData;
-    
+
     for(i = 0; i < ChunksInFile; i++)
     {
         if(((i >= PMSpriteStart) && (i < PMSoundStart)) || (i == (ChunksInFile - 1)))
@@ -152,7 +152,7 @@ void PM_Startup(void)
             if((offs & 1) == 1)
             {
                 *ptr++ = 0;
-                if(i == (ChunksInFile - 1)) 
+                if(i == (ChunksInFile - 1))
                 {
                     PMSoundInfoPagePadded = 1;
                 }
@@ -172,11 +172,11 @@ void PM_Startup(void)
         {
             size = pageLengths[i];
         }
-        else 
+        else
         {
             size = pageOffsets[i + 1] - pageOffsets[i];
         }
-        
+
         fseek(file, pageOffsets[i], SEEK_SET);
         fread(ptr, size, 1, file);
         ptr += size;
@@ -184,13 +184,13 @@ void PM_Startup(void)
 
     /* last page points after page buffer */
     PMPages[ChunksInFile] = ptr;
-    
+
     free(pageLengths);
     free(pageOffsets);
     fclose(file);
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: PM_CannotOpen
@@ -210,12 +210,12 @@ static void PM_CannotOpen(const char *string)
     strcpy(str,"Can't open ");
     strcat(str,string);
     strcat(str,"!\n");
-    
+
     printf("%s",str);
     while(1){} /* hang system */
 }
 
-/* 
+/*
 ================================================================
 =
 = Function: PM_Shutdown

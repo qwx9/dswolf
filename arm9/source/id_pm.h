@@ -19,7 +19,7 @@ static inline U8 *PM_GetPage(S32 page)
         printf("PM_GetPage: Tried to access illegal page: %i", page);
         while(1){} /* hang system */
     }
-    
+
     return PMPages[page];
 }
 
@@ -46,7 +46,7 @@ static inline U32 PM_GetPageSize(S32 page)
         printf("PM_GetPageSize: Tried to access illegal page: %i", page);
         while(1){} /* hang system */
     }
-    
+
     return (U32) (PMPages[page + 1] - PMPages[page]);
 }
 
