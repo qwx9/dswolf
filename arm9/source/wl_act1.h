@@ -10,5 +10,7 @@ extern void MoveDoors(void);
 extern void InitAreas(void);
 extern void OpenDoor (U8 door);
 extern void PlaceItemType(S32 itemtype, S32 tilex, S32 tiley);
+void PushWall   (int, int, int);
+void MovePWalls (void);
 
 #endif

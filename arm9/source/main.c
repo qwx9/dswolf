@@ -984,6 +984,8 @@ U8 SaveTheGame(FILE *file,S32 x,S32 y)
     fwrite (doorobjlist,sizeof(doorobjlist),1,file);
     checksum = DoChecksum((U8 *)doorobjlist,sizeof(doorobjlist),checksum);
 
+    /* FIXME: store pwall stuff: pwallstate, pwallx, pwally, pwalldir, pwallpos */
+
     /* WRITE OUT CHECKSUM */
     fwrite (&checksum,sizeof(checksum),1,file);
 
@@ -1101,6 +1103,8 @@ U8 LoadTheGame(FILE *file,S32 x,S32 y)
     DiskFlopAnim(x,y);
     fread (doorobjlist,sizeof(doorobjlist),1,file);
     checksum = DoChecksum((U8 *)doorobjlist,sizeof(doorobjlist),checksum);
+
+    /* FIXME: get pwall stuff */
 
     Thrust(0,0);    /* set player->areanumber to the floortile you're standing on */
 

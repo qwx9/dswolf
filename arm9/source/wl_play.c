@@ -183,6 +183,8 @@ void PlayLoop(void)
         madenoise = 0;
 
         MoveDoors();
+        /* FIXME: kluge */
+        MovePWalls();
 
         for(obj = player; obj != NULL; obj = obj->next)
         {

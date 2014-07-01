@@ -39,6 +39,7 @@ extern statobj_t    statobjlist[MAXSTATS];
 extern statobj_t    *laststatobj;
 extern S16 centerx;
 extern S32 scale;
+extern U8 pwallpos;
 
 /* local variables */
 
@@ -105,6 +106,9 @@ static void DrawScaleds(void);
 static U8 TransformTile (S32 tx, S32 ty, S16 *dispx, S16 *dispheight);
 static void TransformActor(objtype *ob);
 static S32 CalcRotate (objtype *ob);
+/* FIXME: kluge */
+static void HitHorizPWall(void);
+static void HitVertPWall(void);
 
 /*
 ================================================================
@@ -217,6 +221,7 @@ static void AsmRefresh(void)
     U32 xpartial = 0;   /* holds distance between player and tile side */
     U32 ypartial = 0;
     S16 angl = 0;
+    S32 doorhit;
 
     for(pixx=0; pixx<viewwidth; pixx++)
     {
@@ -291,22 +296,37 @@ vertentry:
                 /* check to see if we need to draw a door */
                 if(tilehit & 0x80)
                 {
-                    S32 yintbuf = yintercept + (ystep>>1);
-                    if((yintbuf>>16)!=(yintercept>>16))
+                    /* FIXME: kluge */
+                    if (tilehit & 0x40)
                     {
-                        goto passvert;
+                        /* vertpushwall */
+                        doorhit = yintercept + ((S32)pwallpos * ystep) / 64;
+                        if (doorhit>>TILESHIFT != yintercept>>TILESHIFT)
+                            goto passvert;
+                        yintercept = doorhit;
+                        xintercept = xtile << TILESHIFT;
+                        HitVertPWall();
                     }
-
-                    /* is door fully open ? */
-                    if((U16)yintbuf < doorposition[(tilehit & 0x7f)])
+                    else
                     {
-                        goto passvert;
-                    }
 
-                    yintercept= yintbuf;
-                    xintercept= (xtile<<TILESHIFT)|0x8000;
-                    ytile = (S16) (yintercept >> TILESHIFT);
-                    HitVertDoor();
+                        S32 yintbuf = yintercept + (ystep>>1);
+                        if((yintbuf>>16)!=(yintercept>>16))
+                        {
+                            goto passvert;
+                        }
+
+                        /* is door fully open ? */
+                        if((U16)yintbuf < doorposition[(tilehit & 0x7f)])
+                        {
+                            goto passvert;
+                        }
+
+                        yintercept= yintbuf;
+                        xintercept= (xtile<<TILESHIFT)|0x8000;
+                        ytile = (S16) (yintercept >> TILESHIFT);
+                        HitVertDoor();
+                    }
                 }
                 else
                 {
@@ -347,22 +367,38 @@ horizentry:
                 /* check to see if we need to draw a door */
                 if(tilehit & 0x80)
                 {
-                    S32 xintbuf=xintercept + (xstep>>1);
-                    if((xintbuf>>16)!=(xintercept>>16))
+                    /* FIXME: kluge */
+                    if (tilehit & 0x40)
                     {
-                        goto passhoriz;
-                    }
+                        doorhit = xintercept + ((S32)pwallpos * xstep) / 64;
 
-                    /* is door fully open ? */
-                    if((U16)xintbuf<doorposition[(tilehit & 0x7f)])
+                        /* horizpushwall */
+                        if (doorhit>>TILESHIFT != xintercept>>TILESHIFT)
+                            goto passhoriz;
+
+                        xintercept = doorhit;
+                        yintercept = ytile << TILESHIFT;
+                        HitHorizPWall();
+                    }
+                    else
                     {
-                        goto passhoriz;
-                    }
+                        S32 xintbuf=xintercept + (xstep>>1);
+                        if((xintbuf>>16)!=(xintercept>>16))
+                        {
+                            goto passhoriz;
+                        }
 
-                    xintercept = xintbuf;
-                    yintercept = (ytile<<TILESHIFT) + 0x8000;
-                    xtile = (S16) (xintercept >> TILESHIFT);
-                    HitHorizDoor();
+                        /* is door fully open ? */
+                        if((U16)xintbuf<doorposition[(tilehit & 0x7f)])
+                        {
+                            goto passhoriz;
+                        }
+
+                        xintercept = xintbuf;
+                        yintercept = (ytile<<TILESHIFT) + 0x8000;
+                        xtile = (S16) (xintercept >> TILESHIFT);
+                        HitHorizDoor();
+                    }
                 }
                 else
                 {
@@ -1130,4 +1166,115 @@ void CalcTics(void)
     {
         tics = MAXTICS;
     }
+}
+
+/* FIXME: kluge */
+static void
+HitHorizPWall(void)
+{
+    /* FIXME: different size and sign variables? why?
+     *  -> HitHorizWall */
+    U16 wallpic;
+    U32 texture,
+        offset;
+
+    texture = (xintercept >> TEXTUREFROMFIXEDSHIFT) & TEXTUREMASK;
+
+    offset = pwallpos << 10;
+
+    if (ytilestep == -1)
+        yintercept += TILEGLOBAL - offset;
+    else
+    {
+        texture = TEXTUREMASK - texture;
+        yintercept += offset;
+    }
+
+    if (lastside == 0 && lastintercept == ytile && lasttilehit == tilehit && ~lasttilehit & 0x40)
+    {
+        if (pixx & 0x3 && texture == lasttexture)
+        {
+            ScalePost();
+            postx = pixx;
+            wallheight[pixx] = wallheight[pixx-1];
+            return;
+        }
+
+        ScalePost();
+        wallheight[pixx] = CalcHeight();
+        postsource += texture-lasttexture;
+        postx = pixx;
+        lasttexture = texture;
+        return;
+    }
+
+    if (lastside != -1)
+        ScalePost();
+
+    lastside = 0;
+    lastintercept = ytile;
+    lasttilehit = tilehit;
+    lasttexture = texture;
+    wallheight[pixx] = CalcHeight();
+    postx = pixx;
+
+    wallpic = horizwall[tilehit & 63];
+    postsource = PM_GetTexture(wallpic) + texture;
+    /* FIXME: redundant? */
+    ScalePost();
+}
+
+
+/* FIXME: kluge */
+static void
+HitVertPWall(void)
+{
+    U16 wallpic;
+    /* FIXME: unsure of size for variable */
+    U32 texture,
+        offset;
+
+    texture = (yintercept >> 4) & 0xfc0;
+    offset = pwallpos << 10;
+
+    if (xtilestep == -1)
+    {
+        xintercept += TILEGLOBAL - offset;
+        texture = 0xfc0 - texture;
+    }
+    else
+        xintercept += offset;
+
+    if (lastside == 1 && lastintercept == xtile && lasttilehit == tilehit && ~lasttilehit & 0x40)
+    {
+        if (pixx & 0x3 && texture == lasttexture)
+        {
+            ScalePost();
+            postx = pixx;
+            wallheight[pixx] = wallheight[pixx-1];
+            return;
+        }
+
+        ScalePost();
+        wallheight[pixx] = CalcHeight();
+        postsource += texture - lasttexture;
+        postx = pixx;
+        lasttexture = texture;
+        return;
+    }
+
+    if (lastside != -1)
+        ScalePost();
+
+    lastside = 1;
+    lastintercept = xtile;
+    lasttilehit = tilehit;
+    lasttexture = texture;
+    wallheight[pixx] = CalcHeight();
+    postx = pixx;
+
+    wallpic = vertwall[tilehit & 63];
+    postsource = PM_GetTexture(wallpic) + texture;
+    /* FIXME: redundant? */
+    ScalePost();
 }

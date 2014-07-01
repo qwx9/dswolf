@@ -1061,7 +1061,9 @@ static void Cmd_Use(void)
     S32    checkx;
     S32    checky;
     U8     doornum;
-//    S32    dir;
+    /* FIXME: dir: used only for pwalls */
+    /* FIXME: enum values are what here? */
+    S32    dir;
     U8 elevatorok;
 
     /* find which cardinal direction the player is facing */
@@ -1069,28 +1071,28 @@ static void Cmd_Use(void)
     {
         checkx = player->tilex + 1;
         checky = player->tiley;
-//        dir = di_east;
+        dir = di_east;
         elevatorok = 1;
     }
     else if (player->angle < 3*ANGLES/8)
     {
         checkx = player->tilex;
         checky = player->tiley-1;
-//        dir = di_north;
+        dir = di_north;
         elevatorok = 0;
     }
     else if (player->angle < 5*ANGLES/8)
     {
         checkx = player->tilex - 1;
         checky = player->tiley;
-//        dir = di_west;
+        dir = di_west;
         elevatorok = 1;
     }
     else
     {
         checkx = player->tilex;
         checky = player->tiley + 1;
-//        dir = di_south;
+        dir = di_south;
         elevatorok = 0;
     }
 
@@ -1098,8 +1100,7 @@ static void Cmd_Use(void)
 
     if (*(mapsegs[1]+(checky<<mapshift)+checkx) == PUSHABLETILE)
     {
-        /* pushable wall */
-        //PushWall(checkx,checky,dir);
+        PushWall(checkx,checky,dir);
         return;
     }
 

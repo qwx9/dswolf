@@ -86,6 +86,13 @@ static statinfo_type statinfo[] =
     {SPR_STAT_26,bo_clip2},                 /* Clip            "      */
     {-1}                                    /* terminator             */
 };
+/* push walls */
+static U8       pwalldir;
+static U16      pwallstate;
+/* NOTE: check{x,y} are S32, but pwall{x,y} were originally
+ * unsigned int, what the duck? */
+static S32      pwallx,
+                pwally;
 
 /* global variables */
 
@@ -97,6 +104,9 @@ S16          doornum;
 statobj_t    statobjlist[MAXSTATS];
 statobj_t    *laststatobj;
 U16          doorposition[MAXDOORS];    /* leading edge of door 0=closed, 0xffff = fully open */
+/* push walls */
+/* amount a pushable wall has been moved (0-63) */
+U8 pwallpos;
 
 /* local prototypes */
 
@@ -794,4 +804,158 @@ void PlaceItemType (S32 itemtype, S32 tilex, S32 tiley)
     spot->visspot = &spotvis[tilex][tiley];
     spot->flags = FL_BONUS | statinfo[type].specialFlags;
     spot->itemnumber = statinfo[type].type;
+}
+
+/* FIXME: kluge */
+void
+PushWall(int checkx, int checky, int dir)
+{
+    int oldtile;
+
+    if (pwallstate)
+        return;
+
+    oldtile = tilemap[checkx][checky];
+    if (!oldtile)
+        return;
+
+    switch (dir)
+    {
+        /* FIXME: actorat: assignment makes pointer w/o a cast */
+        case di_north:
+            if (actorat[checkx][checky-1])
+            {
+                SD_PlaySound(NOWAYSND);
+                return;
+            }
+            actorat[checkx][checky-1] = oldtile;
+            tilemap[checkx][checky-1] = oldtile;
+            break;
+        case di_east:
+            if (actorat[checkx+1][checky])
+            {
+                SD_PlaySound(NOWAYSND);
+                return;
+            }
+            actorat[checkx+1][checky] = oldtile;
+            tilemap[checkx+1][checky] = oldtile;
+            break;
+        case di_south:
+            if (actorat[checkx][checky+1])
+            {
+                SD_PlaySound(NOWAYSND);
+                return;
+            }
+            actorat[checkx][checky+1] = oldtile;
+            tilemap[checkx][checky+1] = oldtile;
+            break;
+        case di_west:
+            if (actorat[checkx-1][checky])
+            {
+                SD_PlaySound(NOWAYSND);
+                return;
+            }
+            actorat[checkx-1][checky] = oldtile;
+            tilemap[checkx-1][checky] = oldtile;
+            break;
+    }
+
+    gamestate.secretcount++;
+    pwallx = checkx;
+    pwally = checky;
+    pwalldir = dir;
+    pwallstate = 1;
+    pwallpos = 0;
+    tilemap[pwallx][pwally] |= 0xc0;
+    /* remove P tile info */
+    /**(mapsegs[1]+farmapylookup[pwally]+pwallx) = 0;*/
+    *(mapsegs[1]+(pwally<<mapshift)+pwallx) = 0;
+
+    SD_PlaySound(PUSHWALLSND);
+}
+
+/* FIXME: kluge */
+void
+MovePWalls(void)
+{
+    int oldblock,
+        oldtile;
+
+    if (!pwallstate)
+        return;
+
+    oldblock = pwallstate/128;
+
+    pwallstate += tics;
+
+    if (pwallstate/128 != oldblock)
+    {
+        /* block crossed into a new block */
+        oldtile = tilemap[pwallx][pwally] & 63;
+
+        /* the tile can now be walked into */
+        tilemap[pwallx][pwally] = 0;
+        actorat[pwallx][pwally] = 0;
+        /**(mapsegs[0]+farmapylookup[pwally]+pwallx) = player->areanumber+AREATILE;*/
+        *(mapsegs[0]+(pwally<<mapshift)+pwallx) = player->areanumber+AREATILE;
+
+        /* see if it should be pushed farther */
+        if (pwallstate > 256)
+        {
+            /* the block has been pushed two tiles */
+            pwallstate = 0;
+            return;
+        }
+        else
+        {
+            switch (pwalldir)
+            {
+                /* FIXME: actorat: assignment makes pointer w/o a cast */
+                case di_north:
+                    pwally--;
+                    if (actorat[pwallx][pwally-1])
+                    {
+                        pwallstate = 0;
+                        return;
+                    }
+                    actorat[pwallx][pwally-1] = oldtile;
+                    tilemap[pwallx][pwally-1] = oldtile;
+                    break;
+                case di_east:
+                    pwallx++;
+                    if (actorat[pwallx+1][pwally])
+                    {
+                        pwallstate = 0;
+                        return;
+                    }
+                    actorat[pwallx+1][pwally] = oldtile;
+                    actorat[pwallx+1][pwally] = oldtile;
+                    break;
+                case di_south:
+                    pwally++;
+                    if (actorat[pwallx][pwally+1])
+                    {
+                        pwallstate = 0;
+                        return;
+                    }
+                    actorat[pwallx][pwally+1] = oldtile;
+                    tilemap[pwallx][pwally+1] = oldtile;
+                    break;
+                case di_west:
+                    pwallx--;
+                    if (actorat[pwallx-1][pwally])
+                    {
+                        pwallstate = 0;
+                        return;
+                    }
+                    actorat[pwallx-1][pwally] = oldtile;
+                    tilemap[pwallx-1][pwally] = oldtile;
+                    break;
+            }
+
+            tilemap[pwallx][pwally] = oldtile | 0xc0;
+        }
+    }
+
+    pwallpos = (pwallstate / 2) & 63;
 }

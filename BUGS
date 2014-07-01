@@ -11,3 +11,7 @@
 - music: listen to main menu music: not everything is being played
     compare to dosbox, etc.
 - slowdown when beginning to play music from beginning again
+- pause can be cancelled by hit a key repeatedly
+    lazy1 port: breaks pause only if a/b/x/y pressed once
+- actors spawning bugs, behaviour not at all like in original
+    can be seen in e1m1, just compare the soldiers between the two
