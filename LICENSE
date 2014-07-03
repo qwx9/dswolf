@@ -1,0 +1,42 @@
+dswolf uses code from several projects, and some are licensed differently.
+
+    * The original source code of Wolfenstein 3-D:
+
+        Its license can be found in the LICENSE.id file.
+
+    * The Nintendo DS port of Wolfenstein 3-D by Steven Taffs (aka "happy
+      bunny"), as seen at https://code.google.com/p/wolfenstein-3d-nds/:
+
+        No license found in the project files...
+
+    * An alpha release of the Nintendo DS port of Wolfenstein 3-D by "Lazy1"
+      (http://lazyone.drunkencoders.com):
+
+        No license found in the project files...
+
+    * wolf4sdl, a port of Wolfenstein 3-D to the Simple DirectMedia Layer (SDL)
+      library, by Moritz "Ripper" Kroll (http://www.chaos-software.de.vu):
+
+        As far as I can tell, it uses the same license as Wolfenstein 3-D, e.g.
+        LICENSE.id.
+
+    * DSx86's AdLib emulation code:
+
+        Its license can be found in arm7/source/adlib.s.
+        It covers the following files:
+
+            - arm7/source/adlib.s
+            - arm7/source/audio.c
+            - arm7/source/fn_tab.s
+            - arm7/source/sin_tab.s
+            - arm7/source/tl_tab.s
+
+The AdLib emulation code excepted, the rest of the code in this project is
+licensed under the 3-Clause BSD License, which can be found in the
+LICENSE.dswolf file.
+
+Wolfenstein 3-D is a trademark of id Software.
+The original source code of Wolfenstein 3-D has been used for educational
+purposes only, and I claim no ownership or proprietary rights in or to
+Wolfenstein 3-D, nor the artwork data, music or software tools (source code
+included).

@@ -1,7 +1,6 @@
-- determine license to use
-    what codebase does this have? GPLv2 release from id? Wolf3dEULA?
 - docs:
     . README, etc.
+    . acknowledgements: adlib /dsx86, etc.
     . comments: description of modules, etc.
 - don't require a specific directory where the gamefiles are to be
   located, instead try current directory, then a default one
@@ -23,3 +22,6 @@
 - sound volume?
 - strive for savegame compat?
 - eliminate senseless limitations for levels?
+- improve code based on carmack's own suggestions
+    . see RELEASE.TXT
+    . see TODO from lazy1's project files
