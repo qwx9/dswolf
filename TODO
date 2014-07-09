@@ -4,7 +4,9 @@
     . comments: description of modules, etc.
 - don't require a specific directory where the gamefiles are to be
   located, instead try current directory, then a default one
-    stat calls fail with a relative path
+    stat() works just fine, the problem is that the current working directory
+    is / instead of current working directory; apparently, need cart w/ argv
+    support for that
 - one executable for all versions of the game
     . remove shitty ifdefs
         actually, most are removed (SPEAR, SPEARDEMO)
@@ -16,6 +18,9 @@
 - quit -> restart or shutdown
 - refactor code
     keep old id structure?
+    . use int where it doesn't matter, instead of {S,U}32
+    . use signed/unsigned ints intelligently, where it actually matters
+    . headers are a clusterfuck right now
 - port to 9front (9wolf)
 - savegame naming? how does it work?
 - brightness a la doom?

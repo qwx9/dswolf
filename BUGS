@@ -20,3 +20,6 @@
     lazy1 port: breaks pause only if a/b/x/y pressed once
 - actors spawning bugs, behaviour not at all like in original
     can be seen in e1m1, just compare the soldiers between the two
+- usage of file streams for binary files
+    . just use open instead, we don't care about portability
+    . fseek -> lseek
