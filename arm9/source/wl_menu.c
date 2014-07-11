@@ -1139,7 +1139,7 @@ void CheckForEpisodes(void)
     if(numEpisodesMissing == -1)
     {
         printf("cant open valid vswap file \n");
-        /* TODO: reset or poweroff instead (wait for keypress) */
+        /* TODO: wait for input, then exit if some button is pressed */
         while(1){}; /* hang system */
     }
 
@@ -1659,7 +1659,8 @@ static S32 CP_Quit(S32 temp)
         SD_MusicOff();
         SD_StopSound();
         MenuFadeOut();
-        while(1){}; /* hang system */
+        Delay_ms(500);
+        exit(EXIT_SUCCESS);
     }
 
     DrawMainMenu();
