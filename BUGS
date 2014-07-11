@@ -3,7 +3,7 @@
     wrong: should be the original wallpic from when the wall was
     intact, but is the wallpic of the block "behind" it
 - wrong icon (icon.bmp) (not really a bug, but whatever)
-- fucks out on standby (if closed lid during gameplay)
+- fucks out on standby (just close the lid)
 - works only on shareware, no full version or sod (shareware or full)
     wl6 works fine if commenting out #define SHAREWARE
     that leaves out spear and sdm
@@ -11,15 +11,22 @@
 - performance: not as fluid as lazy1's port
 - controls: shitty; no controls for gun selection, etc.
 - lower screen -> print banner, then status messages
-- dogs: wrong sounds (dying, hits?)
 - shitty delay between going to the menu and going back in game
 - music: listen to main menu music: not everything is being played
     compare to dosbox, etc.
+    . seems that some instruments are maybe too quiet, but can be heard
 - big fps drop when repeating current music track
 - pause can be cancelled by hit a key repeatedly
     lazy1 port: breaks pause only if a/b/x/y pressed once
 - actors spawning bugs, behaviour not at all like in original
     can be seen in e1m1, just compare the soldiers between the two
+    seems to affect only patrolling enemies, check it
 - usage of file streams for binary files
     . just use open instead, we don't care about portability
     . fseek -> lseek
+- bugs on full screen size:
+    . poor fps (not very fluid, compare to lazy1)
+    . intermission screen draws a crapped out HUD when it shouldn't
+- got "length or dest is null!" on finishing e1m1 once, could not reproduce.
+- overwriting a savegame: the new text is being drawn over the old one w/o
+  clearing
