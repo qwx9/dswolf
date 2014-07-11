@@ -2,12 +2,10 @@
     . the wallpic displayed once the wall is pushed all the way is
     wrong: should be the original wallpic from when the wall was
     intact, but is the wallpic of the block "behind" it
-- wrong icon (icon.bmp) (not really a bug, but whatever)
 - fucks out on standby (just close the lid)
 - works only on shareware, no full version or sod (shareware or full)
     wl6 works fine if commenting out #define SHAREWARE
     that leaves out spear and sdm
-- modified exit messages (a/b instead of y/n): that's just WRONG
 - performance: not as fluid as lazy1's port
 - controls: shitty; no controls for gun selection, etc.
 - lower screen -> print banner, then status messages

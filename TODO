@@ -15,7 +15,9 @@
 - option to swap screens
 - option to use stylus for movement
 - restart or shutdown on error
-- quit -> restart or shutdown
+    exit() -> shutdown
+    must register whatever is needed w/ atexit
+    wait for input, and if confirmed, quit
 - refactor code
     keep old id structure?
     . use int where it doesn't matter, instead of {S,U}32
@@ -32,3 +34,4 @@
 - be able to push more than one pwall at a time
 - read/save settings to disk
 - touch keyboard for input (save names, highscore names, etc.)
+- handle corrupted savegames better
