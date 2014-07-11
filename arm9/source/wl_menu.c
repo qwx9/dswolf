@@ -66,8 +66,8 @@
 #define STR_DISNEY  "Disney Sound Source"
 #define STR_SB      "Sound Blaster"
 
-#define YESBUTTONNAME "A"
-#define NOBUTTONNAME  "B"
+#define YESBUTTONNAME "Y"
+#define NOBUTTONNAME  "N"
 
 #define ENDSTR1 "Dost thou wish to\nleave with such hasty\nabandon?"
 #define ENDSTR2 "Chickening out...\nalready?"
