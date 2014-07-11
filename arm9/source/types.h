@@ -1,7 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#define SHAREWARE
+/*#define SHAREWARE*/
 #define MaxHighName 57
 
 typedef unsigned char   U8;
