@@ -35,3 +35,6 @@
 - read/save settings to disk
 - touch keyboard for input (save names, highscore names, etc.)
 - handle corrupted savegames better
+    . debug the corrupt save we have saved
+- automap (toggled on or off) on lower screen (by default)
+- no demo playback or anything
