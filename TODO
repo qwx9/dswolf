@@ -11,6 +11,8 @@
     . remove shitty ifdefs
         actually, most are removed (SPEAR, SPEARDEMO)
         SHAREWARE was defined in types.h
+    . there is no spear support here; see id-notes for how to retrieve objs;
+    see other ports, etc.
 - use lower screen for SOMETHING
 - option to swap screens
 - option to use stylus for movement
@@ -38,3 +40,4 @@
     . debug the corrupt save we have saved
 - automap (toggled on or off) on lower screen (by default)
 - no demo playback or anything
+- missing SIGNON obj (see notes on how to retrieve)
